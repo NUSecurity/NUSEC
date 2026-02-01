@@ -24,23 +24,33 @@ export default function Quiz() {
 
   const currentQuestion = questions[currentQuestionIndex];
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  
+  try {
+    const response = await fetch('/api/validate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        questionId: currentQuestion.id,
+        answer: userAnswer
+      })
+    });
 
-    // Normalize both answers for comparison
-    const normalizedUserAnswer = userAnswer.toLowerCase().trim();
-    const normalizedCorrectAnswer = currentQuestion.answer.toLowerCase().trim();
+    const data = await response.json();
 
-    if (normalizedUserAnswer === normalizedCorrectAnswer) {
+    if (data.correct) {
       setIsCorrect(true);
       setShowHint(false);
-      setCompletedQuestions((prev) => new Set(prev).add(currentQuestionIndex));
-
+      setCompletedQuestions(prev => new Set(prev).add(currentQuestionIndex));
+      
       // Move to next question or complete quiz
       setTimeout(() => {
         if (currentQuestionIndex < questions.length - 1) {
           setCurrentQuestionIndex(currentQuestionIndex + 1);
-          setUserAnswer("");
+          setUserAnswer('');
           setIsCorrect(null);
           setIsRevisiting(false);
         } else {
@@ -51,7 +61,11 @@ export default function Quiz() {
       setIsCorrect(false);
       setShowHint(true);
     }
-  };
+  } catch (error) {
+    console.error('Error validating answer:', error);
+    // Handle error (show error message to user)
+  }
+};
 
   const handlePrevious = () => {
     if (currentQuestionIndex > 0) {

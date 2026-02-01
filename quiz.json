@@ -1,38 +1,38 @@
 [
   {
-    "question": "When was our site first registered? (Format: YYYY-MM-DD)",
-    "answer": "2025-09-13"
+    "id": 1,
+    "question": "When was our site first registered? (Format: YYYY-MM-DD)"
   },
   {
-    "question": "There Was a hidden flAg stored in a Yearly Backup that was lAter deleted from the nuseC site. It was stored in nusec.club/bacKup.html but for some reason we can't see it anymore",
-    "answer": "28.02968845564392, -82.82074467963191",
-    "hint": "Read the capitalized characters in the question"
+    "id": 2,
+    "question": "There was a hidden flag stored in a yearly backup that was later deleted from the NUSEC site. It was stored in nusec.club/backup.html but for some reason we can't see it anymore",
+    "hint": "Read the bold characters in the question"
   },
   {
-    "question": "Hmmmm. These look like coordinates. Can you figure out where these coordinates are located?",
-    "answer": "Caladesi Island"
+    "id": 3,
+    "question": "Hmmmm. These look like coordinates. Can you figure out where these coordinates are located?"
   },
   {
+    "id": 4,
     "question": "Great job! It looks like this person created a username with the name of the Island(first word) + the birth year of one of our E-board members. Can you find the Social Media platform this person used?",
-    "answer": "Instagram",
     "hint": "The birth year is 2005"
   },
   {
+    "id": 5,
     "question": "What country was the posted photo taken in?",
-    "answer": "Norway",
     "hint": "Reverse Image Search"
   },
   {
-    "question": "What about the photo on his story?",
-    "answer": "Serbia"
+    "id": 6,
+    "question": "What about the photo on his story?"
   },
   {
-    "question": "It looks like it was taken with a live camera. Can you find the IP Address?",
-    "answer": "109.233.191.130"
+    "id": 7,
+    "question": "It looks like it was taken with a live camera. Can you find the IP Address?"
   },
   {
+    "id": 8,
     "question": "What's the most dangerous CVE associated with this IP address in 2025?",
-    "answer": "CVE-2025-23048",
     "hint": "Shodan"
   }
 ]
