@@ -5,8 +5,8 @@
   },
   {
     "id": 2,
-    "question": "There was a hidden flag stored in a yearly backup that was later deleted from the NUSEC site. It was stored in nusec.club/backup.html but for some reason we can't see it anymore",
-    "hint": "Read the bold characters in the question"
+    "question": "There Was a hidden flAg stored in a Yearly Backup that wAs later deleted from the nuseC site. It was stored in nusec.club/bacKup.html but for some reason we can't see it anymore",
+    "hint": "Read the capitalized characters in the question"
   },
   {
     "id": 3,
@@ -15,7 +15,7 @@
   {
     "id": 4,
     "question": "Great job! It looks like this person created a username with the name of the Island(first word) + the birth year of one of our E-board members. Can you find the Social Media platform this person used?",
-    "hint": "The birth year is 2005"
+    "hint": "Check out https://instantusername.com/"
   },
   {
     "id": 5,
