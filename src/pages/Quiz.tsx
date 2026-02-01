@@ -28,7 +28,7 @@ export default function Quiz() {
   e.preventDefault();
   
   try {
-    const response = await fetch('/api/validate', {
+    const response = await fetch('/api/quizValidator', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
