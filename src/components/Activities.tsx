@@ -122,7 +122,7 @@ const Activities = () => {
               <p className="text-muted-foreground text-sm">
                 Learn how to use the web like a hacker!
               </p>
-              <span className="text-primary text-xs">Today, 6:00 PM</span>
+              <span className="text-primary text-xs">Today, 7:30 PM</span>
             </div>
             <div className="border-l-4 border-primary pl-4">
               <h4 className="font-semibold text-foreground">

@@ -114,6 +114,9 @@ export default function Quiz() {
               You are officially an{" "}
               <span className="text-purple-600 font-bold">OSINT Master</span>!
             </p>
+            <p className="text-xl text-gray-700 mb-4">
+              We have enough info to find and track the attacker down! Looks like they were trying to erase their tracks from NUSEC connections. We tracked them to an IP, good enough for law enforcement… or something we can do about it… Thank you for your web investigation skills!
+            </p>
             <p className="text-lg text-gray-600 italic">
               Remember: With great power comes great responsibility.
             </p>
