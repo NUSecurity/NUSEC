@@ -33,7 +33,7 @@ const Hero = () => {
           <div className="mb-8">
             <h1 className="text-5xl md:text-7xl font-bold text-foreground mb-4">
               <span className="bg-gradient-primary bg-clip-text text-transparent">
-                <GlitchText text="NUSECURITY" intensity="low" />
+                <GlitchText text="NUSECURITY TEST" intensity="low" />
               </span>
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground mb-2">
