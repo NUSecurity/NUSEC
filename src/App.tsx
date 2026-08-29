@@ -10,7 +10,6 @@ import HallOfFame from "./pages/HallOfFame";
 import Quiz from "./pages/Quiz";
 
 const queryClient = new QueryClient();
-//const basename = import.meta.env.BASE_URL.replace(/\/$/, ""); // '/NUSEC/' -> '/NUSEC'
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
