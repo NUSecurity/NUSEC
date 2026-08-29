@@ -51,12 +51,6 @@ const Header: React.FC = () => {
             >
               Activities
             </button>
-            {/* <button
-              onClick={() => scrollToSection("projects")}
-              className="text-foreground hover:text-primary transition-colors"
-            >
-              Projects
-            </button> */}
             <button
               onClick={() => scrollToSection("contact")}
               className="text-foreground hover:text-primary transition-colors"
@@ -104,12 +98,6 @@ const Header: React.FC = () => {
                 className="text-left text-foreground hover:text-primary transition-colors"
               >
                 Activities & Calendar
-              </button>
-              <button
-                onClick={() => scrollToSection("projects")}
-                className="text-left text-foreground hover:text-primary transition-colors"
-              >
-                Projects
               </button>
               <button
                 onClick={() => scrollToSection("contact")}
