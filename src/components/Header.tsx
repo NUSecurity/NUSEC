@@ -1,6 +1,5 @@
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
-// import { useNavigate } from "react-router-dom";
 import nusecLogo from "@/assets/nusec-logo.png";
 import GlitchText from "@/components/animations/GlitchText";
 import { scrollToSection } from "@/lib/scroll";
@@ -13,25 +12,13 @@ const sections = [
   { id: "contact", label: "Join" },
 ];
 
-/* Route links are hidden from the nav pending the decision on whether to keep
-   the Hall of Fame, Quiz, and Scanner pages. To restore, uncomment this array,
-   the `useNavigate` import, `goToRoute` below, and the `routes.map` blocks in
-   the desktop and/or mobile <nav>. */
-// const routes = [{ path: "/halloffame", label: "HALL OF FAME!!!" }];
-
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  // const navigate = useNavigate();
 
   const goToSection = (sectionId: string) => {
     scrollToSection(sectionId);
     setIsMenuOpen(false);
   };
-
-  // const goToRoute = (path: string) => {
-  //   setIsMenuOpen(false);
-  //   navigate(path);
-  // };
 
   const linkStyles = "text-foreground hover:text-primary transition-colors";
 
@@ -61,16 +48,6 @@ const Header: React.FC = () => {
                 {label}
               </button>
             ))}
-            {/* {routes.map(({ path, label }) => (
-              <button
-                key={path}
-                type="button"
-                onClick={() => goToRoute(path)}
-                className={linkStyles}
-              >
-                {label}
-              </button>
-            ))} */}
           </nav>
 
           {/* Mobile Menu Button */}
@@ -97,16 +74,6 @@ const Header: React.FC = () => {
                   {label}
                 </button>
               ))}
-              {/* {routes.map(({ path, label }) => (
-                <button
-                  key={path}
-                  type="button"
-                  onClick={() => goToRoute(path)}
-                  className={`text-left ${linkStyles}`}
-                >
-                  {label}
-                </button>
-              ))} */}
             </div>
           </nav>
         )}

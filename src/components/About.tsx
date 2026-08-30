@@ -43,11 +43,6 @@ const differentiators = [
     description:
       "Connect and participate with competitive Capture The Flag (CTF) competitions, apply and join a cybersecurity scholarship, lead your team in a cybersecurity project, or practice your public speaking and leadership in your own workshop for the club. Whatever you need, we can guide you to cyber opportunities that will benefit your future.",
   },
-  {
-    title: "Mentorship Program (Upcoming)",
-    description:
-      "Connect with experienced members and alumni who provide guidance for your cybersecurity journey.",
-  },
 ];
 
 const About = () => {
