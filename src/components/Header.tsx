@@ -1,20 +1,39 @@
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import nusecLogo from "@/assets/nusec-logo.png";
 import GlitchText from "@/components/animations/GlitchText";
+import { scrollToSection } from "@/lib/scroll";
+
+/** Sections on the landing page, in nav order. */
+const sections = [
+  { id: "home", label: "Home" },
+  { id: "about", label: "About" },
+  { id: "activities", label: "Activities" },
+  { id: "contact", label: "Join" },
+];
+
+/* Route links are hidden from the nav pending the decision on whether to keep
+   the Hall of Fame, Quiz, and Scanner pages. To restore, uncomment this array,
+   the `useNavigate` import, `goToRoute` below, and the `routes.map` blocks in
+   the desktop and/or mobile <nav>. */
+// const routes = [{ path: "/halloffame", label: "HALL OF FAME!!!" }];
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-      setIsMenuOpen(false);
-    }
+  const goToSection = (sectionId: string) => {
+    scrollToSection(sectionId);
+    setIsMenuOpen(false);
   };
+
+  // const goToRoute = (path: string) => {
+  //   setIsMenuOpen(false);
+  //   navigate(path);
+  // };
+
+  const linkStyles = "text-foreground hover:text-primary transition-colors";
 
   return (
     <header className="fixed top-0 left-0 right-0 bg-background/90 backdrop-blur-md border-b border-border z-50">
@@ -33,45 +52,33 @@ const Header: React.FC = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <button
-              onClick={() => scrollToSection("home")}
-              className="text-foreground hover:text-primary transition-colors"
-            >
-              Home
-            </button>
-            <button
-              onClick={() => scrollToSection("about")}
-              className="text-foreground hover:text-primary transition-colors"
-            >
-              About
-            </button>
-            <button
-              onClick={() => scrollToSection("activities")}
-              className="text-foreground hover:text-primary transition-colors"
-            >
-              Activities
-            </button>
-            <button
-              onClick={() => scrollToSection("contact")}
-              className="text-foreground hover:text-primary transition-colors"
-            >
-              Join
-            </button>
-
-            {/* Route navigation */}
-            {/*<button
-              type="button"
-	                    onClick={() => navigate("/halloffame")} 
-              className="text-foreground hover:text-primary transition-colors"
-            >
-              HALL OF FAME!!!
-            </button> */}
+            {sections.map(({ id, label }) => (
+              <button
+                key={id}
+                onClick={() => goToSection(id)}
+                className={linkStyles}
+              >
+                {label}
+              </button>
+            ))}
+            {/* {routes.map(({ path, label }) => (
+              <button
+                key={path}
+                type="button"
+                onClick={() => goToRoute(path)}
+                className={linkStyles}
+              >
+                {label}
+              </button>
+            ))} */}
           </nav>
 
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="md:hidden text-foreground"
+            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={isMenuOpen}
           >
             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -81,40 +88,25 @@ const Header: React.FC = () => {
         {isMenuOpen && (
           <nav className="md:hidden mt-4 pb-4 border-t border-border pt-4">
             <div className="flex flex-col space-y-4">
-              <button
-                onClick={() => scrollToSection("home")}
-                className="text-left text-foreground hover:text-primary transition-colors"
-              >
-                Home
-              </button>
-              <button
-                onClick={() => scrollToSection("about")}
-                className="text-left text-foreground hover:text-primary transition-colors"
-              >
-                About
-              </button>
-              <button
-                onClick={() => scrollToSection("activities")}
-                className="text-left text-foreground hover:text-primary transition-colors"
-              >
-                Activities & Calendar
-              </button>
-              <button
-                onClick={() => scrollToSection("contact")}
-                className="text-left text-foreground hover:text-primary transition-colors"
-              >
-                Contact
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setIsMenuOpen(false);
-                  navigate("/halloffame");
-                }}
-                className="text-left text-foreground hover:text-primary transition-colors"
-              >
-                HALL OF FAME!!!
-              </button>
+              {sections.map(({ id, label }) => (
+                <button
+                  key={id}
+                  onClick={() => goToSection(id)}
+                  className={`text-left ${linkStyles}`}
+                >
+                  {label}
+                </button>
+              ))}
+              {/* {routes.map(({ path, label }) => (
+                <button
+                  key={path}
+                  type="button"
+                  onClick={() => goToRoute(path)}
+                  className={`text-left ${linkStyles}`}
+                >
+                  {label}
+                </button>
+              ))} */}
             </div>
           </nav>
         )}

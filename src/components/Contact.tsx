@@ -3,6 +3,85 @@ import { Button } from "@/components/ui/button";
 import { Instagram, Mail, MessageSquare, MapPin } from "lucide-react";
 import TerminalText from "@/components/animations/TerminalText";
 import BinaryStream from "@/components/animations/BinaryStream";
+import type { ReactNode } from "react";
+
+type ContactAction =
+  | { type: "link"; href: string; label: string }
+  | { type: "email"; address: string }
+  | { type: "text"; value: string };
+
+interface ContactMethod {
+  icon: ReactNode;
+  title: string;
+  description: string;
+  action: ContactAction;
+}
+
+const contactMethods: ContactMethod[] = [
+  {
+    icon: <Mail className="w-8 h-8 text-white" />,
+    title: "Email Us",
+    description: "General inquiries and questions",
+    action: { type: "email", address: "nusechusky@gmail.com" },
+  },
+  {
+    icon: <MessageSquare className="w-8 h-8 text-white" />,
+    title: "Discord",
+    description: "Join our active community chat",
+    action: {
+      type: "link",
+      href: "https://discord.gg/JkYMdTbuDw",
+      label: "Join Server",
+    },
+  },
+  {
+    icon: <Instagram className="w-8 h-8 text-white" />,
+    title: "Instagram",
+    description: "Stay updated on our latest events!",
+    action: {
+      type: "link",
+      href: "https://www.instagram.com/nusecurity/",
+      label: "Follow Us",
+    },
+  },
+  {
+    icon: <MapPin className="w-8 h-8 text-white" />,
+    title: "Behrakis",
+    description: "Room 105",
+    action: { type: "text", value: "Northeastern University" },
+  },
+];
+
+const ContactActionContent = ({ action }: { action: ContactAction }) => {
+  switch (action.type) {
+    case "email":
+      return (
+        <a
+          href={`mailto:${action.address}`}
+          className="text-primary hover:underline font-medium"
+        >
+          {action.address}
+        </a>
+      );
+    case "link":
+      return (
+        <Button
+          asChild
+          variant="outline"
+          size="sm"
+          className="border-primary text-primary hover:bg-primary hover:text-white"
+        >
+          <a href={action.href} target="_blank" rel="noopener noreferrer">
+            {action.label}
+          </a>
+        </Button>
+      );
+    case "text":
+      return (
+        <span className="text-primary font-medium">{action.value}</span>
+      );
+  }
+};
 
 const Contact = () => {
   return (
@@ -23,99 +102,27 @@ const Contact = () => {
 
         {/* Contact Cards */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          {/* Email */}
-          <Card className="bg-gradient-card border-border hover:scale-105 transition-all text-center">
-            <CardHeader>
-              <div className="bg-gradient-primary p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                <Mail className="w-8 h-8 text-white" />
-              </div>
-              <CardTitle className="text-foreground">Email Us</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground text-sm mb-4">
-                General inquiries and questions
-              </p>
-              <a
-                href="mailto:nusechusky@gmail.com"
-                className="text-primary hover:underline font-medium"
-              >
-                nusechusky@gmail.com
-              </a>
-            </CardContent>
-          </Card>
-
-          {/* Discord */}
-          <Card className="bg-gradient-card border-border hover:scale-105 transition-all text-center">
-            <CardHeader>
-              <div className="bg-gradient-primary p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                <MessageSquare className="w-8 h-8 text-white" />
-              </div>
-              <CardTitle className="text-foreground">Discord</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground text-sm mb-4">
-                Join our active community chat
-              </p>
-              <Button
-                asChild
-                variant="outline"
-                size="sm"
-                className="border-primary text-primary hover:bg-primary hover:text-white"
-              >
-                <a
-                  href="https://discord.gg/JkYMdTbuDw"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Join Server
-                </a>
-              </Button>
-            </CardContent>
-          </Card>
-          {/* Instagram */}
-          <Card className="bg-gradient-card border-border hover:scale-105 transition-all text-center">
-            <CardHeader>
-              <div className="bg-gradient-primary p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                <Instagram className="w-8 h-8 text-white" />
-              </div>
-              <CardTitle className="text-foreground">Instagram</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground text-sm mb-4">
-                Stay updated on our latest events!
-              </p>
-              <Button
-                asChild
-                variant="outline"
-                size="sm"
-                className="border-primary text-primary hover:bg-primary hover:text-white"
-              >
-                <a
-                  href="https://www.instagram.com/nusecurity/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Follow Us
-                </a>
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Location */}
-          <Card className="bg-gradient-card border-border hover:scale-105 transition-all text-center">
-            <CardHeader>
-              <div className="bg-gradient-primary p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                <MapPin className="w-8 h-8 text-white" />
-              </div>
-              <CardTitle className="text-foreground">Behrakis</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground text-sm mb-4">Room 105</p>
-              <span className="text-primary font-medium">
-                Northeastern University
-              </span>
-            </CardContent>
-          </Card>
+          {contactMethods.map((method) => (
+            <Card
+              key={method.title}
+              className="bg-gradient-card border-border hover:scale-105 transition-all text-center"
+            >
+              <CardHeader>
+                <div className="bg-gradient-primary p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                  {method.icon}
+                </div>
+                <CardTitle className="text-foreground">
+                  {method.title}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground text-sm mb-4">
+                  {method.description}
+                </p>
+                <ContactActionContent action={method.action} />
+              </CardContent>
+            </Card>
+          ))}
         </div>
 
         {/* CTA */}
