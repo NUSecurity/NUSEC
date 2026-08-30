@@ -78,7 +78,7 @@ const Activities = () => {
           ))}
         </div>
 
-        <div className="bg-gradient-card border border-border rounded-lg p-8 mb-16 text-center">
+        <div className="bg-gradient-card border border-border rounded-lg p-8 text-center">
           <h3 className="text-2xl font-bold text-foreground mb-4">
             OSINT Quiz
           </h3>
@@ -91,43 +91,6 @@ const Activities = () => {
           </Button>
         </div>
 
-        <div className="bg-gradient-card border border-border rounded-lg p-8 text-center">
-          <h3 className="text-2xl font-bold text-foreground mb-4">
-            Upcoming Events
-          </h3>
-          <div className="grid md:grid-cols-3 gap-6 text-left">
-            <div className="border-l-4 border-primary pl-4">
-              <h4 className="font-semibold text-foreground">OSINT Event!</h4>
-              <p className="text-muted-foreground text-sm">
-                Learn how to use the web like a hacker!
-              </p>
-              <span className="text-primary text-xs">Today, 6:00 PM</span>
-            </div>
-            <div className="border-l-4 border-primary pl-4">
-              <h4 className="font-semibold text-foreground">
-                Guest Speaker Event
-              </h4>
-              <p className="text-muted-foreground text-sm">
-                Hear from a live guest speaker!
-              </p>
-              <span className="text-primary text-xs">
-                Monday, February 9th, 6:00 PM
-              </span>
-            </div>
-            <div className="border-l-4 border-primary pl-4">
-              <h4 className="font-semibold text-foreground">
-                Blue vs Red Team 1v1 and E-Board Voting!
-              </h4>
-              <p className="text-muted-foreground text-sm">
-                Watch a live 1v1 hacker showdown and vote on who you want to be
-                on the E-Board next semester!
-              </p>
-              <span className="text-primary text-xs">
-                Monday, February 23rd, 6:00 PM
-              </span>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   );
