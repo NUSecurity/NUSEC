@@ -17,7 +17,7 @@ const Footer = () => {
 
           <div className="text-center md:text-right">
             <p className="text-muted-foreground text-sm">
-              © 2025 NUSEC. All rights reserved.
+              © {new Date().getFullYear()} NUSEC. All rights reserved.
             </p>
             <p className="text-muted-foreground text-xs mt-1">
               Building the Secure Community of tomorrow, today.
