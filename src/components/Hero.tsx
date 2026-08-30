@@ -4,15 +4,9 @@ import MatrixRain from "@/components/animations/MatrixRain";
 import GlitchText from "@/components/animations/GlitchText";
 import TerminalText from "@/components/animations/TerminalText";
 import CircuitBoard from "@/components/animations/CircuitBoard";
+import { scrollToSection } from "@/lib/scroll";
 
 const Hero = () => {
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
   return (
     <section
       id="home"

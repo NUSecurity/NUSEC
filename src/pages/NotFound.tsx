@@ -1,5 +1,7 @@
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import GlitchText from "@/components/animations/GlitchText";
 
 const NotFound = () => {
   const location = useLocation();
@@ -12,13 +14,23 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100">
+    <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">404</h1>
-        <p className="mb-4 text-xl text-gray-600">Oops! Page not found</p>
-        <a href="/" className="text-blue-500 underline hover:text-blue-700">
-          Return to Home
-        </a>
+        <h1 className="mb-4 text-6xl font-bold">
+          <span className="bg-gradient-primary bg-clip-text text-transparent">
+            <GlitchText text="404" intensity="low" />
+          </span>
+        </h1>
+        <p className="mb-8 text-xl text-muted-foreground">
+          Oops! This page doesn't exist.
+        </p>
+        <Button
+          asChild
+          size="lg"
+          className="bg-gradient-primary hover:bg-primary text-white px-8 py-3 text-lg font-semibold"
+        >
+          <Link to="/">Return to Home</Link>
+        </Button>
       </div>
     </div>
   );

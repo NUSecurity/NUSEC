@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Code, Trophy, Users, BookOpen, Wifi, Bug } from "lucide-react";
+import { Code, Trophy, Users } from "lucide-react";
 import GlitchText from "@/components/animations/GlitchText";
 import CircuitBoard from "@/components/animations/CircuitBoard";
 import { Button } from "./ui/button";
@@ -29,27 +29,6 @@ const Activities = () => {
       description:
         "Industry professionals share insights on cybersecurity careers, emerging threats, and cutting-edge technologies.",
       frequency: "Bi-weekly",
-    },
-    {
-      icon: <BookOpen className="w-8 h-8" />,
-      title: "Study Groups",
-      description:
-        "Collaborative learning sessions for cybersecurity certifications like CISSP, CEH, and Security+.",
-      frequency: "Ongoing",
-    },
-    {
-      icon: <Wifi className="w-8 h-8" />,
-      title: "Network Security Labs",
-      description:
-        "Hands-on experience with network monitoring, intrusion detection, and security architecture design.",
-      frequency: "Bi-weekly",
-    },
-    {
-      icon: <Bug className="w-8 h-8" />,
-      title: "Bug Bounty Programs",
-      description:
-        "Learn ethical hacking through coordinated bug bounty hunting and responsible disclosure practices.",
-      frequency: "Ongoing",
     },
   ];
 
