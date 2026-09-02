@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle2, Flag, Loader2, XCircle } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { FLAG_FORMAT } from "@/ctf/types";
 import { cn } from "@/lib/utils";
 
 type Status = "idle" | "checking" | "correct" | "incorrect" | "error";
@@ -9,7 +9,6 @@ type Status = "idle" | "checking" | "correct" | "incorrect" | "error";
 interface FlagSubmitProps {
   meetingSlug: string;
   challengeSlug: string;
-  flagFormat: string;
   /** True if this challenge was already solved in a previous visit. */
   alreadySolved: boolean;
   onSolved: () => void;
@@ -20,7 +19,6 @@ interface FlagSubmitProps {
 const FlagSubmit = ({
   meetingSlug,
   challengeSlug,
-  flagFormat,
   alreadySolved,
   onSolved,
   disabled = false,
@@ -74,93 +72,44 @@ const FlagSubmit = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-3">
-      <label
-        htmlFor={`flag-${challengeSlug}`}
-        className="flex items-center gap-2 text-sm font-medium text-foreground"
-      >
-        <Flag className="h-4 w-4 text-primary" />
-        Submit flag
-        <span className="font-mono text-xs text-muted-foreground">
-          {flagFormat}
-        </span>
-      </label>
-
+    <form onSubmit={handleSubmit} className="space-y-2">
       <div className="flex flex-col gap-3 sm:flex-row">
         <input
-          id={`flag-${challengeSlug}`}
           type="text"
+          aria-label="Flag"
           value={solved ? "" : flag}
           onChange={(event) => {
             setFlag(event.target.value);
             if (status !== "idle" && status !== "checking") setStatus("idle");
           }}
           disabled={disabled || solved || status === "checking"}
-          placeholder={solved ? "Solved" : flagFormat}
+          placeholder={solved ? "Solved" : FLAG_FORMAT}
           autoComplete="off"
           spellCheck={false}
           className={cn(
             "flex-1 rounded-md border bg-secondary px-4 py-2 font-mono text-sm text-foreground",
             "placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring",
             "disabled:cursor-not-allowed disabled:opacity-60",
-            status === "correct" && "border-green-500",
+            solved && "border-green-500/60 text-green-400",
             status === "incorrect" && "border-destructive",
-            (status === "idle" || status === "checking" || status === "error") &&
-              "border-input",
+            !solved && status !== "incorrect" && "border-input",
           )}
         />
         <Button
           type="submit"
           disabled={disabled || solved || status === "checking" || !flag.trim()}
-          className="bg-gradient-primary text-white hover:bg-primary sm:w-32"
+          className="bg-gradient-primary text-white hover:bg-primary sm:w-28"
         >
-          {status === "checking" ? (
-            <>
-              <Loader2 className="animate-spin" /> Checking
-            </>
-          ) : (
-            "Check"
-          )}
+          {status === "checking" ? <Loader2 className="animate-spin" /> : "Submit"}
         </Button>
       </div>
 
-      <AnimatePresence mode="wait">
-        {status === "correct" && (
-          <motion.p
-            key="correct"
-            initial={{ opacity: 0, y: -4 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            className="flex items-center gap-2 text-sm font-medium text-green-500"
-          >
-            <CheckCircle2 className="h-4 w-4" />
-            Correct — challenge solved.
-          </motion.p>
-        )}
-        {status === "incorrect" && (
-          <motion.p
-            key="incorrect"
-            initial={{ opacity: 0, y: -4 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            className="flex items-center gap-2 text-sm text-destructive"
-          >
-            <XCircle className="h-4 w-4" />
-            Not quite. Check the format and try again.
-          </motion.p>
-        )}
-        {status === "error" && (
-          <motion.p
-            key="error"
-            initial={{ opacity: 0, y: -4 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            className="text-sm text-yellow-500"
-          >
-            {errorMessage}
-          </motion.p>
-        )}
-      </AnimatePresence>
+      {status === "incorrect" && (
+        <p className="text-sm text-destructive">Not quite. Try again.</p>
+      )}
+      {status === "error" && (
+        <p className="text-sm text-yellow-500">{errorMessage}</p>
+      )}
     </form>
   );
 };

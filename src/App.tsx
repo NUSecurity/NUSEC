@@ -18,10 +18,10 @@ const App = () => (
           <Route path="/osint-quiz" element={<Quiz />} />
 
           {/*
-            Mini-CTF. Unlisted on purpose: nothing on the site links here, and
-            bare /challenges falls through to the 404 so the meeting slug has to
-            be known. Both routes are driven by src/ctf/meetings — new meetings
-            need no route changes.
+            Mini-CTF at /challenges/mini-ctf. Unlisted on purpose: nothing on the
+            site links here, and bare /challenges renders the 404 so the meeting
+            slug has to be known. Both routes are driven by src/ctf/meetings —
+            swapping in a new meeting needs no route changes.
           */}
           <Route path="/challenges/:meetingSlug" element={<MeetingPage />} />
           <Route

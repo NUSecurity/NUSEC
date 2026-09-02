@@ -1,27 +1,22 @@
 import { Challenge, Meeting } from "@/ctf/types";
-import gm1 from "./gm-1";
+import miniCtf from "./mini-ctf";
 
 /**
  * Every meeting whose challenge pages should resolve.
  *
- * To run GM-2:
- *   1. Add `public/ctf/gm-2/` with that meeting's artifacts.
- *   2. Add `src/ctf/meetings/gm-2.ts` (copy gm-1.ts as a starting point).
- *   3. Add its flags to `api/ctfValidator.ts`.
- *   4. Add it to the array below.
+ * The mini-CTF lives at a fixed slug, so `/challenges/mini-ctf` is the same
+ * link every meeting. Running the next one is a content swap, not a rebuild:
  *
- * To retire GM-1, either flip `active: false` in its manifest (page still
- * resolves, marked archived) or delete its manifest, its line below, its
- * `public/ctf/gm-1/` folder, and its flags in the validator.
+ *   1. Replace the files in `public/ctf/mini-ctf/`.
+ *   2. Rewrite the challenges in `mini-ctf.ts`.
+ *   3. Replace the flags in `api/ctfValidator.ts`.
  *
- * Order matters only for `currentMeeting` — newest first.
+ * Nothing here changes. If you ever want to keep an old meeting readable
+ * alongside the current one, give it its own slug (`mini-ctf-1`, say), add its
+ * manifest to the array below, and set `active: false` on it so its flags stop
+ * being accepted.
  */
-export const meetings: Meeting[] = [gm1];
-
-/** The meeting `/challenges` and the "latest" link point at. */
-export const currentMeeting: Meeting | undefined = meetings.find(
-  (meeting) => meeting.active !== false,
-);
+export const meetings: Meeting[] = [miniCtf];
 
 export function getMeeting(slug: string | undefined): Meeting | undefined {
   return meetings.find((meeting) => meeting.slug === slug);

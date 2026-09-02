@@ -1,22 +1,31 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 
 /**
- * Flag checker for the mini-CTF at /challenges/*.
+ * Flag checker for every CTF served under /challenges/*.
+ *
+ * Nothing below the FLAGS table is CTF-specific — it looks up whatever the
+ * client asks for and answers `{ correct }`. Running a new CTF means adding
+ * rows to the table, never editing the handler.
  *
  * Flags live ONLY here, on the server. They are never sent to the client and
  * must never be copied into `src/ctf/meetings/*` — that code ships in the
  * browser bundle.
  *
- * Keys are `<meetingSlug>/<challengeSlug>` and must match the slugs in the
- * meeting manifest. Each entry is a list so alternate spellings are accepted.
+ * Keys are `<meetingSlug>/<challengeSlug>` and must match the slugs in that
+ * meeting's manifest exactly; nothing type-checks that they agree, and a
+ * mismatch surfaces to solvers as a 404 from the checker rather than a wrong
+ * answer. Each entry is a list, so alternate spellings can be accepted.
  *
- * When GM-1 is retired, delete its block; when GM-2 lands, add one below it.
+ * Group rows by meeting under a comment header. Several meetings can sit here
+ * at once; delete a meeting's rows once its challenges are retired for good.
+ * Note that `active: false` on a manifest only disables the input in the UI —
+ * rows left here keep validating, so remove them if that matters.
  */
 const FLAGS: Record<string, string[]> = {
-  // --- GM-1 -----------------------------------------------------------------
-  "gm-1/admin-portal": ["NUSEC{NUS3C_4DM1N_4CC3SS}"],
-  "gm-1/in-the-details": ["NUSEC{NUS3C_h1dd3n_1n_pla1n_s1ght}"],
-  "gm-1/wire-tap": ["NUSEC{w1r3sh4lk_m@st3r}"],
+  // --- mini-ctf ------------------------------------------------------------
+  "mini-ctf/admin-authentication": ["NUSEC{NUS3C_4DM1N_4CC3SS}"],
+  "mini-ctf/cool-logo": ["NUSEC{NUS3C_h1dd3n_1n_pla1n_s1ght}"],
+  "mini-ctf/leaked-login": ["NUSEC{w1r3sh4lk_m@st3r}"],
 };
 
 /** Trim, collapse case, and drop stray whitespace inside the braces. */
