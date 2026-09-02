@@ -1,9 +1,5 @@
 import { Meeting } from "@/ctf/types";
 
-/**
- * The mini-CTF. Artifacts live in `public/ctf/mini-ctf/`.
- * Flags are checked server-side in `api/ctfValidator.ts` — never put them here.
- */
 const miniCtf: Meeting = {
   slug: "mini-ctf",
   title: "Mini CTF",
@@ -13,9 +9,8 @@ const miniCtf: Meeting = {
       slug: "admin-authentication",
       title: "Admin Authentication",
       category: "web",
-      brief: [
+      brief:
         "On the linked site, only administrators with proper authorization are allowed to view sensitive content.",
-      ],
       assets: [
         {
           label: "Open the portal",
@@ -28,9 +23,8 @@ const miniCtf: Meeting = {
       slug: "cool-logo",
       title: "Cool Logo",
       category: "forensics",
-      brief: [
+      brief:
         "For no reason in particular, a PNG of our logo can be found below.",
-      ],
       assets: [
         {
           label: "logo.png",
@@ -43,9 +37,8 @@ const miniCtf: Meeting = {
       slug: "leaked-login",
       title: "Leaked Login",
       category: "network",
-      brief: [
+      brief:
         "Some network traffic was captured which we believe may contain some login credentials.",
-      ],
       assets: [
         {
           label: "nusec-login.pcapng",

@@ -10,10 +10,10 @@ function read(meetingSlug: string): Set<string> {
   try {
     const raw = window.localStorage.getItem(storageKey(meetingSlug));
     const parsed: unknown = raw ? JSON.parse(raw) : [];
-    return new Set(Array.isArray(parsed) ? parsed.filter((v) => typeof v === "string") : []);
+    return new Set(
+      Array.isArray(parsed) ? parsed.filter((v) => typeof v === "string") : [],
+    );
   } catch {
-    // Private browsing, disabled storage, or corrupted value — progress is a
-    // convenience, so fall back to an empty set rather than breaking the page.
     return new Set();
   }
 }

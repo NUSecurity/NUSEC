@@ -26,13 +26,9 @@ const ChallengePage = () => {
           {challenge.title}
         </h1>
 
-        <div className="space-y-4">
-          {challenge.brief.map((paragraph, i) => (
-            <p key={i} className="leading-relaxed text-muted-foreground">
-              {paragraph}
-            </p>
-          ))}
-        </div>
+        <p className="leading-relaxed text-muted-foreground">
+          {challenge.brief}
+        </p>
 
         {challenge.assets && challenge.assets.length > 0 && (
           <ul className="mt-6 space-y-2">
