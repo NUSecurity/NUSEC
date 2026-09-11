@@ -2,6 +2,7 @@ import { Shield, Users, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import MatrixRain from "@/components/animations/MatrixRain";
 import GlitchText from "@/components/animations/GlitchText";
+import TerminalText from "@/components/animations/TerminalText";
 import CircuitBoard from "@/components/animations/CircuitBoard";
 import { scrollToSection } from "@/lib/scroll";
 
@@ -24,11 +25,14 @@ const Hero = () => {
         <div className="max-w-4xl mx-auto text-center">
           {/* Main Heading */}
           <div className="mb-8">
-            <h1 className="text-5xl md:text-7xl font-bold text-foreground">
+            <h1 className="text-5xl md:text-7xl font-bold text-foreground mb-4">
               <span className="bg-gradient-primary bg-clip-text text-transparent">
                 <GlitchText text="NUSECURITY" intensity="low" />
               </span>
             </h1>
+            <p className="text-xl md:text-2xl text-muted-foreground">
+              <TerminalText text="Northeastern Cybersecurity Club" speed={20} />
+            </p>
           </div>
 
           {/* Feature Icons */}
