@@ -19,13 +19,13 @@ interface ContactMethod {
 
 const contactMethods: ContactMethod[] = [
   {
-    icon: <Mail className="w-8 h-8 text-white" />,
+    icon: <Mail className="w-8 h-8 text-primary" />,
     title: "Email Us",
     description: "General inquiries and questions",
     action: { type: "email", address: "nusechusky@gmail.com" },
   },
   {
-    icon: <MessageSquare className="w-8 h-8 text-white" />,
+    icon: <MessageSquare className="w-8 h-8 text-primary" />,
     title: "Discord",
     description: "Join our active community chat",
     action: {
@@ -35,7 +35,7 @@ const contactMethods: ContactMethod[] = [
     },
   },
   {
-    icon: <Instagram className="w-8 h-8 text-white" />,
+    icon: <Instagram className="w-8 h-8 text-primary" />,
     title: "Instagram",
     description: "Stay updated on our latest events!",
     action: {
@@ -45,7 +45,7 @@ const contactMethods: ContactMethod[] = [
     },
   },
   {
-    icon: <MapPin className="w-8 h-8 text-white" />,
+    icon: <MapPin className="w-8 h-8 text-primary" />,
     title: "Behrakis",
     description: "Room 105",
     action: { type: "text", value: "Northeastern University" },
@@ -69,7 +69,7 @@ const ContactActionContent = ({ action }: { action: ContactAction }) => {
           asChild
           variant="outline"
           size="sm"
-          className="border-primary text-primary hover:bg-primary hover:text-white"
+          className="border-primary/60 text-primary hover:bg-primary/10 hover:text-primary"
         >
           <a href={action.href} target="_blank" rel="noopener noreferrer">
             {action.label}
@@ -105,10 +105,10 @@ const Contact = () => {
           {contactMethods.map((method) => (
             <Card
               key={method.title}
-              className="bg-gradient-card border-border hover:scale-105 transition-all text-center"
+              className="border-border bg-secondary/40 text-center shadow-none transition-colors hover:border-primary/60"
             >
               <CardHeader>
-                <div className="bg-gradient-primary p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                <div className="rounded-full border border-border bg-secondary/60 p-3 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
                   {method.icon}
                 </div>
                 <CardTitle className="text-foreground">
@@ -127,7 +127,7 @@ const Contact = () => {
 
         {/* CTA */}
         <div className="max-w-2xl mx-auto">
-          <Card className="bg-gradient-card border-border">
+          <Card className="border-border bg-secondary/40 shadow-none">
             <CardHeader className="text-center">
               <CardTitle className="text-foreground text-2xl">
                 Ready to Get Started?

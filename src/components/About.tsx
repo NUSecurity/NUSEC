@@ -68,15 +68,15 @@ const About = () => {
           {pillars.map((pillar) => (
             <Card
               key={pillar.title}
-              className="bg-gradient-card border-border transition-all relative overflow-hidden hover:scale-105"
+              className="relative overflow-hidden border-border bg-secondary/40 shadow-none transition-colors hover:border-primary/60"
             >
               <ScanLine
                 className="absolute inset-0"
                 duration={pillar.scanDuration}
               />
               <CardHeader className="text-center relative z-10">
-                <div className="bg-gradient-primary p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                  <div className="text-white">{pillar.icon}</div>
+                <div className="rounded-full border border-border bg-secondary/60 p-3 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                  <div className="text-primary">{pillar.icon}</div>
                 </div>
                 <CardTitle className="text-foreground">
                   {pillar.title}
@@ -91,7 +91,7 @@ const About = () => {
           ))}
         </div>
 
-        <div className="bg-gradient-card border border-border rounded-lg p-8">
+        <div className="rounded-lg border border-border bg-secondary/40 p-8">
           <h3 className="text-2xl font-bold text-foreground mb-4 text-center">
             What Makes Us Different?
           </h3>

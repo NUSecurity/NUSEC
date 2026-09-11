@@ -56,11 +56,11 @@ const Activities = () => {
           {activities.map((activity, index) => (
             <Card
               key={index}
-              className="bg-gradient-card border-border  transition-all duration-300 hover:scale-105"
+              className="border-border bg-secondary/40 shadow-none transition-colors hover:border-primary/60"
             >
               <CardHeader className="text-center">
-                <div className="bg-gradient-primary p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                  <div className="text-white">{activity.icon}</div>
+                <div className="rounded-full border border-border bg-secondary/60 p-3 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                  <div className="text-primary">{activity.icon}</div>
                 </div>
                 <CardTitle className="text-foreground text-lg">
                   {activity.title}
@@ -78,7 +78,7 @@ const Activities = () => {
           ))}
         </div>
 
-        <div className="bg-gradient-card border border-border rounded-lg p-8 text-center">
+        <div className="rounded-lg border border-border bg-secondary/40 p-8 text-center">
           <h3 className="text-2xl font-bold text-foreground mb-4">
             OSINT Quiz
           </h3>
