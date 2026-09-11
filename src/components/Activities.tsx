@@ -2,12 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Code, Trophy, Users } from "lucide-react";
 import GlitchText from "@/components/animations/GlitchText";
 import CircuitBoard from "@/components/animations/CircuitBoard";
-import { Button } from "./ui/button";
-import { useNavigate } from "react-router-dom";
 
 const Activities = () => {
-  const nav = useNavigate();
-
   const activities = [
     {
       icon: <Code className="w-8 h-8" />,
@@ -52,7 +48,7 @@ const Activities = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {activities.map((activity, index) => (
             <Card
               key={index}
@@ -77,20 +73,6 @@ const Activities = () => {
             </Card>
           ))}
         </div>
-
-        <div className="rounded-lg border border-border bg-secondary/40 p-8 text-center">
-          <h3 className="text-2xl font-bold text-foreground mb-4">
-            OSINT Quiz
-          </h3>
-          <Button
-            size="lg"
-            className="bg-gradient-primary hover:bg-primary text-white px-8 py-3 text-lg font-semibold"
-            onClick={() => nav("/osint-quiz")}
-          >
-            Take it here!
-          </Button>
-        </div>
-
       </div>
     </section>
   );
