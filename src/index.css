@@ -39,13 +39,7 @@ All colors MUST be HSL.
     --radius: 0.75rem;
 
     /* Cybersecurity theme colors */
-    --cyber-purple: 270 95% 60%;
-    --cyber-purple-dark: 270 95% 40%;
-    --cyber-purple-light: 270 95% 80%;
-    --cyber-dark: 0 0% 5%;
     --cyber-darker: 0 0% 3%;
-    --cyber-light: 0 0% 98%;
-    --cyber-gray: 0 0% 60%;
 
     /* Gradients */
     --gradient-primary: linear-gradient(
@@ -53,13 +47,6 @@ All colors MUST be HSL.
       hsl(270 95% 60%),
       hsl(270 95% 40%)
     );
-    --gradient-hero: linear-gradient(135deg, hsl(0 0% 3%), hsl(270 95% 10%));
-    --gradient-card: linear-gradient(135deg, hsl(0 0% 8%), hsl(270 95% 8%));
-
-    /* Animations */
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-glow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-
   }
 
 }

@@ -128,12 +128,7 @@ const Contact = () => {
         {/* CTA */}
         <div className="max-w-2xl mx-auto">
           <Card className="border-border bg-secondary/40 shadow-none">
-            <CardHeader className="text-center">
-              <CardTitle className="text-foreground text-2xl">
-                Ready to Get Started?
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="text-center">
+            <CardContent className="text-center pt-6">
               <p className="text-muted-foreground">
                 <TerminalText
                   text="No prior experience required! We welcome students from all majors and skill levels. Whether you're a complete beginner or an experienced security enthusiast, there's a place for you in NUSEC."

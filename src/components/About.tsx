@@ -15,8 +15,7 @@ const About = () => {
             dedicated to fostering a cybersecurity community & awareness at
             Northeastern University. We bring together passionate students to
             explore the fascinating world of information security while
-            providing opportunities for students. We focus on professional
-            development, technical workshops, and community events.
+            providing opportunities for students.
           </p>
         </div>
 
