@@ -8,7 +8,6 @@ import { scrollToSection } from "@/lib/scroll";
 const sections = [
   { id: "home", label: "Home" },
   { id: "about", label: "About" },
-  { id: "activities", label: "Activities" },
   { id: "contact", label: "Join" },
 ];
 
