@@ -134,18 +134,11 @@ const Contact = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="text-center">
-              <p className="text-muted-foreground mb-6">
+              <p className="text-muted-foreground">
                 <TerminalText
                   text="No prior experience required! We welcome students from all majors and skill levels. Whether you're a complete beginner or an experienced security enthusiast, there's a place for you in NUSEC."
                   speed={20}
                 />
-              </p>
-
-              <p className="text-muted-foreground text-sm mt-6">
-                <strong className="text-primary">
-                  New Member Orientation:
-                </strong>{" "}
-                Any meeting — just show up!
               </p>
             </CardContent>
           </Card>

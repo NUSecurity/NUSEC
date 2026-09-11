@@ -19,9 +19,6 @@ const Footer = () => {
             <p className="text-muted-foreground text-sm">
               © {new Date().getFullYear()} NUSEC. All rights reserved.
             </p>
-            <p className="text-muted-foreground text-xs mt-1">
-              Building the Secure Community of tomorrow, today.
-            </p>
           </div>
         </div>
       </div>
