@@ -1,4 +1,4 @@
-import { Shield } from "lucide-react";
+import nusecEmblem from "@/assets/nusec-emblem.png";
 
 const Footer = () => {
   return (
@@ -6,7 +6,7 @@ const Footer = () => {
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="flex items-center space-x-3 mb-4 md:mb-0">
-            <Shield className="w-6 h-6 text-primary" />
+            <img src={nusecEmblem} alt="" className="h-8 w-8 object-contain" />
             <div>
               <h3 className="font-bold text-foreground">NUSEC</h3>
               <p className="text-xs text-muted-foreground">
