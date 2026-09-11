@@ -46,8 +46,8 @@ const contactMethods: ContactMethod[] = [
   },
   {
     icon: <MapPin className="w-8 h-8 text-primary" />,
-    title: "Behrakis",
-    description: "Room 105",
+    title: "Shillman 305",
+    description: "Tuesdays, 6:00 – 7:30 PM",
     action: { type: "text", value: "Northeastern University" },
   },
 ];
