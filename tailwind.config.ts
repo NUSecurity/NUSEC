@@ -54,23 +54,11 @@ export default {
         },
         // Cybersecurity theme colors
         cyber: {
-          purple: "hsl(var(--cyber-purple))",
-          "purple-dark": "hsl(var(--cyber-purple-dark))",
-          "purple-light": "hsl(var(--cyber-purple-light))",
-          dark: "hsl(var(--cyber-dark))",
           darker: "hsl(var(--cyber-darker))",
-          light: "hsl(var(--cyber-light))",
-          gray: "hsl(var(--cyber-gray))",
         },
       },
       backgroundImage: {
         "gradient-primary": "var(--gradient-primary)",
-        "gradient-hero": "var(--gradient-hero)",
-        "gradient-card": "var(--gradient-card)",
-      },
-      transitionProperty: {
-        smooth: "var(--transition-smooth)",
-        glow: "var(--transition-glow)",
       },
       borderRadius: {
         lg: "var(--radius)",

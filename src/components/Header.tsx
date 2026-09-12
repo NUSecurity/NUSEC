@@ -1,6 +1,6 @@
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
-import nusecLogo from "@/assets/nusec-logo.png";
+import nusecEmblem from "@/assets/nusec-emblem.png";
 import GlitchText from "@/components/animations/GlitchText";
 import { scrollToSection } from "@/lib/scroll";
 
@@ -8,7 +8,6 @@ import { scrollToSection } from "@/lib/scroll";
 const sections = [
   { id: "home", label: "Home" },
   { id: "about", label: "About" },
-  { id: "activities", label: "Activities" },
   { id: "contact", label: "Join" },
 ];
 
@@ -28,7 +27,11 @@ const Header: React.FC = () => {
         <div className="flex items-center justify-between">
           {/* Logo and Brand */}
           <div className="flex items-center space-x-3">
-            <img src={nusecLogo} alt="NUSEC Logo" className="w-10 h-10" />
+            <img
+              src={nusecEmblem}
+              alt="NUSEC Logo"
+              className="h-10 w-10 object-contain"
+            />
             <div>
               <h1 className="text-xl font-bold text-foreground">
                 <GlitchText text="NUSEC" intensity="low" />

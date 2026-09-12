@@ -10,10 +10,10 @@ const Hero = () => {
   return (
     <section
       id="home"
-      className="min-h-screen bg-gradient-hero flex items-center relative overflow-hidden"
+      className="min-h-screen bg-background flex items-center relative overflow-hidden"
     >
       {/* Matrix Rain Background */}
-      <MatrixRain className="absolute inset-0 w-full h-full opacity-30" />
+      <MatrixRain className="absolute inset-0 w-full h-full opacity-20" />
 
       {/* Circuit Board Pattern */}
       <CircuitBoard className="absolute inset-0 w-full h-full" />
@@ -30,21 +30,15 @@ const Hero = () => {
                 <GlitchText text="NUSECURITY" intensity="low" />
               </span>
             </h1>
-            <p className="text-xl md:text-2xl text-muted-foreground mb-2">
-              <TerminalText text="Security Club" speed={100} />
-            </p>
-            <p className="text-lg text-cyber-gray">
-              <TerminalText
-                text="Growing the security community, one byte at a time"
-                speed={30}
-              />
+            <p className="text-xl md:text-2xl text-muted-foreground">
+              <TerminalText text="Northeastern Cybersecurity Club" speed={20} />
             </p>
           </div>
 
           {/* Feature Icons */}
           <div className="flex justify-center items-center space-x-8 mb-12">
             <div className="flex flex-col items-center">
-              <div className="bg-gradient-card p-4 rounded-full mb-2">
+              <div className="mb-2 rounded-full border border-border bg-secondary/40 p-4">
                 <Shield className="w-8 h-8 text-primary" />
               </div>
               <span className="text-sm text-muted-foreground">
@@ -52,13 +46,13 @@ const Hero = () => {
               </span>
             </div>
             <div className="flex flex-col items-center">
-              <div className="bg-gradient-card p-4 rounded-full mb-2">
+              <div className="mb-2 rounded-full border border-border bg-secondary/40 p-4">
                 <Users className="w-8 h-8 text-primary" />
               </div>
               <span className="text-sm text-muted-foreground">Community</span>
             </div>
             <div className="flex flex-col items-center">
-              <div className="bg-gradient-card p-4 rounded-full mb-2">
+              <div className="mb-2 rounded-full border border-border bg-secondary/40 p-4">
                 <Lock className="w-8 h-8 text-primary" />
               </div>
               <span className="text-sm text-muted-foreground">Education</span>
@@ -77,7 +71,7 @@ const Hero = () => {
             <Button
               variant="outline"
               size="lg"
-              className="border-primary text-primary hover:bg-primary hover:text-white px-8 py-3 text-lg"
+              className="border-primary/60 text-primary hover:bg-primary/10 hover:text-primary px-8 py-3 text-lg"
               onClick={() => scrollToSection("contact")}
             >
               Join Us
