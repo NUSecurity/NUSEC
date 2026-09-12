@@ -14,7 +14,7 @@ const miniCtf: Meeting = {
       assets: [
         {
           label: "Open the portal",
-          href: "/ctf/mini-ctf/admin.html",
+          href: "/ctf/mini-ctf/admin",
           kind: "link",
         },
       ],

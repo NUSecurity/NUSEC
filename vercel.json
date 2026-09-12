@@ -6,6 +6,10 @@
   "devCommand": "npm run dev",
   "rewrites": [
     {
+      "source": "/ctf/mini-ctf/admin",
+      "destination": "/api/adminPortal"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
