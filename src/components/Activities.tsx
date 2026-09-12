@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Code, Trophy, Users } from "lucide-react";
+import { Award, Code, Users } from "lucide-react";
 
 const activities = [
   {
@@ -9,10 +9,10 @@ const activities = [
       "Regular hands-on workshops covering penetration testing, digital forensics, malware analysis, and secure coding practices.",
   },
   {
-    icon: <Trophy className="w-8 h-8" />,
-    title: "CTF Competitions",
+    icon: <Award className="w-8 h-8" />,
+    title: "Certification Prep",
     description:
-      "Participate in Capture The Flag events, both internal competitions and external university challenges.",
+      "Build the foundational skills that carry over to entry-level security certifications, should you pursue one.",
   },
   {
     icon: <Users className="w-8 h-8" />,

@@ -95,7 +95,7 @@ const Contact = () => {
             Join <span className="text-primary">NUSEC</span>
           </h2>
           <p className="text-lg text-muted-foreground leading-relaxed">
-            Ready to develop your cybersecurity journey? Connect with us and
+            Ready to start your cybersecurity journey? Connect with us and
             become part of the most dynamic security community on campus.
           </p>
         </div>
