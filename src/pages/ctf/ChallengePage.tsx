@@ -30,6 +30,12 @@ const ChallengePage = () => {
           {challenge.brief}
         </p>
 
+        {challenge.content && (
+          <pre className="mt-6 whitespace-pre-wrap break-all rounded-lg border border-border bg-secondary/40 px-4 py-3 font-mono text-sm text-foreground">
+            {challenge.content}
+          </pre>
+        )}
+
         {challenge.assets && challenge.assets.length > 0 && (
           <ul className="mt-6 space-y-2">
             {challenge.assets.map((asset) => (

@@ -12,6 +12,9 @@ export const FLAGS = {
   "mini-ctf/cool-logo": ["NUSEC{NUS3C_h1dd3n_1n_pla1n_s1ght}"],
   // Also embedded in public/ctf/mini-ctf/nusec-login.pcapng — rotate together.
   "mini-ctf/leaked-login": ["NUSEC{w1r3sh4rk_m@st3r}"],
+  // Encoded in the challenge's `content` in src/ctf/meetings/mini-ctf.ts
+  // (base64 of hex) — rotate together.
+  "mini-ctf/obscure-encryption": ["NUSEC{lay3r_by_l@yer}"],
 } satisfies Record<string, string[]>;
 
 export type FlagKey = keyof typeof FLAGS;

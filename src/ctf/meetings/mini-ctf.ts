@@ -47,6 +47,15 @@ const miniCtf: Meeting = {
         },
       ],
     },
+    {
+      slug: "obscure-encryption",
+      title: "Obscure Encryption",
+      category: "cryptography",
+      brief:
+        "We intercepted this message, but it looks like it was encoded more than once.",
+      content:
+        "NEUgNTUgNTMgNDUgNDMgN0IgNkMgNjEgNzkgMzMgNzIgNUYgNjIgNzkgNUYgNkMgNDAgNzkgNjUgNzIgN0Q=",
+    },
   ],
 };
 
