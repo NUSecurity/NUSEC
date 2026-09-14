@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { acceptedFlags } from "../lib/flags";
+import { acceptedFlags } from "../lib/flags.js";
 
 function normalize(value: string): string {
   return value.trim().toLowerCase().replace(/\s+/g, "");
