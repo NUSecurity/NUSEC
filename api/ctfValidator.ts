@@ -1,11 +1,5 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-
-const FLAGS: Record<string, string[]> = {
-  // --- mini-ctf ------------------------------------------------------------
-  "mini-ctf/admin-authentication": ["NUSEC{NUS3C_4DM1N_4CC3SS}"],
-  "mini-ctf/cool-logo": ["NUSEC{NUS3C_h1dd3n_1n_pla1n_s1ght}"],
-  "mini-ctf/leaked-login": ["NUSEC{w1r3sh4rk_m@st3r}"],
-};
+import { acceptedFlags } from "../lib/flags";
 
 function normalize(value: string): string {
   return value.trim().toLowerCase().replace(/\s+/g, "");
@@ -28,7 +22,7 @@ export default function handler(req: VercelRequest, res: VercelResponse) {
       .json({ error: "Missing meeting, challenge, or flag" });
   }
 
-  const accepted = FLAGS[`${meeting}/${challenge}`];
+  const accepted = acceptedFlags(`${meeting}/${challenge}`);
 
   if (!accepted) {
     return res.status(404).json({ error: "Challenge not found" });

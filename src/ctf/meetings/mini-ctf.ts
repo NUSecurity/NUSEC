@@ -14,7 +14,7 @@ const miniCtf: Meeting = {
       assets: [
         {
           label: "Open the portal",
-          href: "/ctf/mini-ctf/admin.html",
+          href: "/ctf/mini-ctf/admin",
           kind: "link",
         },
       ],
@@ -46,6 +46,14 @@ const miniCtf: Meeting = {
           kind: "download",
         },
       ],
+    },
+    {
+      slug: "obscure-encryption",
+      title: "Obscure Encryption",
+      category: "cryptography",
+      brief: "While trying to intercept a flag, we got this useless gibberish.",
+      content:
+        "NEUgNTUgNTMgNDUgNDMgN0IgNkMgNjEgNzkgMzMgNzIgNUYgNjIgNzkgNUYgNkMgNDAgNzkgNjUgNzIgN0Q=",
     },
   ],
 };

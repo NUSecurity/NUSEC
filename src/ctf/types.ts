@@ -5,7 +5,7 @@ export type ChallengeCategory =
   | "web"
   | "forensics"
   | "network"
-  | "crypto"
+  | "cryptography"
   | "osint"
   | "reversing"
   | "misc";
@@ -15,7 +15,7 @@ export const categoryLabels: Record<ChallengeCategory, string> = {
   web: "Web",
   forensics: "Forensics",
   network: "Network",
-  crypto: "Crypto",
+  cryptography: "Cryptography",
   osint: "OSINT",
   reversing: "Reversing",
   misc: "Misc",
@@ -36,6 +36,11 @@ export interface Challenge {
   category: ChallengeCategory;
   /** The brief, rendered as a single paragraph. */
   brief: string;
+  /**
+   * Literal challenge text — ciphertext, a log line, a hash. Rendered inline in
+   * a monospace block, for content too small to be worth a download.
+   */
+  content?: string;
   assets?: ChallengeAsset[];
 }
 
