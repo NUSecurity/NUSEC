@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import type { SolvedEntry } from "@/ctf/progress";
 import { FLAG_FORMAT } from "@/ctf/types";
 import { cn } from "@/lib/utils";
 
@@ -11,7 +12,8 @@ interface FlagSubmitProps {
   challengeSlug: string;
   /** True if this challenge was already solved in a previous visit. */
   alreadySolved: boolean;
-  onSolved: () => void;
+  /** Receives whatever the checker awarded alongside the correct verdict. */
+  onSolved: (award: SolvedEntry) => void;
   /** Closed meetings show the input disabled rather than hiding it. */
   disabled?: boolean;
 }
@@ -55,11 +57,11 @@ const FlagSubmit = ({
         );
       }
 
-      const data: { correct?: boolean } = await response.json();
+      const data: { correct?: boolean } & SolvedEntry = await response.json();
 
       if (data.correct) {
         setStatus("correct");
-        onSolved();
+        onSolved({ letter: data.letter, index: data.index, total: data.total });
       } else {
         setStatus("incorrect");
       }

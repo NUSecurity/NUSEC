@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { flagFor } from "../lib/flags.js";
 
-const FLAG = flagFor("mini-ctf/admin-authentication");
+const FLAG = flagFor("hands-on-practice/admin-authentication");
 
 /** Reads one cookie out of the request's Cookie header. */
 function readCookie(header: string | undefined, name: string) {
@@ -25,6 +25,9 @@ function page(granted: boolean) {
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
+  /* JetBrains Mono ligates == != -> </ /> into single glyphs, which makes
+     typed payloads and quoted syntax unreadable. Never wanted here. */
+  * { font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
 
     body {
       background: #09090F;

@@ -59,4 +59,11 @@ All colors MUST be HSL.
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Ciphertext, hex and payloads must render character for character — no
+     font ligature is ever welcome on this site. */
+  * {
+    font-variant-ligatures: none;
+    font-feature-settings: "liga" 0, "calt" 0;
+  }
 }
