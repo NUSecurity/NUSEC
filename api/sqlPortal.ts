@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { flagFor } from "../lib/flags";
-import { attemptLogin } from "../lib/sqlInjection";
+import { flagFor } from "../lib/flags.js";
+import { attemptLogin } from "../lib/sqlInjection.js";
 
 const FLAG = flagFor("hands-on-practice/members-only");
 

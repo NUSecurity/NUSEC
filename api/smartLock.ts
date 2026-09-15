@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { flagFor } from "../lib/flags";
-import { installerCode, product } from "../lib/lockDatasheet";
+import { flagFor } from "../lib/flags.js";
+import { installerCode, product } from "../lib/lockDatasheet.js";
 
 const FLAG = flagFor("hands-on-practice/smart-lock");
 

@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { flagFor } from "../lib/flags";
+import { flagFor } from "../lib/flags.js";
 
 const FLAG = flagFor("hands-on-practice/admin-authentication");
 

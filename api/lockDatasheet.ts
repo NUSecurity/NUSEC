@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { pages, product, type Block } from "../lib/lockDatasheet";
+import { pages, product, type Block } from "../lib/lockDatasheet.js";
 
 const escapeHtml = (value: string) =>
   value

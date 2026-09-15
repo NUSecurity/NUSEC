@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { flagFor } from "../lib/flags";
-import { tickets, triage } from "../lib/promptInjection";
+import { flagFor } from "../lib/flags.js";
+import { tickets, triage } from "../lib/promptInjection.js";
 
 /** The escalation key the assistant is told to protect — and the flag. */
 const KEY = flagFor("hands-on-practice/ticket-triage");

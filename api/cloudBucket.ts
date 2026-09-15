@@ -7,7 +7,7 @@ import {
   objectFor,
   secondPage,
   type BucketObject,
-} from "../lib/bucketObjects";
+} from "../lib/bucketObjects.js";
 
 const escapeHtml = (value: string) =>
   value

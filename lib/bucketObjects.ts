@@ -7,7 +7,7 @@
  * how real enumeration misses real data.
  */
 
-import { flagFor } from "./flags";
+import { flagFor } from "./flags.js";
 
 export interface BucketObject {
   key: string;

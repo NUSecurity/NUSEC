@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { flagFor } from "../lib/flags";
-import { checkDestination, diskImage, imageLabel } from "../lib/diskImage";
+import { flagFor } from "../lib/flags.js";
+import { checkDestination, diskImage, imageLabel } from "../lib/diskImage.js";
 
 const FLAG = flagFor("hands-on-practice/disk-image-triage");
 

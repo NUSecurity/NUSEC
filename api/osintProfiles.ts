@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { flagFor } from "../lib/flags";
-import { checkAnswers, platforms, questions } from "../lib/socialProfiles";
+import { flagFor } from "../lib/flags.js";
+import { checkAnswers, platforms, questions } from "../lib/socialProfiles.js";
 
 const FLAG = flagFor("hands-on-practice/paper-trail");
 

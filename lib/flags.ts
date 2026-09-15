@@ -1,4 +1,4 @@
-import { secret } from "./env";
+import { secret } from "./env.js";
 
 /**
  * Every accepted flag, keyed by `<meeting>/<challenge>`.

@@ -9,7 +9,7 @@
  * flag, so possessing one is proof of a solve. The word itself is configured
  * in the environment, because this repository is public.
  */
-import { secret } from "./env";
+import { secret } from "./env.js";
 const WORD_VAR = "SECRET_WORD";
 
 /**
