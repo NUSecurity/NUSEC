@@ -2,7 +2,7 @@ import { Meeting } from "@/ctf/types";
 
 const miniCtf: Meeting = {
   slug: "mini-ctf",
-  title: "Mini CTF",
+  title: "Hands On Practice",
   active: true,
   challenges: [
     {
@@ -46,6 +46,13 @@ const miniCtf: Meeting = {
           kind: "download",
         },
       ],
+    },
+    {
+      slug: "dns-osint",
+      title: "Digital Footprint",
+      category: "osint",
+      brief:
+        "Do some OSINT on our website, nusec.club. Can you find a flag hiding somewhere on the internet?",
     },
     {
       slug: "obscure-encryption",
