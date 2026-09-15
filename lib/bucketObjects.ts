@@ -7,6 +7,8 @@
  * how real enumeration misses real data.
  */
 
+import { flagFor } from "./flags";
+
 export interface BucketObject {
   key: string;
   size: number;
@@ -31,13 +33,15 @@ DB_PASS=stg-7f2a-readonly
 SESSION_SECRET=not-a-real-secret-staging
 `;
 
+// Built from the flag table rather than restating it, so there is exactly one
+// place the answer lives.
 const prodEnv = `# PROD - do not commit. copied here 2026-08-30 during the migration
 NODE_ENV=production
 API_BASE=https://api.nusec-club.example
 DB_HOST=prod-db.internal
 DB_USER=app_rw
 DB_PASS=Hq4!vT9wLm2xZr6d
-SESSION_SECRET=NUSEC{buck3ts_sh0uld_n0t_b3_publ1c}
+SESSION_SECRET=${flagFor("hands-on-practice/open-bucket")}
 SMTP_URL=smtps://mailer:8Kd2vn4Qp@smtp.internal:465
 `;
 

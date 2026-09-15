@@ -10,10 +10,13 @@
   Run it on the projector during the meeting. Each solved challenge hands one
   person one letter; type them in here as the room calls them out.
 
-  To change the word, edit WORD below — the site's copy lives server-side in
-  lib/letters.ts, which is where it has to stay so the browser never sees it.
-  Keep the two in step, and keep the letter count equal to the number of
-  challenges.
+  The word is NOT stored in this file, because this repository is public.
+  Pass it in the URL fragment, which never leaves your machine:
+
+      open "facilitator/final-word.html#YOURWORD"
+
+  Or just type it into the target field on the page. It must match SECRET_WORD
+  from the site's environment, and have one letter per challenge.
 -->
 <html lang="en">
 <head>
@@ -71,6 +74,21 @@
   }
 
   .sub { color: #9A9A9A; font-size: 0.85rem; margin-bottom: 2.5rem; }
+
+  .target { margin-bottom: 1.6rem; }
+  .target label {
+    display: block; font-size: 0.66rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: #6A6A6A; margin-bottom: 0.4rem;
+  }
+  .target input {
+    width: 100%; max-width: 380px; margin: 0 auto; display: block;
+    background: rgba(24, 24, 24, 0.82); border: 1px solid #262626;
+    border-radius: 8px; color: #BFBFBF; font: inherit; font-size: 0.85rem;
+    padding: 0.5rem 0.8rem; text-align: center; text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .target input:focus { outline: none; border-color: hsl(270 95% 60%); color: #FAFAFA; }
+  body.solved .target { display: none; }
 
   .slots {
     display: flex;
@@ -169,6 +187,12 @@
   <h1>The Final Word</h1>
   <p class="sub">Nine challenges. One letter each. Nobody finishes this alone.</p>
 
+  <div class="target">
+    <label for="target">Target word</label>
+    <input id="target" type="text" autocomplete="off" spellcheck="false"
+           placeholder="type the word the room is working towards">
+  </div>
+
   <div class="slots" id="slots"></div>
   <div class="count" id="count"></div>
   <div class="status" id="status"></div>
@@ -178,14 +202,18 @@
 
 <script>
 (function () {
-  // Must match WORD in lib/letters.ts (server-side).
-  var WORD = 'CHAMELEON';
+  // Deliberately not hardcoded: this file lives in a public repository. The
+  // word comes from the URL fragment (#YOURWORD) or the target field, and must
+  // match SECRET_WORD in the site's environment.
+  var WORD = (window.location.hash || '').replace('#', '').toUpperCase()
+    .replace(/[^A-Z]/g, '');
 
   var slotsEl = document.getElementById('slots');
   var countEl = document.getElementById('count');
   var statusEl = document.getElementById('status');
   var inputs = [];
   var won = false;
+  var targetEl = document.getElementById('target');
 
   /* ------------------------------------------------- matrix rain backdrop */
 
@@ -289,6 +317,13 @@
   }
 
   function refresh() {
+    if (WORD.length === 0) {
+      countEl.textContent = '';
+      statusEl.className = 'status';
+      statusEl.textContent = 'Set the target word above to begin.';
+      return;
+    }
+
     var filled = 0;
 
     inputs.forEach(function (input) {
@@ -342,8 +377,11 @@
     refresh();
   }
 
-  for (var i = 0; i < WORD.length; i++) {
-    (function (index) {
+  function buildSlots() {
+    slotsEl.textContent = '';
+    inputs = [];
+
+    for (var i = 0; i < WORD.length; i++) (function (index) {
       var input = document.createElement('input');
       input.type = 'text';
       input.className = 'slot';
@@ -383,6 +421,8 @@
       inputs.push(input);
       slotsEl.appendChild(input);
     })(i);
+
+    refresh();
   }
 
   document.getElementById('reset').addEventListener('click', function () {
@@ -395,12 +435,24 @@
     });
     statusEl.className = 'status';
     statusEl.textContent = '';
-    inputs[0].focus();
     refresh();
+    if (inputs.length > 0) inputs[0].focus();
   });
 
-  refresh();
-  inputs[0].focus();
+  targetEl.value = WORD;
+
+  targetEl.addEventListener('input', function () {
+    WORD = targetEl.value.toUpperCase().replace(/[^A-Z]/g, '');
+    targetEl.value = WORD;
+    won = false;
+    pieces = [];
+    document.body.classList.remove('solved');
+    buildSlots();
+  });
+
+  buildSlots();
+  if (inputs.length > 0) inputs[0].focus();
+  else targetEl.focus();
 })();
 </script>
 </body>

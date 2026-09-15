@@ -1,4 +1,4 @@
-import { defineConfig, type Plugin } from "vite";
+import { defineConfig, loadEnv, type Plugin } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import type { IncomingMessage, ServerResponse } from "http";
@@ -129,16 +129,24 @@ function blockFacilitator(): Plugin {
   };
 }
 
-export default defineConfig({
-  base: "/",
-  server: {
-    host: "::",
-    port: 3000,
-  },
-  plugins: [react(), blockFacilitator(), ctfApiDev()],
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
+export default defineConfig(({ mode }) => {
+  // The handlers in `api/` read secrets through process.env, the way they will
+  // on Vercel. Vite only exposes VITE_-prefixed vars to the client, so load the
+  // whole `.env` into the dev server's own process instead. Nothing here
+  // reaches the browser bundle — there is no `define` for these.
+  Object.assign(process.env, loadEnv(mode, process.cwd(), ""));
+
+  return {
+    base: "/",
+    server: {
+      host: "::",
+      port: 3000,
     },
-  },
+    plugins: [react(), blockFacilitator(), ctfApiDev()],
+    resolve: {
+      alias: {
+        "@": path.resolve(__dirname, "./src"),
+      },
+    },
+  };
 });

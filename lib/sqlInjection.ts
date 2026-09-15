@@ -21,9 +21,17 @@ export interface Member {
   role: "admin" | "member";
 }
 
-/** The admin password is unguessable on purpose: injection is the only way in. */
+/**
+ * Unguessable on purpose, and configured rather than checked in: a readable
+ * admin password would let anyone who finds this repository log in straight
+ * past the challenge. Leaving it unset is a safe default — nobody can
+ * authenticate legitimately at all, and injection remains the intended path.
+ */
+const adminPassword =
+  process.env.SQL_ADMIN_PASSWORD ?? `unset-${Math.random().toString(36).slice(2)}`;
+
 export const members: Member[] = [
-  { id: 1, username: "admin", password: "Xv7$qP2mLd9!zR4tWn6", role: "admin" },
+  { id: 1, username: "admin", password: adminPassword, role: "admin" },
   { id: 2, username: "j.reyes", password: "hunter2", role: "member" },
   { id: 3, username: "dave", password: "correcthorse", role: "member" },
 ];

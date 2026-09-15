@@ -6,9 +6,11 @@
  * which defeats the point of the room having to pool letters.
  *
  * A letter is only ever attached to a response that already carried a correct
- * flag, so possessing one is proof of a solve.
+ * flag, so possessing one is proof of a solve. The word itself is configured
+ * in the environment, because this repository is public.
  */
-const WORD = "CHAMELEON";
+import { secret } from "./env";
+const WORD_VAR = "SECRET_WORD";
 
 /**
  * Position in the word each challenge is worth. Explicit rather than derived
@@ -35,9 +37,17 @@ export interface LetterAward {
   total: number;
 }
 
+/** Every environment variable the letter mechanic needs. */
+export const requiredLetterVars = [WORD_VAR];
+
 /** The letter a challenge is worth, or undefined if it isn't worth one. */
 export function letterFor(key: string): LetterAward | undefined {
+  const word = secret(WORD_VAR);
   const index = positions[key];
-  if (index === undefined || index >= WORD.length) return undefined;
-  return { letter: WORD[index], index, total: WORD.length };
+
+  if (word === undefined || index === undefined || index >= word.length) {
+    return undefined;
+  }
+
+  return { letter: word[index], index, total: word.length };
 }
