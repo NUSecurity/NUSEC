@@ -4,8 +4,6 @@ const handsOnPractice: Meeting = {
   slug: "hands-on-practice",
   title: "Hands On Practice",
   active: true,
-  // One letter per challenge, in the order below.
-  secretWord: "CHAMELEON",
   challenges: [
     {
       slug: "admin-authentication",

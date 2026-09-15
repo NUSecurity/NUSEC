@@ -1,5 +1,6 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { acceptedFlags } from "../lib/flags";
+import { letterFor } from "../lib/letters";
 
 function normalize(value: string): string {
   return value.trim().toLowerCase().replace(/\s+/g, "");
@@ -31,6 +32,12 @@ export default function handler(req: VercelRequest, res: VercelResponse) {
   const submitted = normalize(flag);
   const correct = accepted.some((value) => normalize(value) === submitted);
 
-  // Only ever report the verdict, never the expected flag.
-  return res.status(200).json({ correct });
+  if (!correct) {
+    // Only ever report the verdict, never the expected flag.
+    return res.status(200).json({ correct: false });
+  }
+
+  // The letter rides along with a correct answer and nowhere else, so it can
+  // only be obtained by actually solving the challenge.
+  return res.status(200).json({ correct: true, ...letterFor(`${meeting}/${challenge}`) });
 }

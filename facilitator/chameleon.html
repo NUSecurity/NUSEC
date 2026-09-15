@@ -10,9 +10,10 @@
   Run it on the projector during the meeting. Each solved challenge hands one
   person one letter; type them in here as the room calls them out.
 
-  To change the word, edit WORD below — the site's copy lives in
-  src/ctf/meetings/hands-on-practice.ts as `secretWord`. Keep them in step,
-  and keep the letter count equal to the number of challenges.
+  To change the word, edit WORD below — the site's copy lives server-side in
+  lib/letters.ts, which is where it has to stay so the browser never sees it.
+  Keep the two in step, and keep the letter count equal to the number of
+  challenges.
 -->
 <html lang="en">
 <head>
@@ -177,7 +178,7 @@
 
 <script>
 (function () {
-  // Must match `secretWord` in src/ctf/meetings/hands-on-practice.ts.
+  // Must match WORD in lib/letters.ts (server-side).
   var WORD = 'CHAMELEON';
 
   var slotsEl = document.getElementById('slots');

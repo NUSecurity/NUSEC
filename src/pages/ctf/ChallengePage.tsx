@@ -19,14 +19,8 @@ const ChallengePage = () => {
 
   const { meeting, challenge } = found;
   const isArchived = meeting.active === false;
-  const isSolved = solved.has(challenge.slug);
-
-  const letterIndex = meeting.challenges.findIndex(
-    (item) => item.slug === challenge.slug,
-  );
-  const word = meeting.secretWord;
-  const hasLetter =
-    word !== undefined && word.length === meeting.challenges.length;
+  const entry = solved.get(challenge.slug);
+  const isSolved = entry !== undefined;
 
   return (
     <CtfLayout backTo={`/challenges/${meeting.slug}`}>
@@ -76,7 +70,7 @@ const ChallengePage = () => {
             meetingSlug={meeting.slug}
             challengeSlug={challenge.slug}
             alreadySolved={isSolved}
-            onSolved={() => markSolved(challenge.slug)}
+            onSolved={(award) => markSolved(challenge.slug, award)}
             disabled={isArchived}
           />
           {isArchived && (
@@ -86,11 +80,17 @@ const ChallengePage = () => {
           )}
         </div>
 
-        {isSolved && hasLetter && (
-          <div className="mt-6">
-            <LetterReveal word={word} index={letterIndex} />
-          </div>
-        )}
+        {entry?.letter !== undefined &&
+          entry.index !== undefined &&
+          entry.total !== undefined && (
+            <div className="mt-6">
+              <LetterReveal
+                letter={entry.letter}
+                index={entry.index}
+                total={entry.total}
+              />
+            </div>
+          )}
       </article>
     </CtfLayout>
   );
