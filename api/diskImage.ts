@@ -9,6 +9,9 @@ const treeJson = JSON.stringify(diskImage).replace(/</g, "\\u003c");
 
 const styles = `
   * { margin: 0; padding: 0; box-sizing: border-box; }
+  /* JetBrains Mono ligates == != -> </ /> into single glyphs, which makes
+     typed payloads and quoted syntax unreadable. Never wanted here. */
+  * { font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
 
   body {
     background: #09090F;

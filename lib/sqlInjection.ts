@@ -136,6 +136,15 @@ function tokenize(sql: string): Token[] {
     }
 
     const pair = sql.slice(at, at + 2);
+
+    // SQLite accepts == for equality, and people who write code all day reach
+    // for it by reflex. Rejecting it would look like the input was mangled.
+    if (pair === "==") {
+      tokens.push({ kind: "op", value: "=" });
+      at += 2;
+      continue;
+    }
+
     if (pair === "<>" || pair === "!=" || pair === "<=" || pair === ">=") {
       tokens.push({ kind: "op", value: pair });
       at += 2;
