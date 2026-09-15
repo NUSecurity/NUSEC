@@ -106,62 +106,21 @@ function atbash(text: string): string {
     .join("");
 }
 
+/**
+ * Listed in a deliberately scrambled order.
+ *
+ * These used to be declared in the order the challenge's recipe needs, which
+ * meant clicking straight down the Decode column solved it without reading
+ * anything. Working out the order is the challenge — do not "tidy" this back
+ * into sequence. No position here matches its step in the intended recipe.
+ */
 export const cipherOps: CipherOp[] = [
   {
-    id: "to-base64",
-    name: "To Base64",
-    group: "encode",
-    hint: "Bytes into A–Z a–z 0–9 + /",
-    run: toBase64,
-  },
-  {
-    id: "to-hex",
-    name: "To Hex",
-    group: "encode",
-    hint: "Each byte as two hex digits",
-    run: toHex,
-  },
-  {
-    id: "to-binary",
-    name: "To Binary",
-    group: "encode",
-    hint: "Each byte as eight bits",
-    run: toBinary,
-  },
-  {
-    id: "url-encode",
-    name: "URL Encode",
-    group: "encode",
-    hint: "Percent-escapes unsafe characters",
-    run: (text) => encodeURIComponent(text),
-  },
-  {
-    id: "caesar-plus",
-    name: "Caesar Shift +3",
-    group: "encode",
-    hint: "Rotates letters forward three places",
-    run: (text) => caesar(text, 3),
-  },
-  {
-    id: "from-base64",
-    name: "From Base64",
+    id: "reverse",
+    name: "Reverse",
     group: "decode",
-    hint: "Back to the original bytes",
-    run: fromBase64,
-  },
-  {
-    id: "from-hex",
-    name: "From Hex",
-    group: "decode",
-    hint: "Hex digit pairs back to bytes",
-    run: fromHex,
-  },
-  {
-    id: "caesar-minus",
-    name: "Caesar Shift −3",
-    group: "decode",
-    hint: "Rotates letters back three places",
-    run: (text) => caesar(text, -3),
+    hint: "Flips the character order",
+    run: (text) => [...text].reverse().join(""),
   },
   {
     id: "atbash",
@@ -171,11 +130,60 @@ export const cipherOps: CipherOp[] = [
     run: atbash,
   },
   {
-    id: "reverse",
-    name: "Reverse",
+    id: "from-base64",
+    name: "From Base64",
     group: "decode",
-    hint: "Flips the character order",
-    run: (text) => [...text].reverse().join(""),
+    hint: "Back to the original bytes",
+    run: fromBase64,
+  },
+  {
+    id: "caesar-minus",
+    name: "Caesar Shift −3",
+    group: "decode",
+    hint: "Rotates letters back three places",
+    run: (text) => caesar(text, -3),
+  },
+  {
+    id: "from-hex",
+    name: "From Hex",
+    group: "decode",
+    hint: "Hex digit pairs back to bytes",
+    run: fromHex,
+  },
+  {
+    id: "to-binary",
+    name: "To Binary",
+    group: "encode",
+    hint: "Each byte as eight bits",
+    run: toBinary,
+  },
+  {
+    id: "caesar-plus",
+    name: "Caesar Shift +3",
+    group: "encode",
+    hint: "Rotates letters forward three places",
+    run: (text) => caesar(text, 3),
+  },
+  {
+    id: "to-base64",
+    name: "To Base64",
+    group: "encode",
+    hint: "Bytes into A–Z a–z 0–9 + /",
+    run: toBase64,
+  },
+  {
+    id: "url-encode",
+    name: "URL Encode",
+    group: "encode",
+    hint: "Percent-escapes unsafe characters",
+    run: (text) => encodeURIComponent(text),
+  },
+  {
+    id: "to-hex",
+    name: "To Hex",
+    group: "encode",
+    hint: "Each byte as two hex digits",
+    run: toHex,
   },
 ];
 
@@ -214,7 +222,8 @@ export function runRecipe(input: string, ids: string[]): RecipeStep[] {
     } catch (error) {
       steps.push({
         output: "",
-        error: error instanceof CipherError ? error.message : "That step failed.",
+        error:
+          error instanceof CipherError ? error.message : "That step failed.",
       });
       broken = true;
     }
