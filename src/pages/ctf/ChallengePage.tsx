@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { Download, ExternalLink } from "lucide-react";
 import CtfLayout from "@/components/ctf/CtfLayout";
 import FlagSubmit from "@/components/ctf/FlagSubmit";
+import LetterReveal from "@/components/ctf/LetterReveal";
 import { getChallenge } from "@/ctf/meetings";
 import { useProgress } from "@/ctf/progress";
 import NotFound from "@/pages/NotFound";
@@ -18,6 +19,14 @@ const ChallengePage = () => {
 
   const { meeting, challenge } = found;
   const isArchived = meeting.active === false;
+  const isSolved = solved.has(challenge.slug);
+
+  const letterIndex = meeting.challenges.findIndex(
+    (item) => item.slug === challenge.slug,
+  );
+  const word = meeting.secretWord;
+  const hasLetter =
+    word !== undefined && word.length === meeting.challenges.length;
 
   return (
     <CtfLayout backTo={`/challenges/${meeting.slug}`}>
@@ -66,7 +75,7 @@ const ChallengePage = () => {
           <FlagSubmit
             meetingSlug={meeting.slug}
             challengeSlug={challenge.slug}
-            alreadySolved={solved.has(challenge.slug)}
+            alreadySolved={isSolved}
             onSolved={() => markSolved(challenge.slug)}
             disabled={isArchived}
           />
@@ -76,6 +85,12 @@ const ChallengePage = () => {
             </p>
           )}
         </div>
+
+        {isSolved && hasLetter && (
+          <div className="mt-6">
+            <LetterReveal word={word} index={letterIndex} />
+          </div>
+        )}
       </article>
     </CtfLayout>
   );

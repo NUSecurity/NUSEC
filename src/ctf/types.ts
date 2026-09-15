@@ -57,5 +57,11 @@ export interface Meeting {
   slug: string;
   title: string;
   active: boolean;
+  /**
+   * A word split one letter per challenge, in `challenges` order, handed out
+   * as each one is solved. Reordering the array reorders the letters. Ignored
+   * unless its length matches the number of challenges.
+   */
+  secretWord?: string;
   challenges: Challenge[];
 }

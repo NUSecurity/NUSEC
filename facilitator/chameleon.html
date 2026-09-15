@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<!--
+  LOCAL ONLY — do not move this file into public/ or src/.
+
+  It lives outside the Vite build on purpose, so it is never bundled, never
+  deployed and never reachable from the website. Open it straight off disk:
+
+      open facilitator/chameleon.html
+
+  Run it on the projector during the meeting. Each solved challenge hands one
+  person one letter; type them in here as the room calls them out.
+
+  To change the word, edit WORD below — the site's copy lives in
+  src/ctf/meetings/hands-on-practice.ts as `secretWord`. Keep them in step,
+  and keep the letter count equal to the number of challenges.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Hands On Practice — Final Word</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0D0D0D;
+    color: #FAFAFA;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    overflow: hidden;
+  }
+
+  canvas.layer {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  #matrix { opacity: 0.2; z-index: 0; }
+  #confetti { z-index: 3; }
+
+  .wrap { position: relative; z-index: 2; text-align: center; max-width: 900px; width: 100%; }
+
+  .label {
+    font-size: 0.7rem;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    color: #8A8A8A;
+  }
+
+  h1 {
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-weight: 700;
+    margin: 0.5rem 0 0.4rem;
+    background: linear-gradient(135deg, hsl(270 95% 60%), hsl(270 95% 40%));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .sub { color: #9A9A9A; font-size: 0.85rem; margin-bottom: 2.5rem; }
+
+  .slots {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-bottom: 1.8rem;
+  }
+
+  .slots.shake { animation: shake 0.4s; }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-10px); }
+    40% { transform: translateX(10px); }
+    60% { transform: translateX(-6px); }
+    80% { transform: translateX(6px); }
+  }
+
+  input.slot {
+    width: 66px;
+    height: 84px;
+    background: rgba(24, 24, 24, 0.82);
+    border: 1px solid #262626;
+    border-radius: 12px;
+    color: #FAFAFA;
+    font: inherit;
+    font-size: 2.2rem;
+    font-weight: 700;
+    text-align: center;
+    text-transform: uppercase;
+    caret-color: hsl(270 95% 60%);
+    transition: border-color 0.18s, box-shadow 0.18s, background 0.18s;
+  }
+
+  input.slot::placeholder { color: #3A3A3A; font-weight: 400; }
+
+  input.slot:focus {
+    outline: none;
+    border-color: hsl(270 95% 60%);
+    box-shadow: 0 0 0 3px hsl(270 95% 60% / 0.18);
+  }
+
+  input.slot.filled {
+    border-color: hsl(270 95% 60% / 0.55);
+    background: hsl(270 95% 60% / 0.10);
+    color: hsl(270 95% 72%);
+  }
+
+  body.solved input.slot {
+    border-color: #00B862;
+    background: rgba(0, 184, 98, 0.12);
+    color: #35E07E;
+  }
+
+  body.solved input.slot { animation: pop 0.45s backwards; }
+
+  @keyframes pop {
+    0% { transform: scale(1); }
+    45% { transform: scale(1.16); }
+    100% { transform: scale(1); }
+  }
+
+  .count { color: #7A7A7A; font-size: 0.8rem; letter-spacing: 0.12em; }
+
+  .status { min-height: 2.4rem; margin-top: 1.4rem; font-size: 1rem; }
+  .status.win { color: #35E07E; font-weight: 700; font-size: 1.3rem; letter-spacing: 0.08em; }
+  .status.bad { color: #E0574A; }
+
+  button.reset {
+    margin-top: 1.8rem;
+    background: transparent;
+    border: 1px solid #2E2E2E;
+    color: #8A8A8A;
+    font: inherit;
+    font-size: 0.78rem;
+    padding: 0.5rem 1.4rem;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  button.reset:hover { border-color: hsl(270 95% 60%); color: #FAFAFA; }
+
+  @media (max-width: 720px) {
+    input.slot { width: 44px; height: 60px; font-size: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<canvas class="layer" id="matrix"></canvas>
+<canvas class="layer" id="confetti"></canvas>
+
+<div class="wrap">
+  <div class="label">Hands On Practice</div>
+  <h1>The Final Word</h1>
+  <p class="sub">Nine challenges. One letter each. Nobody finishes this alone.</p>
+
+  <div class="slots" id="slots"></div>
+  <div class="count" id="count"></div>
+  <div class="status" id="status"></div>
+
+  <button class="reset" id="reset" type="button">Clear</button>
+</div>
+
+<script>
+(function () {
+  // Must match `secretWord` in src/ctf/meetings/hands-on-practice.ts.
+  var WORD = 'CHAMELEON';
+
+  var slotsEl = document.getElementById('slots');
+  var countEl = document.getElementById('count');
+  var statusEl = document.getElementById('status');
+  var inputs = [];
+  var won = false;
+
+  /* ------------------------------------------------- matrix rain backdrop */
+
+  var matrix = document.getElementById('matrix');
+  var mctx = matrix.getContext('2d');
+  var drops = [];
+  var FONT = 14;
+  var CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*(){}[]|\\:;"<>,.?/~`'.split('');
+
+  function sizeMatrix() {
+    matrix.width = window.innerWidth;
+    matrix.height = window.innerHeight;
+    var columns = Math.floor(matrix.width / FONT);
+    drops = [];
+    for (var i = 0; i < columns; i++) drops[i] = Math.random() * matrix.height;
+  }
+
+  function drawMatrix() {
+    mctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+    mctx.fillRect(0, 0, matrix.width, matrix.height);
+    mctx.fillStyle = 'hsl(270, 95%, 60%)';
+    mctx.font = FONT + 'px monospace';
+
+    for (var i = 0; i < drops.length; i++) {
+      mctx.fillText(CHARS[Math.floor(Math.random() * CHARS.length)], i * FONT, drops[i]);
+      if (drops[i] > matrix.height && Math.random() > 0.975) drops[i] = 0;
+      drops[i] += FONT;
+    }
+  }
+
+  sizeMatrix();
+  window.addEventListener('resize', sizeMatrix);
+  setInterval(drawMatrix, 50);
+
+  /* -------------------------------------------------------------- confetti */
+
+  var confetti = document.getElementById('confetti');
+  var cctx = confetti.getContext('2d');
+  var pieces = [];
+  var COLORS = ['#A855F7', '#7C3AED', '#35E07E', '#00B862', '#FAFAFA', '#E0A020'];
+
+  function sizeConfetti() {
+    confetti.width = window.innerWidth;
+    confetti.height = window.innerHeight;
+  }
+
+  sizeConfetti();
+  window.addEventListener('resize', sizeConfetti);
+
+  function burst() {
+    for (var i = 0; i < 260; i++) {
+      pieces.push({
+        x: confetti.width / 2 + (Math.random() - 0.5) * 320,
+        y: confetti.height / 2 + (Math.random() - 0.5) * 60,
+        vx: (Math.random() - 0.5) * 15,
+        vy: Math.random() * -16 - 4,
+        size: Math.random() * 8 + 4,
+        color: COLORS[Math.floor(Math.random() * COLORS.length)],
+        spin: (Math.random() - 0.5) * 0.4,
+        angle: Math.random() * Math.PI * 2,
+        life: 1
+      });
+    }
+  }
+
+  function drawConfetti() {
+    cctx.clearRect(0, 0, confetti.width, confetti.height);
+
+    for (var i = pieces.length - 1; i >= 0; i--) {
+      var p = pieces[i];
+      p.vy += 0.34;
+      p.vx *= 0.995;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.angle += p.spin;
+      if (p.y > confetti.height * 0.62) p.life -= 0.012;
+
+      if (p.life <= 0 || p.y > confetti.height + 60) {
+        pieces.splice(i, 1);
+        continue;
+      }
+
+      cctx.save();
+      cctx.globalAlpha = Math.max(p.life, 0);
+      cctx.translate(p.x, p.y);
+      cctx.rotate(p.angle);
+      cctx.fillStyle = p.color;
+      cctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+      cctx.restore();
+    }
+
+    requestAnimationFrame(drawConfetti);
+  }
+
+  drawConfetti();
+
+  /* ----------------------------------------------------------- the puzzle */
+
+  function typed() {
+    return inputs.map(function (input) { return input.value.toUpperCase(); }).join('');
+  }
+
+  function refresh() {
+    var filled = 0;
+
+    inputs.forEach(function (input) {
+      var has = input.value.trim().length > 0;
+      if (has) filled++;
+      input.classList.toggle('filled', has && !won);
+    });
+
+    countEl.textContent = filled + ' of ' + WORD.length + ' letters in';
+
+    if (won) return;
+
+    if (filled < WORD.length) {
+      statusEl.className = 'status';
+      statusEl.textContent = '';
+      return;
+    }
+
+    if (typed() === WORD) {
+      won = true;
+      document.body.classList.add('solved');
+      countEl.textContent = '';
+      statusEl.className = 'status win';
+      statusEl.textContent = WORD;
+
+      inputs.forEach(function (input, index) {
+        input.style.animationDelay = (index * 0.06) + 's';
+        input.blur();
+      });
+
+      burst();
+      setTimeout(burst, 550);
+      setTimeout(burst, 1100);
+      return;
+    }
+
+    statusEl.className = 'status bad';
+    statusEl.textContent = 'Not the word yet — check the letters with the room.';
+    slotsEl.classList.remove('shake');
+    void slotsEl.offsetWidth;
+    slotsEl.classList.add('shake');
+  }
+
+  function spread(text, from) {
+    var letters = text.toUpperCase().replace(/[^A-Z]/g, '').split('');
+    for (var i = 0; i < letters.length && from + i < inputs.length; i++) {
+      inputs[from + i].value = letters[i];
+    }
+    var landed = Math.min(from + letters.length, inputs.length - 1);
+    inputs[landed].focus();
+    refresh();
+  }
+
+  for (var i = 0; i < WORD.length; i++) {
+    (function (index) {
+      var input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'slot';
+      input.maxLength = 1;
+      input.placeholder = '_';
+      input.autocomplete = 'off';
+      input.spellcheck = false;
+      input.setAttribute('aria-label', 'Letter ' + (index + 1));
+
+      input.addEventListener('input', function () {
+        input.value = input.value.toUpperCase().replace(/[^A-Z]/g, '');
+        if (input.value && index < inputs.length - 1) inputs[index + 1].focus();
+        refresh();
+      });
+
+      input.addEventListener('keydown', function (event) {
+        if (event.key === 'Backspace' && !input.value && index > 0) {
+          inputs[index - 1].focus();
+          inputs[index - 1].value = '';
+          refresh();
+          event.preventDefault();
+        } else if (event.key === 'ArrowLeft' && index > 0) {
+          inputs[index - 1].focus();
+        } else if (event.key === 'ArrowRight' && index < inputs.length - 1) {
+          inputs[index + 1].focus();
+        }
+      });
+
+      // Pasting the whole word fills every box rather than just this one.
+      input.addEventListener('paste', function (event) {
+        event.preventDefault();
+        spread((event.clipboardData || window.clipboardData).getData('text'), index);
+      });
+
+      input.addEventListener('focus', function () { input.select(); });
+
+      inputs.push(input);
+      slotsEl.appendChild(input);
+    })(i);
+  }
+
+  document.getElementById('reset').addEventListener('click', function () {
+    won = false;
+    pieces = [];
+    document.body.classList.remove('solved');
+    inputs.forEach(function (input) {
+      input.value = '';
+      input.style.animationDelay = '';
+    });
+    statusEl.className = 'status';
+    statusEl.textContent = '';
+    inputs[0].focus();
+    refresh();
+  });
+
+  refresh();
+  inputs[0].focus();
+})();
+</script>
+</body>
+</html>

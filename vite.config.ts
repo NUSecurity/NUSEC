@@ -109,13 +109,33 @@ function ctfApiDev(): Plugin {
   };
 }
 
+/**
+ * `facilitator/` holds the meeting-night answer page. It is outside `public/`
+ * so the production build never includes it, but the dev server otherwise
+ * serves the project root — and `host: "::"` publishes that to the LAN. This
+ * closes the gap so the file is unreachable over HTTP either way.
+ */
+function blockFacilitator(): Plugin {
+  return {
+    name: "nusec-block-facilitator",
+    apply: "serve",
+    configureServer(server) {
+      server.middlewares.use((req, res, next) => {
+        if (!(req.url ?? "").startsWith("/facilitator")) return next();
+        res.statusCode = 404;
+        res.end("Not found — open this file from disk instead.");
+      });
+    },
+  };
+}
+
 export default defineConfig({
   base: "/",
   server: {
     host: "::",
     port: 3000,
   },
-  plugins: [react(), ctfApiDev()],
+  plugins: [react(), blockFacilitator(), ctfApiDev()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
