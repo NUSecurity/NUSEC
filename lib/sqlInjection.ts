@@ -358,8 +358,17 @@ export function runQuery(sql: string, rows: Member[]): Member[] {
 }
 
 /** The bug: user input is pasted straight into the statement. */
+/**
+ * macOS smart substitution and copy-paste from chat both turn a typed ' into a
+ * curly quote, which would leave a correct payload silently failing for a
+ * reason nobody can see. Fold them back before building the statement.
+ */
+function straightenQuotes(value: string): string {
+  return value.replace(/[\u2018\u2019\u201B\u2032]/g, "'");
+}
+
 export function buildQuery(username: string, password: string): string {
-  return `SELECT id, username, role FROM members WHERE username = '${username}' AND password = '${password}'`;
+  return `SELECT id, username, role FROM members WHERE username = '${straightenQuotes(username)}' AND password = '${straightenQuotes(password)}'`;
 }
 
 export interface LoginResult {
