@@ -10,13 +10,13 @@
   Run it on the projector during the meeting. Each solved challenge hands one
   person one letter; type them in here as the room calls them out.
 
-  The word is NOT stored in this file, because this repository is public.
-  Pass it in the URL fragment, which never leaves your machine:
+  The word is set in WORD below and must match SECRET_WORD in the site's
+  environment, with one letter per challenge. Open it straight off disk:
 
-      open "facilitator/final-word.html#YOURWORD"
+      open facilitator/final-word.html
 
-  Or just type it into the target field on the page. It must match SECRET_WORD
-  from the site's environment, and have one letter per challenge.
+  A #WORD fragment still overrides it, if you ever want to run a different one
+  without editing the file.
 -->
 <html lang="en">
 <head>
@@ -74,21 +74,6 @@
   }
 
   .sub { color: #9A9A9A; font-size: 0.85rem; margin-bottom: 2.5rem; }
-
-  .target { margin-bottom: 1.6rem; }
-  .target label {
-    display: block; font-size: 0.66rem; letter-spacing: 0.2em;
-    text-transform: uppercase; color: #6A6A6A; margin-bottom: 0.4rem;
-  }
-  .target input {
-    width: 100%; max-width: 380px; margin: 0 auto; display: block;
-    background: rgba(24, 24, 24, 0.82); border: 1px solid #262626;
-    border-radius: 8px; color: #BFBFBF; font: inherit; font-size: 0.85rem;
-    padding: 0.5rem 0.8rem; text-align: center; text-transform: uppercase;
-    letter-spacing: 0.1em;
-  }
-  .target input:focus { outline: none; border-color: hsl(270 95% 60%); color: #FAFAFA; }
-  body.solved .target { display: none; }
 
   .slots {
     display: flex;
@@ -187,12 +172,6 @@
   <h1>The Final Word</h1>
   <p class="sub">Nine challenges. One letter each. Nobody finishes this alone.</p>
 
-  <div class="target">
-    <label for="target">Target word</label>
-    <input id="target" type="text" autocomplete="off" spellcheck="false"
-           placeholder="type the word the room is working towards">
-  </div>
-
   <div class="slots" id="slots"></div>
   <div class="count" id="count"></div>
   <div class="status" id="status"></div>
@@ -202,18 +181,18 @@
 
 <script>
 (function () {
-  // Deliberately not hardcoded: this file lives in a public repository. The
-  // word comes from the URL fragment (#YOURWORD) or the target field, and must
-  // match SECRET_WORD in the site's environment.
-  var WORD = (window.location.hash || '').replace('#', '').toUpperCase()
+  // Must match SECRET_WORD in the site's environment. A #WORD fragment in the
+  // URL overrides it, for running a different word without editing this file.
+  var DEFAULT_WORD = 'CHAMELEON';
+  var fromHash = (window.location.hash || '').replace('#', '').toUpperCase()
     .replace(/[^A-Z]/g, '');
+  var WORD = fromHash || DEFAULT_WORD;
 
   var slotsEl = document.getElementById('slots');
   var countEl = document.getElementById('count');
   var statusEl = document.getElementById('status');
   var inputs = [];
   var won = false;
-  var targetEl = document.getElementById('target');
 
   /* ------------------------------------------------- matrix rain backdrop */
 
@@ -317,13 +296,6 @@
   }
 
   function refresh() {
-    if (WORD.length === 0) {
-      countEl.textContent = '';
-      statusEl.className = 'status';
-      statusEl.textContent = 'Set the target word above to begin.';
-      return;
-    }
-
     var filled = 0;
 
     inputs.forEach(function (input) {
@@ -439,20 +411,8 @@
     if (inputs.length > 0) inputs[0].focus();
   });
 
-  targetEl.value = WORD;
-
-  targetEl.addEventListener('input', function () {
-    WORD = targetEl.value.toUpperCase().replace(/[^A-Z]/g, '');
-    targetEl.value = WORD;
-    won = false;
-    pieces = [];
-    document.body.classList.remove('solved');
-    buildSlots();
-  });
-
   buildSlots();
   if (inputs.length > 0) inputs[0].focus();
-  else targetEl.focus();
 })();
 </script>
 </body>

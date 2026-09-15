@@ -116,16 +116,49 @@ const styles = `
     font-size: 0.7rem; color: #8A8AA5;
   }
 
-  .feed .b { font-size: 0.95rem; }
+  .layout-feed .b { font-size: 0.95rem; }
 
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 0.8rem; }
-  .grid .item { border: 1px solid #1A1A2C; border-bottom: 1px solid #1A1A2C; padding: 0; }
-  .photo { aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
-           color: rgba(255,255,255,0.25); font-size: 1.6rem; }
-  .grid .caption { padding: 0.5rem 0.6rem 0.7rem; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.7rem;
+  }
 
-  .code .t { font-family: inherit; }
-  .code .s { color: #8A8AA5; }
+  .grid .item {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #1A1A2C;
+    border-radius: 6px;
+    padding: 0;
+    overflow: hidden;
+    transition: border-color 0.15s;
+  }
+
+  .grid .item:hover { border-color: #33334E; }
+
+  .photo {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.22);
+    font-size: 1.5rem;
+  }
+
+  .grid .caption {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.3rem;
+    padding: 0.55rem 0.6rem 0.65rem;
+  }
+
+  .grid .caption .b { margin-top: 0; font-size: 0.78rem; line-height: 1.4; }
+  .grid .caption .chip { margin-top: 0; font-size: 0.66rem; }
+  .grid .caption .m { font-size: 0.66rem; }
+
+  .layout-code .t { font-family: inherit; }
+  .layout-code .s { color: #8A8AA5; }
 
   form {
     border: 1px solid #1E1E3A;
@@ -307,7 +340,11 @@ function page(): string {
     siteEl.appendChild(head);
 
     platform.sections.forEach(function (section) {
-      var wrapper = el('div', 'section ' + platform.layout);
+      // Namespaced so a layout name can never collide with a utility class.
+      // This used to be the bare layout name, which meant PixelGram's section
+      // got class "section grid" and became a grid container itself, pushing
+      // the heading and the tiles into separate columns.
+      var wrapper = el('div', 'section layout-' + platform.layout);
       wrapper.appendChild(el('div', 'heading', section.heading));
 
       var list = el('div', platform.layout === 'grid' ? 'grid' : '');
