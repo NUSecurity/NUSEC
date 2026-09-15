@@ -6,6 +6,7 @@ import NotFound from "./pages/NotFound";
 import MeetingPage from "./pages/ctf/MeetingPage";
 import ChallengePage from "./pages/ctf/ChallengePage";
 import PcapAnalyzer from "./pages/tools/PcapAnalyzer";
+import CipherBench from "./pages/tools/CipherBench";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,7 @@ const App = () => (
             by any meeting that needs it.
           */}
           <Route path="/tools/pcap" element={<PcapAnalyzer />} />
+          <Route path="/tools/cipher" element={<CipherBench />} />
 
           <Route path="*" element={<NotFound />} />
         </Routes>

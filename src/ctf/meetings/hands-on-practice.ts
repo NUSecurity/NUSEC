@@ -128,9 +128,16 @@ const handsOnPractice: Meeting = {
       slug: "obscure-encryption",
       title: "Obscure Encryption",
       category: "cryptography",
-      brief: "While trying to intercept a flag, we got this useless gibberish.",
-      content:
-        "NEUgNTUgNTMgNDUgNDMgN0IgNkMgNjEgNzkgMzMgNzIgNUYgNjIgNzkgNUYgNkMgNDAgNzkgNjUgNzIgN0Q=",
+      brief:
+        "We intercepted a flag on its way somewhere, but it has been wrapped several times over. Peel it back one layer at a time — the bench linked below will do the work, you just have to get the order right.",
+      content: "N0QzMzczMzQ2MTVGNkMzMzY1MzQ3MjdCNDE1OTRCNDk1MA==",
+      assets: [
+        {
+          label: "Open the cipher bench",
+          href: "/tools/cipher",
+          kind: "link",
+        },
+      ],
     },
   ],
 };

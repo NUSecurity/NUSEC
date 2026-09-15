@@ -22,9 +22,9 @@ export const FLAGS = {
   "hands-on-practice/open-bucket": ["NUSEC{buck3ts_sh0uld_n0t_b3_publ1c}"],
   // Handed out by api/smartLock.ts for the datasheet's factory installer code.
   "hands-on-practice/smart-lock": ["NUSEC{d3f4ult_cr3d5_sh1p_w1th_th3_d0cs}"],
-  // Encoded in the challenge's `content` in src/ctf/meetings/hands-on-practice.ts
-  // (base64 of hex) — rotate together.
-  "hands-on-practice/obscure-encryption": ["NUSEC{lay3r_by_l@yer}"],
+  // Encoded in the challenge's `content` in src/ctf/meetings/hands-on-practice.ts.
+  // Unwraps as: From Base64, From Hex, Caesar -3, Atbash, Reverse.
+  "hands-on-practice/obscure-encryption": ["NUSEC{l4y3r_c4k3}"],
 } satisfies Record<string, string[]>;
 
 export type FlagKey = keyof typeof FLAGS;
