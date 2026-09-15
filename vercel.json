@@ -6,8 +6,36 @@
   "devCommand": "npm run dev",
   "rewrites": [
     {
-      "source": "/ctf/mini-ctf/admin",
+      "source": "/ctf/hands-on-practice/admin",
       "destination": "/api/adminPortal"
+    },
+    {
+      "source": "/ctf/hands-on-practice/image",
+      "destination": "/api/diskImage"
+    },
+    {
+      "source": "/ctf/hands-on-practice/login",
+      "destination": "/api/sqlPortal"
+    },
+    {
+      "source": "/ctf/hands-on-practice/social",
+      "destination": "/api/osintProfiles"
+    },
+    {
+      "source": "/ctf/hands-on-practice/triage",
+      "destination": "/api/triageAssistant"
+    },
+    {
+      "source": "/ctf/hands-on-practice/bucket",
+      "destination": "/api/cloudBucket"
+    },
+    {
+      "source": "/ctf/hands-on-practice/lock",
+      "destination": "/api/smartLock"
+    },
+    {
+      "source": "/ctf/hands-on-practice/lock-datasheet",
+      "destination": "/api/lockDatasheet"
     },
     {
       "source": "/(.*)",

@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { flagFor } from "../lib/flags";
 
-const FLAG = flagFor("mini-ctf/admin-authentication");
+const FLAG = flagFor("hands-on-practice/admin-authentication");
 
 /** Reads one cookie out of the request's Cookie header. */
 function readCookie(header: string | undefined, name: string) {

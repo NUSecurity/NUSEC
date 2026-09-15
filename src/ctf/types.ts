@@ -3,20 +3,28 @@ export const FLAG_FORMAT = "NUSEC{...}";
 /** Groups challenges under a heading on the meeting menu. */
 export type ChallengeCategory =
   | "web"
+  | "appsec"
   | "forensics"
   | "network"
   | "cryptography"
   | "osint"
+  | "ai"
+  | "cloud"
+  | "embedded"
   | "reversing"
   | "misc";
 
 /** Heading text for each category, shown only on the menu page. */
 export const categoryLabels: Record<ChallengeCategory, string> = {
   web: "Web",
+  appsec: "App Security",
   forensics: "Forensics",
   network: "Network",
   cryptography: "Cryptography",
-  osint: "OSINT",
+  osint: "OSINT / OPSEC",
+  ai: "AI Security",
+  cloud: "Cloud Security",
+  embedded: "Embedded / Hardware",
   reversing: "Reversing",
   misc: "Misc",
 };

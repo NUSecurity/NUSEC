@@ -1,7 +1,7 @@
 import { Challenge, Meeting } from "@/ctf/types";
-import miniCtf from "./mini-ctf";
+import handsOnPractice from "./hands-on-practice";
 
-export const meetings: Meeting[] = [miniCtf];
+export const meetings: Meeting[] = [handsOnPractice];
 
 export function getMeeting(slug: string | undefined): Meeting | undefined {
   return meetings.find((meeting) => meeting.slug === slug);
