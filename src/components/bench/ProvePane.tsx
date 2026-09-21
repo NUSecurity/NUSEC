@@ -2,7 +2,6 @@ import { getArtifact, proveTiles } from "@/bench";
 import { runChecks } from "@/bench/checks";
 import {
   BenchState,
-  Tier,
   tierExamples,
   tierLabels,
   windowTypeLabels,
@@ -43,26 +42,6 @@ const ProvePane = ({
         ready: Boolean(state.prove),
       }}
     >
-      {/*
-        Tier 0 gets named and then excluded. This is the distinction most
-        students haven't heard before, and it's what keeps Project and Prove
-        from collapsing into each other.
-      */}
-      <div className="rounded-md border border-border/60 bg-secondary/30 px-3 py-2.5">
-        <p className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-          Tier 0 — {tierLabels[0 as Tier]}
-        </p>
-        <p className="mt-1 max-w-2xl text-xs leading-relaxed text-muted-foreground">
-          {tierExamples[0 as Tier]}.{" "}
-          <strong className="text-foreground/90">
-            None of that counts as proof
-          </strong>{" "}
-          — it's the thing your project already made. This step is about taking
-          that thing somewhere it could be turned down, so there's nothing below
-          Tier 1 to pick.
-        </p>
-      </div>
-
       <div className="grid gap-5 lg:grid-cols-3">
         {tiers.map((tier) => (
           <TileGroup
@@ -76,8 +55,8 @@ const ProvePane = ({
             {proveTiles
               .filter((tile) => tile.tier === tier)
               .map((tile) => {
-                // Does this gate take what the project makes? Advisory only,
-                // but better surfaced while choosing than afterwards.
+                // Does this gate take what the project makes? Marked, not
+                // enforced — a cert that consumes nothing is a fine choice.
                 const joins =
                   state.artifact &&
                   tile.consumes_artifacts.includes(state.artifact);
@@ -87,7 +66,7 @@ const ProvePane = ({
                     key={tile.id}
                     tile={tile}
                     selected={state.prove === tile.id}
-                    compatible={!state.artifact || Boolean(joins)}
+                    common={Boolean(joins)}
                     open={open === tile.id}
                     onSelect={() =>
                       onChange({

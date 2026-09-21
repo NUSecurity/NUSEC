@@ -181,7 +181,7 @@ const domains: Domain[] = [
         url: "https://linuxjourney.com/",
         type: "hands-on",
         note: "Short free lessons with checks. Good for filling specific gaps rather than reading front to back.",
-        last_verified: null,
+        last_verified: V_2026_09,
       },
       {
         title: "Linux Upskill Challenge",
@@ -745,13 +745,6 @@ const domains: Domain[] = [
         type: "hands-on",
         note: "Spin up a real multi-node network topology from one YAML file. The quickest way to build something you can then segment and test.",
         last_verified: V_2026_09,
-      },
-      {
-        title: "GNS3",
-        url: "https://www.gns3.com/",
-        type: "hands-on",
-        note: "Build and break a real network topology in software. The practical way to prove segmentation holds.",
-        last_verified: null,
       },
       {
         title: "Wireshark documentation",

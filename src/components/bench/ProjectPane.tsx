@@ -1,9 +1,5 @@
-import { getKit, kits } from "@/bench";
-import {
-  availableArtifacts,
-  availablePatterns,
-  availableTargets,
-} from "@/bench/compose";
+import { artifacts, getKit, getPattern, getTarget, kits, patterns, targets } from "@/bench";
+import { commonArtifacts, commonPatterns, commonTargets } from "@/bench/compose";
 import { runChecks } from "@/bench/checks";
 import {
   BenchState,
@@ -15,8 +11,8 @@ import {
 } from "@/bench/types";
 import ChecksList from "@/components/bench/ChecksList";
 import Panel, { TileGroup } from "@/components/bench/Panel";
+import ResourceList from "@/components/bench/ResourceList";
 import TileRow from "@/components/bench/TileRow";
-import { getTarget } from "@/bench";
 import { cn } from "@/lib/utils";
 
 interface ProjectPaneProps {
@@ -30,10 +26,13 @@ interface ProjectPaneProps {
 /**
  * Pattern × Target × Artifact, as three columns.
  *
- * Patterns declare which target classes they accept, so picking a pattern
- * narrows the targets to combinations that mean something. Nothing is hidden —
- * incompatible tiles dim but stay readable and clickable, because seeing that
- * "tear down" doesn't apply to a web app is itself the lesson.
+ * Every combination is selectable. Picking a pattern marks the targets and
+ * artifacts it's most often paired with, and that's the whole of it — the
+ * unusual pairings are frequently the interesting ones, and the tool has no
+ * business ruling them out.
+ *
+ * Targets are ordered software first. That's not a claim about what matters;
+ * it's a claim about what this room turns up wanting to do.
  */
 const ProjectPane = ({
   state,
@@ -42,10 +41,11 @@ const ProjectPane = ({
   onChange,
   onNext,
 }: ProjectPaneProps) => {
-  const legalPatterns = new Set(availablePatterns(state).map((p) => p.id));
-  const legalTargets = new Set(availableTargets(state).map((t) => t.id));
-  const legalArtifacts = new Set(availableArtifacts(state).map((a) => a.id));
+  const usualPatterns = new Set(commonPatterns(state).map((p) => p.id));
+  const usualTargets = new Set(commonTargets(state).map((t) => t.id));
+  const usualArtifacts = new Set(commonArtifacts(state).map((a) => a.id));
 
+  const pattern = state.pattern ? getPattern(state.pattern) : null;
   const target = state.target ? getTarget(state.target) : null;
   const needsAttestation =
     target && !selfSatisfiable.includes(target.authorization);
@@ -86,22 +86,26 @@ const ProjectPane = ({
         <TileGroup
           label="Pattern"
           hint="What you'd do."
-          count={`${availablePatterns({}).length} options`}
+          count={`${patterns.length} to choose from`}
         >
-          {availablePatterns({}).map((pattern) => (
+          {patterns.map((tile) => (
             <TileRow
-              key={pattern.id}
-              tile={pattern}
-              selected={state.pattern === pattern.id}
-              compatible={legalPatterns.has(pattern.id)}
-              open={open === pattern.id}
-              onSelect={() =>
-                onChange({
-                  pattern: state.pattern === pattern.id ? null : pattern.id,
-                })
+              key={tile.id}
+              tile={tile}
+              selected={state.pattern === tile.id}
+              common={
+                (Boolean(state.target) || Boolean(state.artifact)) &&
+                usualPatterns.has(tile.id)
               }
-              onToggleBrief={() => onToggleBrief(pattern.id)}
-              meta={pattern.accepts.map((c) => targetClassLabels[c]).join(" · ")}
+              open={open === tile.id}
+              onSelect={() =>
+                onChange({ pattern: state.pattern === tile.id ? null : tile.id })
+              }
+              onToggleBrief={() => onToggleBrief(tile.id)}
+              meta={`Often applied to ${tile.accepts
+                .slice(0, 3)
+                .map((c) => targetClassLabels[c].toLowerCase())
+                .join(", ")}`}
             />
           ))}
         </TileGroup>
@@ -109,18 +113,14 @@ const ProjectPane = ({
         <TileGroup
           label="Target"
           hint="What you'd do it to."
-          count={
-            state.pattern
-              ? `${legalTargets.size} fit this pattern`
-              : `${availableTargets({}).length} options`
-          }
+          count={`${targets.length} to choose from`}
         >
-          {availableTargets({}).map((tile) => (
+          {targets.map((tile) => (
             <TileRow
               key={tile.id}
               tile={tile}
               selected={state.target === tile.id}
-              compatible={legalTargets.has(tile.id)}
+              common={Boolean(state.pattern) && usualTargets.has(tile.id)}
               open={open === tile.id}
               onSelect={() =>
                 onChange({ target: state.target === tile.id ? null : tile.id })
@@ -139,7 +139,7 @@ const ProjectPane = ({
               </p>
               <p>
                 <span className="font-semibold uppercase tracking-[0.15em] text-muted-foreground">
-                  Watch out for
+                  Common pitfalls
                 </span>
                 <span className="mt-0.5 block text-foreground/90">
                   {tile.gotchas}
@@ -163,26 +163,22 @@ const ProjectPane = ({
 
         <TileGroup
           label="Artifact"
-          hint="What you'll have when you're done."
-          count={
-            state.pattern
-              ? `${legalArtifacts.size} fit this pattern`
-              : `${availableArtifacts({}).length} options`
-          }
+          hint="What you'll have when you're done. Any project can end in any of these — a teardown can just as well produce a repo."
+          count="Any of these, with any project"
         >
-          {availableArtifacts({}).map((artifact) => (
+          {artifacts.map((tile) => (
             <TileRow
-              key={artifact.id}
-              tile={artifact}
-              selected={state.artifact === artifact.id}
-              compatible={legalArtifacts.has(artifact.id)}
-              open={open === artifact.id}
+              key={tile.id}
+              tile={tile}
+              selected={state.artifact === tile.id}
+              common={Boolean(state.pattern) && usualArtifacts.has(tile.id)}
+              open={open === tile.id}
               onSelect={() =>
                 onChange({
-                  artifact: state.artifact === artifact.id ? null : artifact.id,
+                  artifact: state.artifact === tile.id ? null : tile.id,
                 })
               }
-              onToggleBrief={() => onToggleBrief(artifact.id)}
+              onToggleBrief={() => onToggleBrief(tile.id)}
             />
           ))}
         </TileGroup>
@@ -246,6 +242,19 @@ const ProjectPane = ({
           })}
         </div>
       </div>
+
+      {pattern && (
+        <div className="rounded-lg border border-border bg-card/40 p-4">
+          <h3 className="mb-1 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-foreground/80">
+            {pattern.name} — how to actually do this
+          </h3>
+          <p className="mb-3 max-w-2xl text-xs leading-relaxed text-muted-foreground">
+            The tools and reading for this pattern specifically. Whatever target
+            you point it at, these are the same.
+          </p>
+          <ResourceList resources={pattern.resources} />
+        </div>
+      )}
 
       {checks.length > 0 && <ChecksList checks={checks} />}
     </Panel>

@@ -31,13 +31,10 @@ Realistically a couple of hours a semester, plus PR review as it arrives. The ve
 - **Adding university systems as targets.** They're excluded by policy, not by oversight. Changing that is an e-board conversation, not a merge.
 - **Removing the Tier-0 exclusion.** The gatekeeper ladder is the tool's main argument; Tier 0 not counting as proof is the load-bearing part of it.
 
-## Club-run gates
+## Club-run gates — not yet, deliberately
 
-Two Tier-1 and Tier-2 gates in the tool are ones NUSEC operates, and they only stay real if someone runs them:
+The architecture spec had NUSEC operating two of its own gates: a club blog with genuine editorial review, and lightning talk slots that are *selected* rather than first-come. Both were in an earlier build of the tool and both have been removed, because neither exists and a tool that lists a gate the club doesn't actually run is lying to the room.
 
-- **`PRV-CLUBBLOG`** — the NUSEC blog, *with genuine editorial review*. A post nobody could have rejected is Tier 0. The edit round is what makes it proof.
-- **`PRV-LIGHTNING`** — lightning talk slots that are **selected, not first-come**. The selection is the gate.
+They remain good ideas. A club that runs its own reviewed blog can manufacture Tier-1 proof for its members that doesn't otherwise exist anywhere, and that is the strongest argument for NUSEC owning this rather than pointing at a generic careers site.
 
-These are the strongest argument for NUSEC owning this rather than it being a generic careers site: the club can manufacture proof opportunities for its members that don't otherwise exist. If nobody runs them, two tiles in the tool become false.
-
-Whether the maintainer runs these or hands them to whoever owns comms and meetings is a club call — but someone has to own them, and it should be written down next to this.
+**If the club starts running either, add the tile back.** The bar is the same one every other gate on the list meets: someone with the standing to say no has to be genuinely able to say it. A blog that publishes whatever is submitted is Tier 0, and a lightning slot given to whoever raises a hand first is not a selection.

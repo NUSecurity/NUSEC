@@ -14,7 +14,7 @@ import { BenchState, Rung, rungOrder } from "@/bench/types";
  * infrastructure changing hands. A student can paste theirs into Slack or a
  * co-op application and it still resolves years later.
  *
- *   ?p=PAT-TEARDOWN.TGT-IPCAM.ART-WRITEUP&s=SKL-HW-UART:recognize:use&v=PRV-CLUBBLOG
+ *   ?p=PAT-BREAK.TGT-VULNWEB.ART-WRITEUP&s=SKL-OFFSEC-WEB:recognize:use&v=PRV-CTFWRITEUP
  *
  * Architecture v2 writes the skill parameter as `SKL-HW-UART:use`. We accept
  * that form and read the rung below as the starting point, but we write the

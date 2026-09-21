@@ -159,26 +159,3 @@ export function runChecks(state: BenchState): CheckResult[] {
 /** A bench with an unsatisfied hard block can't be shared or printed. */
 export const isBlocked = (results: CheckResult[]) =>
   results.some((result) => result.severity === "block");
-
-/* ------------------------------------------------------------------ *
- * The closing sentence
- * ------------------------------------------------------------------ */
-
-/**
- * One generated line at the end of a completed bench, naming whether the three
- * fields are one effort or several. This is where the disconnected bench gets
- * caught — not by a block, but by being said out loud.
- */
-export function closingSentence(state: BenchState): string | null {
-  if (!state.artifact || !state.prove) return null;
-
-  const artifact = getArtifact(state.artifact);
-  const prove = getProve(state.prove);
-  const connected = prove.consumes_artifacts.includes(state.artifact);
-
-  if (connected) {
-    return `Your project produces ${artifact.phrase}. Your proof consumes ${artifact.phrase}. Those connect.`;
-  }
-
-  return `Your project produces ${artifact.phrase}. Your proof is ${prove.name.toLowerCase()}. Those don't connect — allowed, but you're running two efforts, not one. Know that going in.`;
-}

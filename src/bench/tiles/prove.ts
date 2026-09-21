@@ -13,18 +13,17 @@ import { V_2026_09 } from "./verified";
  * what the Project field already produces; Prove takes that artifact through a
  * gate that could have rejected it.
  *
- * Note on count: architecture v2 says 24 prove tiles in two places but
- * enumerates 25. All 25 are here — dropping one would have meant inventing a
- * decision the spec didn't make.
+ * Every gate here is one that exists today and that a student can go and find.
+ * The spec had NUSEC running its own blog review and selecting lightning talk
+ * slots; both are good ideas and neither exists yet, and a tool that lists a
+ * gate the club does not actually operate is lying to the room. If the club
+ * starts running them, they belong back in here.
  *
  * Costs are the right order of magnitude as of the last review, not quotes.
  * Vendors reprice; check before budgeting. Refreshing these before each
  * semester's registration season is part of the maintainer role.
  */
 const proveTiles: ProveTile[] = [
-  /* ---------------------------------------------------------------- *
-   * Tier 1 — community review
-   * ---------------------------------------------------------------- */
   {
     id: "PRV-PR",
     name: "Merged PR to a project you don't own",
@@ -81,29 +80,6 @@ const proveTiles: ProveTile[] = [
       "A report with no reproduction, no version, and no environment. Those get closed unread, and reasonably so.",
   },
   {
-    id: "PRV-CLUBBLOG",
-    name: "Post on the NUSEC blog, through editorial review",
-    tier: 1,
-    brief:
-      "A post the club published after an editor read it and asked for changes. A gate NUSEC runs itself — which means the club can manufacture this opportunity for its members rather than everyone waiting on outside venues.",
-    gatekeeper: "The NUSEC editor, who sends drafts back",
-    consumes_artifacts: [
-      "ART-WRITEUP",
-      "ART-REPO",
-      "ART-DATASET",
-      "ART-THREATMODEL",
-      "ART-REFBUILD",
-    ],
-    window: { type: "club-run", note: "Rolling, run by NUSEC." },
-    lead_time: "2–4 weeks including one round of edits",
-    lead_time_months: 1,
-    cost: "Free",
-    first_move:
-      "Send the editor a two-sentence pitch of what you did. Do not wait until the draft is finished.",
-    failure_mode:
-      "Treating the edit round as an insult. Editorial review is exactly what makes this Tier 1 rather than Tier 0 — a post nobody could reject is your own blog.",
-  },
-  {
     id: "PRV-CTFWRITEUP",
     name: "Writeup published on a team's blog",
     tier: 1,
@@ -129,6 +105,30 @@ const proveTiles: ProveTile[] = [
       "Take notes during the CTF, not after. Reconstructing a solve from memory on Tuesday is how writeups die.",
     failure_mode:
       "Writing only the solution. The interesting part is the wrong turn you took and how you noticed — that's what distinguishes your writeup from the other eleven.",
+  },
+  {
+    id: "PRV-REVIEWEDPOST",
+    name: "Post published somewhere with an editor",
+    tier: 1,
+    brief:
+      "A writeup that someone else chose to publish under their name — a security publication, a company engineering blog, a university outlet, an established community site. The editing round is what separates this from posting it yourself.",
+    gatekeeper:
+      "An editor who rejects submissions and sends the rest back for changes",
+    consumes_artifacts: [
+      "ART-WRITEUP",
+      "ART-REPO",
+      "ART-DATASET",
+      "ART-THREATMODEL",
+      "ART-REFBUILD",
+    ],
+    window: { type: "rolling", note: "Open whenever you have something finished." },
+    lead_time: "2–6 weeks including a round of edits",
+    lead_time_months: 1,
+    cost: "Free",
+    first_move:
+      "Find three places that publish the kind of thing you did and read their submission page. Pitch in two sentences — don't wait until the draft is perfect.",
+    failure_mode:
+      "Taking the edit round personally. Being sent back for changes is exactly what makes this count for more than your own blog.",
   },
   {
     id: "PRV-TEACH",
@@ -189,10 +189,127 @@ const proveTiles: ProveTile[] = [
     failure_mode:
       "Rewriting docs to your taste without asking. Open an issue describing the gap first — unrequested rewrites get closed.",
   },
-
-  /* ---------------------------------------------------------------- *
-   * Tier 2 — competitive selection
-   * ---------------------------------------------------------------- */
+  {
+    id: "PRV-NCL",
+    name: "National Cyber League placement",
+    tier: 2,
+    brief:
+      "A placement in NCL's individual or team game. Everyone gets a scored, ranked result against thousands of other students — the scouting report is a genuinely portable piece of evidence.",
+    gatekeeper: "The scoreboard, and every other competitor on it",
+    consumes_artifacts: ["ART-WRITEUP"],
+    window: {
+      type: "seasonal",
+      note: "Runs each spring and fall. Registration closes before the preseason — miss it and you wait a semester.",
+    },
+    lead_time: "1–3 months including the season",
+    lead_time_months: 2,
+    cost: "A registration fee, sometimes covered by the club or department",
+    links: [
+      {
+        title: "National Cyber League",
+        url: "https://nationalcyberleague.org/",
+        last_verified: V_2026_09,
+      },
+    ],
+    first_move:
+      "Find this season's registration deadline and put it in your calendar today. That date is the binding constraint.",
+    failure_mode:
+      "Missing registration. The competition is months long; the window to sign up is short and early.",
+  },
+  {
+    id: "PRV-MEETUP",
+    name: "Talk accepted at a local security meetup",
+    tier: 2,
+    brief:
+      "A slot at a local meetup — an OWASP chapter, a DEF CON group, a regional security group. Organizers turn people down, rooms are small and friendly, and it's the most reachable speaking gate there is.",
+    gatekeeper:
+      "Meetup organizers, who have more people wanting slots than they have evenings",
+    consumes_artifacts: [
+      "ART-WRITEUP",
+      "ART-TOOL",
+      "ART-REPO",
+      "ART-DATASET",
+      "ART-VIDEO",
+      "ART-TEACHING",
+    ],
+    window: {
+      type: "recurring-cfp",
+      note: "Most run monthly and fill their schedule a month or two ahead. Just email the organizer.",
+    },
+    lead_time: "1–2 months from asking to speaking",
+    lead_time_months: 2,
+    cost: "Free",
+    first_move:
+      "Find the nearest OWASP chapter or security meetup and go to one as an attendee first. Ask the organizer afterwards what they're short of.",
+    failure_mode:
+      "Waiting until you have something impressive. Meetups want a fifteen-minute talk about a thing you actually did, not a keynote.",
+    links: [
+      {
+        title: "OWASP chapters",
+        url: "https://owasp.org/chapters/",
+        last_verified: V_2026_09,
+      },
+      {
+        title: "Cybersecurity groups on Meetup",
+        url: "https://www.meetup.com/topics/cybersecurity/",
+        last_verified: V_2026_09,
+      },
+    ],
+  },
+  {
+    id: "PRV-CPTC",
+    name: "Selected for the CPTC roster",
+    tier: 2,
+    brief:
+      "A place on the Collegiate Penetration Testing Competition team. CPTC is the offensive competition that judges the report as much as the access — closer to consulting work than anything else at this level.",
+    gatekeeper: "Team leadership, choosing a roster from more people than fit",
+    consumes_artifacts: ["ART-WRITEUP", "ART-TOOL"],
+    window: {
+      type: "annual",
+      note: "Regional qualifiers run in the fall; roster selection happens before them.",
+    },
+    lead_time: "3–6 months from tryout to competition",
+    lead_time_months: 4,
+    cost: "Free to compete; travel for regionals and beyond",
+    links: [
+      {
+        title: "Collegiate Penetration Testing Competition",
+        url: "https://cptc.io/",
+        last_verified: null,
+      },
+    ],
+    first_move:
+      "Find out who runs the team this year and when tryouts are. Ask at a meeting.",
+    failure_mode:
+      "Preparing only technique. CPTC scores the report and the client briefing heavily — practise writing findings, not just getting shells.",
+  },
+  {
+    id: "PRV-CCDC",
+    name: "Selected for the NUCCDC roster",
+    tier: 2,
+    brief:
+      "A place on Northeastern's Collegiate Cyber Defense Competition team. Defense under live attack with business tasks piling up — the only competition that teaches what it's like to be the person who has to keep the service running.",
+    gatekeeper: "Team captains and coaches, cutting to a fixed roster size",
+    consumes_artifacts: ["ART-REFBUILD", "ART-WRITEUP"],
+    window: {
+      type: "annual",
+      note: "Regional qualifiers run in the spring; roster selection and practice start in the fall.",
+    },
+    lead_time: "4–6 months of practice before qualifiers",
+    lead_time_months: 5,
+    cost: "Free to compete; travel if you advance",
+    links: [
+      {
+        title: "National CCDC",
+        url: "https://www.nationalccdc.org/",
+        last_verified: null,
+      },
+    ],
+    first_move:
+      "Show up to a practice in the fall. Rosters come out of who has been practising, not who applied.",
+    failure_mode:
+      "Turning up in spring expecting to try out. Selection follows months of attendance.",
+  },
   {
     id: "PRV-BSIDES",
     name: "Talk accepted at a regional BSides",
@@ -225,162 +342,6 @@ const proveTiles: ProveTile[] = [
       "Find three chapters with open CFPs. Read their past talk lists before you write a word of the submission.",
     failure_mode:
       "Waiting until you have something 'worth' talking about. Submit the thing you already did.",
-  },
-  {
-    id: "PRV-VILLAGE",
-    name: "Conference village staff or workshop slot",
-    tier: 2,
-    brief:
-      "Selected to run a workshop or staff a village at a conference. Lower profile than a main-stage talk and often more useful — you spend the weekend teaching people directly.",
-    gatekeeper: "Village organizers, who take far fewer people than apply",
-    consumes_artifacts: ["ART-TEACHING", "ART-TOOL", "ART-REPO"],
-    window: {
-      type: "recurring-cfp",
-      note: "Villages run their own calls, usually a few months before the conference and separately from the main CFP.",
-    },
-    lead_time: "2–5 months",
-    lead_time_months: 4,
-    cost: "Travel, sometimes offset for staff",
-    links: [
-      {
-        title: "DEF CON — villages and calls",
-        url: "https://defcon.org/",
-        last_verified: V_2026_09,
-      },
-    ],
-    first_move:
-      "Pick the village matching what you already do and find who runs it. Most publish a call or an email address.",
-    failure_mode:
-      "Applying to the biggest village at the biggest conference first. Smaller regional villages take newcomers and teach you more.",
-  },
-  {
-    id: "PRV-LIGHTNING",
-    name: "NUSEC lightning talk, selected not volunteered",
-    tier: 2,
-    brief:
-      "A five-minute talk at a club meeting, where slots are chosen from submissions rather than filled by whoever raises a hand. The selection is what makes this Tier 2 — and it's a gate NUSEC controls.",
-    gatekeeper:
-      "Whoever runs the selection, choosing among more submissions than slots",
-    consumes_artifacts: ["ART-WRITEUP", "ART-TOOL", "ART-REPO", "ART-VIDEO"],
-    window: {
-      type: "club-run",
-      note: "Each semester, announced at the start of term.",
-    },
-    lead_time: "2–6 weeks",
-    lead_time_months: 1,
-    cost: "Free",
-    first_move:
-      "Submit the project you already finished. Five minutes needs one point, not a survey.",
-    failure_mode:
-      "Preparing fifteen minutes of material for a five-minute slot. Cut to one finding and one slide.",
-  },
-  {
-    id: "PRV-NCL",
-    name: "National Cyber League placement",
-    tier: 2,
-    brief:
-      "A placement in NCL's individual or team game. Everyone gets a scored, ranked result against thousands of other students — the scouting report is a genuinely portable piece of evidence.",
-    gatekeeper: "The scoreboard, and every other competitor on it",
-    consumes_artifacts: ["ART-WRITEUP"],
-    window: {
-      type: "seasonal",
-      note: "Runs each spring and fall. Registration closes before the preseason — miss it and you wait a semester.",
-    },
-    lead_time: "1–3 months including the season",
-    lead_time_months: 2,
-    cost: "A registration fee, sometimes covered by the club or department",
-    links: [
-      {
-        title: "National Cyber League",
-        url: "https://nationalcyberleague.org/",
-        last_verified: V_2026_09,
-      },
-    ],
-    first_move:
-      "Find this season's registration deadline and put it in your calendar today. That date is the binding constraint.",
-    failure_mode:
-      "Missing registration. The competition is months long; the window to sign up is short and early.",
-  },
-  {
-    id: "PRV-CPTC",
-    name: "Selected for the CPTC roster",
-    tier: 2,
-    brief:
-      "A place on the Collegiate Penetration Testing Competition team. CPTC is the offensive competition that judges the report as much as the access — closer to consulting work than anything else at this level.",
-    gatekeeper: "Team leadership, choosing a roster from more people than fit",
-    consumes_artifacts: ["ART-WRITEUP", "ART-TOOL"],
-    window: {
-      type: "annual",
-      note: "Regional qualifiers run in the fall; roster selection happens before them.",
-    },
-    lead_time: "3–6 months from tryout to competition",
-    lead_time_months: 4,
-    cost: "Free to compete; travel for regionals and beyond",
-    links: [
-      {
-        title: "Collegiate Penetration Testing Competition",
-        url: "https://cptc.io/",
-        last_verified: null,
-      },
-    ],
-    first_move:
-      "Find out who runs the team this year and when tryouts are. Ask at a meeting.",
-    failure_mode:
-      "Preparing only technique. CPTC scores the report and the client briefing heavily — practise writing findings, not just getting shells.",
-  },
-  {
-    id: "PRV-ECTF",
-    name: "Selected for the MITRE eCTF team",
-    tier: 2,
-    brief:
-      "A place on the MITRE Embedded CTF team. Months of designing a secure embedded system and then attacking everyone else's — the closest thing to real product security work available to a student.",
-    gatekeeper: "Team leadership, selecting a roster",
-    consumes_artifacts: ["ART-REPO", "ART-WRITEUP", "ART-TOOL"],
-    window: {
-      type: "annual",
-      note: "Runs roughly January to April. Teams form in the fall, before the competition opens.",
-    },
-    lead_time: "4–6 months including the competition",
-    lead_time_months: 5,
-    cost: "Free; hardware usually supplied",
-    links: [
-      {
-        title: "MITRE Embedded CTF",
-        url: "https://ectf.mitre.org/",
-        last_verified: V_2026_09,
-      },
-    ],
-    first_move:
-      "Ask who is organizing this year's team in the fall — by January it has already started.",
-    failure_mode:
-      "Joining with no embedded experience and no time. This one is a real term-long commitment; do a dev board project first.",
-  },
-  {
-    id: "PRV-CCDC",
-    name: "Selected for the NUCCDC roster",
-    tier: 2,
-    brief:
-      "A place on Northeastern's Collegiate Cyber Defense Competition team. Defense under live attack with business tasks piling up — the only competition that teaches what it's like to be the person who has to keep the service running.",
-    gatekeeper: "Team captains and coaches, cutting to a fixed roster size",
-    consumes_artifacts: ["ART-REFBUILD", "ART-WRITEUP"],
-    window: {
-      type: "annual",
-      note: "Regional qualifiers run in the spring; roster selection and practice start in the fall.",
-    },
-    lead_time: "4–6 months of practice before qualifiers",
-    lead_time_months: 5,
-    cost: "Free to compete; travel if you advance",
-    links: [
-      {
-        title: "National CCDC",
-        url: "https://www.nationalccdc.org/",
-        last_verified: null,
-      },
-    ],
-    first_move:
-      "Show up to a practice in the fall. Rosters come out of who has been practising, not who applied.",
-    failure_mode:
-      "Turning up in spring expecting to try out. Selection follows months of attendance.",
   },
   {
     id: "PRV-POSTER",
@@ -422,10 +383,60 @@ const proveTiles: ProveTile[] = [
     failure_mode:
       "Finding the program two weeks after applications closed. This is entirely a calendar problem — solve it with a calendar.",
   },
-
-  /* ---------------------------------------------------------------- *
-   * Tier 3 — formal credential
-   * ---------------------------------------------------------------- */
+  {
+    id: "PRV-VILLAGE",
+    name: "Conference village staff or workshop slot",
+    tier: 2,
+    brief:
+      "Selected to run a workshop or staff a village at a conference. Lower profile than a main-stage talk and often more useful — you spend the weekend teaching people directly.",
+    gatekeeper: "Village organizers, who take far fewer people than apply",
+    consumes_artifacts: ["ART-TEACHING", "ART-TOOL", "ART-REPO"],
+    window: {
+      type: "recurring-cfp",
+      note: "Villages run their own calls, usually a few months before the conference and separately from the main CFP.",
+    },
+    lead_time: "2–5 months",
+    lead_time_months: 4,
+    cost: "Travel, sometimes offset for staff",
+    links: [
+      {
+        title: "DEF CON — villages and calls",
+        url: "https://defcon.org/",
+        last_verified: V_2026_09,
+      },
+    ],
+    first_move:
+      "Pick the village matching what you already do and find who runs it. Most publish a call or an email address.",
+    failure_mode:
+      "Applying to the biggest village at the biggest conference first. Smaller regional villages take newcomers and teach you more.",
+  },
+  {
+    id: "PRV-ECTF",
+    name: "Selected for the MITRE eCTF team",
+    tier: 2,
+    brief:
+      "A place on the MITRE Embedded CTF team. Months of designing a secure embedded system and then attacking everyone else's — the closest thing to real product security work available to a student.",
+    gatekeeper: "Team leadership, selecting a roster",
+    consumes_artifacts: ["ART-REPO", "ART-WRITEUP", "ART-TOOL"],
+    window: {
+      type: "annual",
+      note: "Runs roughly January to April. Teams form in the fall, before the competition opens.",
+    },
+    lead_time: "4–6 months including the competition",
+    lead_time_months: 5,
+    cost: "Free; hardware usually supplied",
+    links: [
+      {
+        title: "MITRE Embedded CTF",
+        url: "https://ectf.mitre.org/",
+        last_verified: V_2026_09,
+      },
+    ],
+    first_move:
+      "Ask who is organizing this year's team in the fall — by January it has already started.",
+    failure_mode:
+      "Joining with no embedded experience and no time. This one is a real term-long commitment; do a dev board project first.",
+  },
   {
     id: "PRV-SECPLUS",
     name: "Security+",
@@ -478,6 +489,33 @@ const proveTiles: ProveTile[] = [
       "Skipping enumeration practice. The exam punishes an incomplete sweep harder than it punishes not knowing an exploit.",
   },
   {
+    id: "PRV-CLOUDSEC",
+    name: "A cloud provider's security certification",
+    tier: 3,
+    brief:
+      "AWS Security Specialty, Azure AZ-500, or the Google equivalent. Vendor certifications with real weight, priced like a normal exam rather than a SANS course.",
+    gatekeeper: "A proctored vendor exam",
+    consumes_artifacts: [],
+    window: {
+      type: "rolling",
+      note: "Book whenever. Vendors revise exam content regularly — check the current blueprint, not last year's.",
+    },
+    lead_time: "2–4 months",
+    lead_time_months: 3,
+    cost: "Low hundreds; student and free-retake promotions come around",
+    links: [
+      {
+        title: "AWS Certified Security — Specialty",
+        url: "https://aws.amazon.com/certification/certified-security-specialty/",
+        last_verified: V_2026_09,
+      },
+    ],
+    first_move:
+      "Pick the provider you already have an account with and download its current exam guide.",
+    failure_mode:
+      "Studying the exam guide without touching the console. These exams ask scenario questions that punish people who never built anything.",
+  },
+  {
     id: "PRV-OSCP",
     name: "OSCP",
     tier: 3,
@@ -503,6 +541,73 @@ const proveTiles: ProveTile[] = [
       "Before spending anything, do ten easy boxes with no walkthroughs. If that's a grind, build the foundation first — this is a lot of money to spend early.",
     failure_mode:
       "Buying it too early. Also: neglecting the report. People fail on the writeup after passing the machines.",
+  },
+  {
+    id: "PRV-RA",
+    name: "Research assistant position",
+    tier: 3,
+    brief:
+      "A position in a research group, paid or for credit. A faculty member chose to spend their budget or their supervision time on you, which is a serious gate.",
+    gatekeeper:
+      "A faculty member deciding whether to spend funding and time on you",
+    consumes_artifacts: ["ART-REPO", "ART-WRITEUP", "ART-DATASET", "ART-TOOL"],
+    window: {
+      type: "seasonal",
+      note: "Informal and continuous, but hiring clusters before each semester and before summer.",
+    },
+    lead_time: "1–4 months from first email to starting",
+    lead_time_months: 3,
+    cost: "Free; often paid",
+    first_move:
+      "Read one recent paper from a group you're interested in and email the author one specific question about it.",
+    failure_mode:
+      "A mass email saying you're interested in research. Specificity about their actual work is the entire difference between a reply and silence.",
+  },
+  {
+    id: "PRV-COOP",
+    name: "Co-op or internship offer in security",
+    tier: 3,
+    brief:
+      "An offer to be paid to do this work. The gate everything else on this list is partly in service of — and the one where the bench you built is the thing you talk about in the interview.",
+    gatekeeper: "A hiring manager with a limited number of seats",
+    consumes_artifacts: [
+      "ART-REPO",
+      "ART-WRITEUP",
+      "ART-TOOL",
+      "ART-DISCLOSURE",
+      "ART-DATASET",
+    ],
+    window: {
+      type: "seasonal",
+      note: "Cycles run well ahead of the work term — searching starts a semester or more before you'd start.",
+    },
+    lead_time: "3–6 months from applying to an offer",
+    lead_time_months: 4,
+    cost: "Free",
+    first_move:
+      "Write the two-sentence version of your current project. You'll say it in every conversation from here on.",
+    failure_mode:
+      "Applying with nothing to point at. The projects on this bench are the interview; do one before the cycle rather than during it.",
+  },
+  {
+    id: "PRV-PAPER",
+    name: "Paper submitted to a venue with review",
+    tier: 3,
+    brief:
+      "A paper submitted somewhere with real peer review — a workshop, a student track, a conference. Submission is the bench item; acceptance is a bonus you don't control.",
+    gatekeeper: "Peer reviewers who reject most of what they read",
+    consumes_artifacts: ["ART-DATASET", "ART-WRITEUP", "ART-TOOL"],
+    window: {
+      type: "recurring-cfp",
+      note: "Hard deadlines, published a long way ahead, and they do not move.",
+    },
+    lead_time: "3–9 months to write and submit",
+    lead_time_months: 6,
+    cost: "Free to submit; some venues charge on acceptance",
+    first_move:
+      "Find a workshop or student track with a deadline four or more months out and write the abstract this week.",
+    failure_mode:
+      "Aiming at a top-tier conference for a first paper. Workshops and student tracks exist for exactly this and review just as genuinely.",
   },
   {
     id: "PRV-GCIH",
@@ -557,100 +662,6 @@ const proveTiles: ProveTile[] = [
       "Do the free and cheap DFIR practice first and confirm you want this specialization before anyone spends this much.",
     failure_mode:
       "Certifying before you've done the work. A GCFA with no case experience reads as a purchase rather than an achievement.",
-  },
-  {
-    id: "PRV-CLOUDSEC",
-    name: "A cloud provider's security certification",
-    tier: 3,
-    brief:
-      "AWS Security Specialty, Azure AZ-500, or the Google equivalent. Vendor certifications with real weight, priced like a normal exam rather than a SANS course.",
-    gatekeeper: "A proctored vendor exam",
-    consumes_artifacts: [],
-    window: {
-      type: "rolling",
-      note: "Book whenever. Vendors revise exam content regularly — check the current blueprint, not last year's.",
-    },
-    lead_time: "2–4 months",
-    lead_time_months: 3,
-    cost: "Low hundreds; student and free-retake promotions come around",
-    links: [
-      {
-        title: "AWS Certified Security — Specialty",
-        url: "https://aws.amazon.com/certification/certified-security-specialty/",
-        last_verified: V_2026_09,
-      },
-    ],
-    first_move:
-      "Pick the provider you already have an account with and download its current exam guide.",
-    failure_mode:
-      "Studying the exam guide without touching the console. These exams ask scenario questions that punish people who never built anything.",
-  },
-  {
-    id: "PRV-RA",
-    name: "Research assistant position",
-    tier: 3,
-    brief:
-      "A position in a research group, paid or for credit. A faculty member chose to spend their budget or their supervision time on you, which is a serious gate.",
-    gatekeeper:
-      "A faculty member deciding whether to spend funding and time on you",
-    consumes_artifacts: ["ART-REPO", "ART-WRITEUP", "ART-DATASET", "ART-TOOL"],
-    window: {
-      type: "seasonal",
-      note: "Informal and continuous, but hiring clusters before each semester and before summer.",
-    },
-    lead_time: "1–4 months from first email to starting",
-    lead_time_months: 3,
-    cost: "Free; often paid",
-    first_move:
-      "Read one recent paper from a group you're interested in and email the author one specific question about it.",
-    failure_mode:
-      "A mass email saying you're interested in research. Specificity about their actual work is the entire difference between a reply and silence.",
-  },
-  {
-    id: "PRV-PAPER",
-    name: "Paper submitted to a venue with review",
-    tier: 3,
-    brief:
-      "A paper submitted somewhere with real peer review — a workshop, a student track, a conference. Submission is the bench item; acceptance is a bonus you don't control.",
-    gatekeeper: "Peer reviewers who reject most of what they read",
-    consumes_artifacts: ["ART-DATASET", "ART-WRITEUP", "ART-TOOL"],
-    window: {
-      type: "recurring-cfp",
-      note: "Hard deadlines, published a long way ahead, and they do not move.",
-    },
-    lead_time: "3–9 months to write and submit",
-    lead_time_months: 6,
-    cost: "Free to submit; some venues charge on acceptance",
-    first_move:
-      "Find a workshop or student track with a deadline four or more months out and write the abstract this week.",
-    failure_mode:
-      "Aiming at a top-tier conference for a first paper. Workshops and student tracks exist for exactly this and review just as genuinely.",
-  },
-  {
-    id: "PRV-COOP",
-    name: "Co-op or internship offer in security",
-    tier: 3,
-    brief:
-      "An offer to be paid to do this work. The gate everything else on this list is partly in service of — and the one where the bench you built is the thing you talk about in the interview.",
-    gatekeeper: "A hiring manager with a limited number of seats",
-    consumes_artifacts: [
-      "ART-REPO",
-      "ART-WRITEUP",
-      "ART-TOOL",
-      "ART-DISCLOSURE",
-      "ART-DATASET",
-    ],
-    window: {
-      type: "seasonal",
-      note: "Cycles run well ahead of the work term — searching starts a semester or more before you'd start.",
-    },
-    lead_time: "3–6 months from applying to an offer",
-    lead_time_months: 4,
-    cost: "Free",
-    first_move:
-      "Write the two-sentence version of your current project. You'll say it in every conversation from here on.",
-    failure_mode:
-      "Applying with nothing to point at. The projects on this bench are the interview; do one before the cycle rather than during it.",
   },
 ];
 

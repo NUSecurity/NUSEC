@@ -8,24 +8,25 @@ import {
 import { Artifact, BenchState, Pattern, Preset, Target } from "@/bench/types";
 
 /**
- * Composition rules for the Project field.
+ * Pairing hints for the Project field.
  *
- * Targets carry classes; patterns declare which classes they accept. The
- * composer only offers valid combinations, so "tear down a vulnerable web app"
- * is unreachable rather than merely discouraged — the student never sees it as
- * an option and never has to be told no.
+ * These used to be rules: patterns declared which target classes they accepted
+ * and the composer refused anything else. That was wrong in practice. Hardening
+ * a badge, writing a repo about an IP camera teardown, documenting a process —
+ * all real projects the class taxonomy forbade. A grammar that rules out good
+ * work is wrong rather than strict.
  *
- * Every function here answers "given what's picked so far, what's still legal",
- * and each returns the full list when nothing constrains it yet. Picking in any
- * order works: a student who knows the device but not the verb is as well
- * served as one who knows the verb.
+ * So every combination is now selectable and these functions only answer "what
+ * goes together most often", which the UI shows as a quiet marker. Picking in
+ * any order works: someone who knows the device but not the verb is as well
+ * served as someone who knows the verb.
  */
 
 const sharesClass = (pattern: Pattern, target: Target) =>
   target.classes.some((cls) => pattern.accepts.includes(cls));
 
-/** Patterns still legal given the target and artifact picked so far. */
-export function availablePatterns(state: Partial<BenchState>): Pattern[] {
+/** Patterns commonly used with the target and artifact picked so far. */
+export function commonPatterns(state: Partial<BenchState>): Pattern[] {
   return patterns.filter((pattern) => {
     if (state.target && !sharesClass(pattern, getTarget(state.target))) {
       return false;
@@ -35,45 +36,32 @@ export function availablePatterns(state: Partial<BenchState>): Pattern[] {
   });
 }
 
-/** Targets still legal given the pattern picked so far. */
-export function availableTargets(state: Partial<BenchState>): Target[] {
+/** Targets this pattern is commonly applied to. */
+export function commonTargets(state: Partial<BenchState>): Target[] {
   if (!state.pattern) return targets;
   const pattern = getPattern(state.pattern);
   return targets.filter((target) => sharesClass(pattern, target));
 }
 
-/** Artifacts still legal given the pattern picked so far. */
-export function availableArtifacts(state: Partial<BenchState>): Artifact[] {
+/** Artifacts this pattern usually ends in. */
+export function commonArtifacts(state: Partial<BenchState>): Artifact[] {
   if (!state.pattern) return artifacts;
   const pattern = getPattern(state.pattern);
   return artifacts.filter((artifact) => pattern.yields.includes(artifact.id));
 }
 
 /**
- * Clears picks that a new selection has made illegal.
+ * Keeps derived state honest after a change.
  *
- * Changing the pattern can strand a target or artifact that no longer fits.
- * Silently dropping the stranded pick is better than blocking the change —
- * the student is exploring, and the tool's job is to let them.
+ * Nothing gets cleared for being an unusual pairing any more — the only rule
+ * left is that permission never carries across a target change, because
+ * attesting you have one team's sign-off says nothing about another's.
  */
-export function reconcile(state: BenchState): BenchState {
-  if (!state.pattern) return state;
-
-  const pattern = getPattern(state.pattern);
-  const next = { ...state };
-
-  if (next.target && !sharesClass(pattern, getTarget(next.target))) {
-    next.target = null;
+export function reconcile(state: BenchState, previous?: BenchState): BenchState {
+  if (previous && state.target !== previous.target) {
+    return { ...state, authorized: false };
   }
-  if (next.artifact && !pattern.yields.includes(next.artifact)) {
-    next.artifact = null;
-  }
-
-  // A target the student can't authorize alone needs a fresh attestation
-  // whenever the target changes — consent doesn't carry between targets.
-  if (next.target !== state.target) next.authorized = false;
-
-  return next;
+  return state;
 }
 
 /** True once all three Project tiles are chosen. */

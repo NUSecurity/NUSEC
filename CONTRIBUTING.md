@@ -16,8 +16,8 @@ src/bench/
   checks.ts           the seven coherence checks + closing sentence
   url.ts              bench state ⇄ URL
   tiles/
-    patterns.ts       17 verbs
-    targets.ts        21 objects
+    patterns.ts       17 verbs, each with its own resources
+    targets.ts        29 objects, software first
     artifacts.ts      9 outputs
     kits.ts           6 prerequisites
     domains.ts        8 domains — these own the pooled resources
@@ -92,7 +92,7 @@ If you have never seen anyone fail at this, you are probably not the right perso
 
 Plain language. No jargon that the tile itself is supposed to teach. Say what the thing *is* and why someone would pick it, not why it's important.
 
-### `gotchas` (targets only) — what bites people
+### `gotchas` (targets only) — common pitfalls
 
 **If there is a safety issue, it goes here and it goes first.** Mains voltage, transmitting on regulated bands, cloning access credentials, cloud billing. Be blunt.
 
@@ -102,9 +102,21 @@ Plain language. No jargon that the tile itself is supposed to teach. Say what th
 
 **University systems are not targets.** Not as a target, not as an example in any brief. A student who wants to test a university service goes through whatever disclosure channel the university actually has. That's a different conversation and not one a tile should nudge anyone toward. PRs adding one will be closed.
 
-**Every target needs an honest `authorization`.** Three values a student satisfies alone (`owned`, `deliberately-vulnerable`, `public`). Two need someone else's word (`team-authorized`, `scoped-program`) and make the composer hard-block until the student attests they have it. If you are unsure which applies, it's one of the last two.
+**Every target needs an honest `authorization`.** Three values a student satisfies alone (`owned`, `deliberately-vulnerable`, `public`). Two need someone else's word (`team-authorized`, `scoped-program`) and hard-block until the student attests they have it. If you are unsure which applies, it's one of the last two.
 
-**Prove tiles are Tier 1 or above.** Tier 0 — your own blog, your own repo, a LinkedIn post — is what the Project field already produces. If nobody could have rejected it, it isn't proof and it doesn't go in `prove.ts`.
+**A target has to be reachable by someone who just showed up.** Not everyone is on a project team, has hardware, or can get access to a lab. If a target needs membership of something, it needs an honest authorization value and it shouldn't be near the top of the list.
+
+**Prove tiles are Tier 1 or above.** Your own blog, your own repo, a LinkedIn post — those are what the Project field already produces. If nobody could have rejected it, it isn't proof and it doesn't go in `prove.ts`.
+
+**Every gate has to actually exist.** Not "the club could run this". A tile describing a gate nobody operates is worse than no tile, because a student will plan around it. If NUSEC starts running its own reviewed blog or a selected talk slot, those become real and belong here — until then they don't.
+
+---
+
+## `accepts` and `yields` are hints, not rules
+
+Patterns declare the target classes they're commonly applied to and the artifacts they usually end in. **Neither restricts anything.** The composer marks common pairings and lets the student pick whatever they want.
+
+This used to be enforced, and it was wrong: it ruled out hardening a badge, writing a repo about a teardown, and documenting a process, all of which are real projects. Set these to what's typical, not to what's permitted.
 
 ---
 

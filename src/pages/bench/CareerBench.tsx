@@ -58,7 +58,7 @@ const CareerBench = () => {
   }, [encoded, location.search, navigate]);
 
   const change = useCallback((patch: Partial<BenchState>) => {
-    setState((previous) => reconcile({ ...previous, ...patch }));
+    setState((previous) => reconcile({ ...previous, ...patch }, previous));
   }, []);
 
   const toggleBrief = useCallback(

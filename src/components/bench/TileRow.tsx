@@ -6,10 +6,10 @@ interface TileRowProps {
   tile: TileBase;
   selected: boolean;
   /**
-   * Compatible with what's picked elsewhere. Incompatible tiles stay clickable
-   * and legible — greying and explaining teaches; hiding and blocking doesn't.
+   * A common pairing with what's already picked. Purely a hint — everything
+   * stays fully selectable, and unusual combinations are often the good ones.
    */
-  compatible?: boolean;
+  common?: boolean;
   /** Whether this tile's brief is currently open. */
   open: boolean;
   onSelect: () => void;
@@ -34,7 +34,7 @@ interface TileRowProps {
 const TileRow = ({
   tile,
   selected,
-  compatible = true,
+  common = false,
   open,
   onSelect,
   onToggleBrief,
@@ -47,9 +47,7 @@ const TileRow = ({
       "rounded-md border transition-colors",
       selected
         ? "border-primary bg-primary/10"
-        : compatible
-          ? "border-border bg-secondary/40 hover:border-primary/60"
-          : "border-border/50 bg-secondary/20",
+        : "border-border bg-secondary/40 hover:border-primary/60",
     )}
   >
     <div className="flex items-stretch">
@@ -67,14 +65,15 @@ const TileRow = ({
             <span
               className={cn(
                 "block text-sm font-medium leading-snug",
-                selected
-                  ? "text-primary"
-                  : compatible
-                    ? "text-foreground"
-                    : "text-muted-foreground",
+                selected ? "text-primary" : "text-foreground",
               )}
             >
               {tile.name}
+              {common && !selected && (
+                <span className="ml-1.5 align-middle text-[0.6rem] font-normal uppercase tracking-wider text-primary/70">
+                  common
+                </span>
+              )}
             </span>
             {meta && (
               <span className="mt-0.5 block text-xs text-muted-foreground">
@@ -111,8 +110,8 @@ const TileRow = ({
         </p>
 
         <p>
-          <span className="font-semibold uppercase tracking-[0.15em] text-destructive/80">
-            How people lose
+          <span className="font-semibold uppercase tracking-[0.15em] text-muted-foreground">
+            Common pitfalls
           </span>
           <span className="mt-0.5 block text-foreground/90">{tile.failure_mode}</span>
         </p>
@@ -125,18 +124,31 @@ const TileRow = ({
               Go here
             </span>
             <span className="mt-1 block space-y-1">
-              {links.map((link) => (
-                <a
-                  key={link.url}
-                  href={link.url}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  className="flex items-start gap-1.5 text-primary/90 hover:text-primary hover:underline"
-                >
-                  <ExternalLink className="mt-0.5 h-3 w-3 shrink-0 opacity-70" />
-                  {link.title}
-                </a>
-              ))}
+              {links.map((link) =>
+                link.last_verified ? (
+                  <a
+                    key={link.url}
+                    href={link.url}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    className="flex items-start gap-1.5 text-primary/90 hover:text-primary hover:underline"
+                  >
+                    <ExternalLink className="mt-0.5 h-3 w-3 shrink-0 opacity-70" />
+                    {link.title}
+                  </a>
+                ) : (
+                  <span
+                    key={link.url}
+                    className="flex items-start gap-1.5 text-foreground/80"
+                  >
+                    <span
+                      aria-hidden
+                      className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-muted-foreground"
+                    />
+                    {link.title}
+                  </span>
+                ),
+              )}
             </span>
           </p>
         )}

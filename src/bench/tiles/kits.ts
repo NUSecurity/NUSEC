@@ -28,9 +28,9 @@ const kits: Kit[] = [
     name: "Hardware bench",
     brief:
       "A multimeter, a soldering iron, a USB-UART adapter and a logic analyzer. This is the entry kit for every hardware project — with it you can find a serial console on an unknown board, and without it you cannot.",
-    cost: "$60–120 for all four, less if the club lends you any of it",
+    cost: "$60–120 for all four, and you do not need all four to start",
     first_move:
-      "Buy a USB-UART adapter first — it's about $12 and it is the single piece that unlocks the most. Ask on the club Discord before buying the rest; we have some of this.",
+      "Buy a USB-UART adapter first — it's about $12 and it unlocks the most by far. Get that one working before you buy anything else.",
     failure_mode:
       "Buying a $400 bench before doing a $12 project. Get the adapter, find one UART, then decide what else you actually need.",
   },

@@ -141,7 +141,15 @@ export type TargetId =
   | "TGT-PUBDATA"
   | "TGT-PROTOSPEC"
   | "TGT-CLUBPROC"
-  | "TGT-BOUNTY";
+  | "TGT-BOUNTY"
+  | "TGT-WEBAPP"
+  | "TGT-APISVC"
+  | "TGT-ADLAB"
+  | "TGT-CONTAINER"
+  | "TGT-CIPIPELINE"
+  | "TGT-MEMIMAGE"
+  | "TGT-LOGSET"
+  | "TGT-MALSAMPLE";
 
 export type ArtifactId =
   | "ART-REPO"
@@ -215,7 +223,7 @@ export type ProveId =
   // Tier 1
   | "PRV-PR"
   | "PRV-BUGREPORT"
-  | "PRV-CLUBBLOG"
+  | "PRV-REVIEWEDPOST"
   | "PRV-CTFWRITEUP"
   | "PRV-TEACH"
   | "PRV-WIKI"
@@ -223,7 +231,7 @@ export type ProveId =
   // Tier 2
   | "PRV-BSIDES"
   | "PRV-VILLAGE"
-  | "PRV-LIGHTNING"
+  | "PRV-MEETUP"
   | "PRV-NCL"
   | "PRV-CPTC"
   | "PRV-ECTF"
@@ -272,6 +280,53 @@ export interface TileBase {
   failure_mode: string;
 }
 
+export const resourceTypeCaps: Record<ResourceType, number> = {
+  foundation: 2,
+  "hands-on": 4,
+  reference: 3,
+  corpus: 4,
+  community: 2,
+};
+
+export const resourceTypeMeanings: Record<ResourceType, string> = {
+  foundation: "The one book or course",
+  "hands-on": "Where you practice",
+  reference: "What stays open while working",
+  corpus: "Real material to work on",
+  community: "Where you ask when stuck",
+};
+
+export type ResourceType =
+  | "foundation"
+  | "hands-on"
+  | "reference"
+  | "corpus"
+  | "community";
+
+export const resourceTypeLabels: Record<ResourceType, string> = {
+  foundation: "Foundation",
+  "hands-on": "Hands-on",
+  reference: "Reference",
+  corpus: "Corpus",
+  community: "Community",
+};
+
+export interface Resource {
+  title: string;
+  url: string;
+  type: ResourceType;
+  /** Why this one and not another. One sentence. */
+  note: string;
+  /**
+   * ISO date the link was last opened and confirmed to be what we claim.
+   * `null` renders as unverified. Past twelve months renders greyed with a
+   * "verify this" link, so decay is visible and distributed.
+   */
+  last_verified: string | null;
+  /** Costs money. Shown so nobody clicks into a paywall unwarned. */
+  paid?: boolean;
+}
+
 /* ------------------------------------------------------------------ *
  * Project field
  * ------------------------------------------------------------------ */
@@ -280,7 +335,14 @@ export interface Pattern extends TileBase {
   id: PatternId;
   /** The verb as it appears in the sentence, e.g. "Tear down". */
   verb: string;
+  /**
+   * Target classes this verb is commonly applied to. A hint, not a gate — the
+   * composer marks these as common pairings and lets you pick anything.
+   * Hardening a badge and tearing down a process are both real projects, and a
+   * taxonomy that forbids them is wrong rather than strict.
+   */
   accepts: TargetClass[];
+  /** Artifacts this pattern usually ends in. Also a hint — any artifact goes. */
   yields: ArtifactId[];
   /**
    * The few skills this pattern will genuinely force you to use. Deliberately
@@ -293,6 +355,8 @@ export interface Pattern extends TileBase {
    */
   demands: SkillId[];
   effort: Effort;
+  /** How to actually do this pattern. Same slot rules as a domain pool. */
+  resources: Resource[];
 }
 
 export interface Target extends TileBase {
@@ -349,52 +413,9 @@ export const rungMeanings: Record<Rung, string> = {
  * nobody reads and five slots with defined roles is a path. The cap is the
  * service being provided.
  */
-export type ResourceType =
-  | "foundation"
-  | "hands-on"
-  | "reference"
-  | "corpus"
-  | "community";
 
-export const resourceTypeLabels: Record<ResourceType, string> = {
-  foundation: "Foundation",
-  "hands-on": "Hands-on",
-  reference: "Reference",
-  corpus: "Corpus",
-  community: "Community",
-};
 
-export const resourceTypeMeanings: Record<ResourceType, string> = {
-  foundation: "The one book or course",
-  "hands-on": "Where you practice",
-  reference: "What stays open while working",
-  corpus: "Real material to work on",
-  community: "Where you ask when stuck",
-};
 
-export const resourceTypeCaps: Record<ResourceType, number> = {
-  foundation: 2,
-  "hands-on": 4,
-  reference: 3,
-  corpus: 4,
-  community: 2,
-};
-
-export interface Resource {
-  title: string;
-  url: string;
-  type: ResourceType;
-  /** Why this one and not another. One sentence. */
-  note: string;
-  /**
-   * ISO date the link was last opened and confirmed to be what we claim.
-   * `null` renders as unverified. Past twelve months renders greyed with a
-   * "verify this" link, so decay is visible and distributed.
-   */
-  last_verified: string | null;
-  /** Costs money. Shown so nobody clicks into a paywall unwarned. */
-  paid?: boolean;
-}
 
 export interface Domain extends TileBase {
   id: DomainId;

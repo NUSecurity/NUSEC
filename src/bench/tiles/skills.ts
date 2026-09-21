@@ -483,7 +483,7 @@ const skills: Skill[] = [
         url: "https://www.digikey.com/",
         type: "reference",
         note: "Search by the characteristics you need and get the datasheet. Also the fastest way to identify an unfamiliar package.",
-        last_verified: null,
+        last_verified: V_2026_09,
       },
     ],
   },

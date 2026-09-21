@@ -7,7 +7,6 @@ import {
   getTarget,
   resourcesFor,
 } from "@/bench";
-import { closingSentence } from "@/bench/checks";
 import { BenchState, rungLabels, rungOrder } from "@/bench/types";
 import BenchSentences from "@/components/bench/BenchSentences";
 
@@ -49,7 +48,6 @@ const PrintSheet = ({ state }: { state: BenchState }) => {
   const artifact = state.artifact ? getArtifact(state.artifact) : null;
   const skill = state.skill ? getSkill(state.skill) : null;
   const prove = state.prove ? getProve(state.prove) : null;
-  const closing = closingSentence(state);
 
   // A handful, not the whole pool — this has to fit on paper.
   const resources = skill
@@ -71,19 +69,13 @@ const PrintSheet = ({ state }: { state: BenchState }) => {
         <BenchSentences state={state} />
       </div>
 
-      {closing && (
-        <p className="mb-4 border-l-2 border-neutral-400 pl-2 text-[0.75rem] italic leading-snug">
-          {closing}
-        </p>
-      )}
-
       <div className="space-y-3">
         {pattern && target && artifact && (
           <Section label={`Project — ${pattern.name} · ${target.name}`}>
             <Row label="Start by">{pattern.first_move}</Row>
             <Row label="Get one">{target.sourcing}</Row>
             <Row label="Cost">{target.cost}</Row>
-            <Row label="Watch out">{target.gotchas}</Row>
+            <Row label="Common pitfalls">{target.gotchas}</Row>
             <Row label="Ends in">{artifact.name} — {artifact.brief}</Row>
             {target.requires_kits.length > 0 && (
               <Row label="You'll need">
@@ -98,7 +90,7 @@ const PrintSheet = ({ state }: { state: BenchState }) => {
         {skill && state.to && (
           <Section label={`Skill — ${skill.name} → ${rungLabels[state.to]}`}>
             <Row label="Start by">{skill.first_move}</Row>
-            <Row label="Watch out">{skill.failure_mode}</Row>
+            <Row label="Common pitfalls">{skill.failure_mode}</Row>
             <div className="mt-1.5">
               <p className="text-[0.6rem] font-semibold uppercase tracking-[0.15em] text-neutral-500">
                 The ladder — tick as you clear each one
@@ -148,10 +140,13 @@ const PrintSheet = ({ state }: { state: BenchState }) => {
               {prove.window.note} {prove.lead_time}.
             </Row>
             <Row label="Cost">{prove.cost}</Row>
-            <Row label="Watch out">{prove.failure_mode}</Row>
-            {prove.links && prove.links.length > 0 && (
+            <Row label="Common pitfalls">{prove.failure_mode}</Row>
+            {prove.links?.some((link) => link.last_verified) && (
               <Row label="Official page">
-                {prove.links.map((link) => link.url).join("  ")}
+                {prove.links
+                  .filter((link) => link.last_verified)
+                  .map((link) => link.url)
+                  .join("  ")}
               </Row>
             )}
           </Section>

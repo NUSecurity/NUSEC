@@ -7,12 +7,11 @@ import {
   getTarget,
   resourcesFor,
 } from "@/bench";
-import { closingSentence, runChecks } from "@/bench/checks";
+import { runChecks } from "@/bench/checks";
 import { BenchState, rungLabels, windowTypeLabels } from "@/bench/types";
 import BenchSentences from "@/components/bench/BenchSentences";
 import ChecksList from "@/components/bench/ChecksList";
 import ResourceList from "@/components/bench/ResourceList";
-import { cn } from "@/lib/utils";
 
 const Card = ({
   label,
@@ -50,7 +49,6 @@ const Field = ({ label, children }: { label: string; children: React.ReactNode }
  */
 const ReviewPanel = ({ state }: { state: BenchState }) => {
   const checks = runChecks(state);
-  const closing = closingSentence(state);
 
   const pattern = state.pattern ? getPattern(state.pattern) : null;
   const target = state.target ? getTarget(state.target) : null;
@@ -65,19 +63,6 @@ const ReviewPanel = ({ state }: { state: BenchState }) => {
           Your bench
         </h2>
         <BenchSentences state={state} />
-
-        {closing && (
-          <p
-            className={cn(
-              "mt-4 rounded-md border-l-2 px-3 py-2 text-sm italic leading-relaxed",
-              closing.includes("Those connect")
-                ? "border-primary bg-primary/10 text-foreground"
-                : "border-muted-foreground bg-secondary/40 text-muted-foreground",
-            )}
-          >
-            {closing}
-          </p>
-        )}
       </section>
 
       {checks.length > 0 && (
@@ -94,7 +79,7 @@ const ReviewPanel = ({ state }: { state: BenchState }) => {
           <Card label="Project" title={`${pattern.name} · ${target.name}`}>
             <Field label="Where to start">{pattern.first_move}</Field>
             <Field label="Where to get one">{target.sourcing}</Field>
-            <Field label="Watch out for">{target.gotchas}</Field>
+            <Field label="Common pitfalls">{target.gotchas}</Field>
             <Field label="You'll end up with">{artifact.brief}</Field>
           </Card>
         )}
@@ -108,7 +93,7 @@ const ReviewPanel = ({ state }: { state: BenchState }) => {
             <Field label={`What ${rungLabels[state.to]} means`}>
               {skill.rungs[state.to]}
             </Field>
-            <Field label="Watch out for">{skill.failure_mode}</Field>
+            <Field label="Common pitfalls">{skill.failure_mode}</Field>
           </Card>
         )}
 
@@ -133,15 +118,25 @@ const ReviewPanel = ({ state }: { state: BenchState }) => {
           <ul className="mt-2 space-y-1.5">
             {[...(target?.links ?? []), ...(prove?.links ?? [])].map((link) => (
               <li key={link.url}>
-                <a
-                  href={link.url}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  className="group flex items-start gap-1.5 text-xs text-foreground hover:text-primary"
-                >
-                  <ExternalLink className="mt-0.5 h-3 w-3 shrink-0 opacity-60" />
-                  <span className="group-hover:underline">{link.title}</span>
-                </a>
+                {link.last_verified ? (
+                  <a
+                    href={link.url}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    className="group flex items-start gap-1.5 text-xs text-foreground hover:text-primary"
+                  >
+                    <ExternalLink className="mt-0.5 h-3 w-3 shrink-0 opacity-60" />
+                    <span className="group-hover:underline">{link.title}</span>
+                  </a>
+                ) : (
+                  <span className="flex items-start gap-1.5 text-xs text-foreground">
+                    <span
+                      aria-hidden
+                      className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-muted-foreground"
+                    />
+                    {link.title}
+                  </span>
+                )}
               </li>
             ))}
           </ul>
