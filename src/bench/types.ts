@@ -112,7 +112,13 @@ export type PatternId =
   | "PAT-SIMULATE"
   | "PAT-BRIDGE"
   | "PAT-MEASURE"
-  | "PAT-AUDIT";
+  | "PAT-AUDIT"
+  | "PAT-DOCUMENT"
+  | "PAT-DETECT"
+  | "PAT-COMPARE"
+  | "PAT-RECOVER"
+  | "PAT-VISUALIZE"
+  | "PAT-PORT";
 
 export type TargetId =
   | "TGT-IPCAM"
@@ -120,7 +126,7 @@ export type TargetId =
   | "TGT-ROUTER"
   | "TGT-KEYFOB"
   | "TGT-BADGE"
-  | "TGT-CANBUS"
+  | "TGT-OBD"
   | "TGT-DEVBOARD"
   | "TGT-FWIMAGE"
   | "TGT-CRACKME"
@@ -244,6 +250,18 @@ export type ProveId =
  * plans die because step one was never concrete and because the common failure
  * was never named, so both are required on every tile regardless of type.
  */
+/**
+ * An outbound link attached to a tile — the official page for a certification,
+ * where to get a target, the protocol spec. Separate from Resource: these are
+ * "go here to do this thing", not a curated learning path, so they aren't
+ * slot-capped or pooled.
+ */
+export interface TileLink {
+  title: string;
+  url: string;
+  last_verified: string | null;
+}
+
 export interface TileBase {
   name: string;
   /** 2–3 sentences, plain language, no jargon the tile itself teaches. */
@@ -288,6 +306,8 @@ export interface Target extends TileBase {
   requires_kits: KitId[];
   authorization: Authorization;
   effort: Effort;
+  /** Where to get one, or the spec. */
+  links?: TileLink[];
 }
 
 export interface Artifact extends TileBase {
@@ -457,6 +477,8 @@ export interface ProveTile extends TileBase {
   lead_time: string;
   lead_time_months: number;
   cost: string;
+  /** The official page — registration, syllabus, CFP. */
+  links?: TileLink[];
 }
 
 /* ------------------------------------------------------------------ *
@@ -477,20 +499,15 @@ export interface BenchState {
   kits: KitId[];
   /** Ticked attestation for a target that needs someone else's word. */
   authorized: boolean;
-  horizon: Horizon;
 }
 
-export type Horizon = "term" | "year";
-
-export const horizonLabels: Record<Horizon, string> = {
-  term: "This term",
-  year: "This year",
-};
-
-export const horizonMonths: Record<Horizon, number> = {
-  term: 4,
-  year: 12,
-};
+/**
+ * The planning horizon the lead-time check measures against. Fixed at one
+ * term rather than offered as a control: a term is the unit a student actually
+ * plans in, and a toggle that only changed one advisory line read as a knob
+ * that did nothing.
+ */
+export const TERM_MONTHS = 4;
 
 export interface Preset {
   slug: string;

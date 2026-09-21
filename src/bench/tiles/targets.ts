@@ -1,4 +1,5 @@
 import { Target } from "@/bench/types";
+import { V_2026_09 } from "./verified";
 
 /**
  * The 21 objects.
@@ -115,23 +116,30 @@ const targets: Target[] = [
     effort: 2,
   },
   {
-    id: "TGT-CANBUS",
-    name: "The NER CAN bus",
-    phrase: "the NER CAN bus",
+    id: "TGT-OBD",
+    name: "Your own car's OBD-II port",
+    phrase: "my own car's OBD-II port",
     brief:
-      "The vehicle network on Northeastern Electric Racing's car. A real automotive bus with real traffic on it — a rare thing for a student to get hands on, and it belongs to a team that has to keep the car running.",
+      "The diagnostic connector every car built since the late 90s has, usually under the dashboard. A real automotive protocol carrying real traffic, on a vehicle you already own — you can listen to a car talking to itself for the price of a cheap adapter.",
     classes: ["embedded", "protocol"],
-    cost: "Free with access; a CAN interface is ~$25",
+    cost: "$10–30 for a USB or Bluetooth adapter",
     sourcing:
-      "Through NER. This needs an actual conversation with the team, not a hallway ask.",
+      "Any ELM327-based adapter works for reading. Wired USB ones are more reliable than the cheap Bluetooth clones.",
     gotchas:
-      "This is someone's competition vehicle. Read-only unless you are explicitly told otherwise, and never during build crunch or on a race weekend.",
+      "Read only. Listening to diagnostic traffic on your own car is fine; writing to the bus is how people disable their own brakes or immobilizer, and a car is not a device you can reflash back to factory. Never do this while driving — park it.",
     requires_kits: [],
-    authorization: "team-authorized",
+    authorization: "owned",
+    links: [
+      {
+        title: "OBD-II PIDs — the standard request codes",
+        url: "https://en.wikipedia.org/wiki/OBD-II_PIDs",
+        last_verified: V_2026_09,
+      },
+    ],
     first_move:
-      "Talk to NER leadership, explain exactly what you want to do and how long you need the car. Get the answer before you buy an interface.",
+      "Plug an adapter in with the car parked and ignition on, and read one live value — engine RPM is the friendliest. Seeing a real number come back proves the whole chain works.",
     failure_mode:
-      "Treating team access as implied by being in the same club orbit. Ask the person who owns the car, and take a no as a no.",
+      "Sending commands to see what happens. Read first, understand the message format, and leave writing alone unless you genuinely know what that message does.",
     effort: 2,
   },
   {
@@ -168,6 +176,13 @@ const targets: Target[] = [
       "Publicly posted for download is the line. Do not go looking for images the vendor did not publish, and check the download page's terms before you redistribute anything from inside the image.",
     requires_kits: [],
     authorization: "public",
+    links: [
+      {
+        title: "FCC ID search — find the device first",
+        url: "https://www.fcc.gov/oet/ea/fccid",
+        last_verified: V_2026_09,
+      },
+    ],
     first_move:
       "Download two consecutive versions of the same firmware and run `binwalk` on both. What changed between them is your lead.",
     failure_mode:
@@ -188,6 +203,13 @@ const targets: Target[] = [
       "These are deliberately built for this, so the usual caution doesn't apply — but run unknown binaries in a VM anyway. It costs you nothing and builds the habit.",
     requires_kits: ["KIT-HOMELAB"],
     authorization: "deliberately-vulnerable",
+    links: [
+      {
+        title: "crackmes.one",
+        url: "https://crackmes.one/",
+        last_verified: V_2026_09,
+      },
+    ],
     first_move:
       "Download one rated a difficulty below where you think you are and solve it end to end today.",
     failure_mode:
@@ -228,6 +250,13 @@ const targets: Target[] = [
       "Run it locally and do not expose it to the internet. These are genuinely vulnerable, and a public one gets found and used within hours.",
     requires_kits: ["KIT-HOMELAB"],
     authorization: "deliberately-vulnerable",
+    links: [
+      {
+        title: "OWASP Juice Shop",
+        url: "https://owasp.org/www-project-juice-shop/",
+        last_verified: V_2026_09,
+      },
+    ],
     first_move:
       "`docker run` Juice Shop and find the first flaw without looking anything up.",
     failure_mode:
@@ -248,6 +277,13 @@ const targets: Target[] = [
       "If you run a VulnHub image locally, host-only networking. These boxes are vulnerable by construction and some ship with real backdoors.",
     requires_kits: ["KIT-HOMELAB"],
     authorization: "deliberately-vulnerable",
+    links: [
+      {
+        title: "VulnHub",
+        url: "https://www.vulnhub.com/",
+        last_verified: V_2026_09,
+      },
+    ],
     first_move:
       "Pick one box rated easy and give yourself two hours on enumeration alone before you try a single exploit.",
     failure_mode:
@@ -367,6 +403,18 @@ const targets: Target[] = [
       "Check the licence and the terms of use — 'public' and 'redistributable' are different things, and some research datasets require you to register and cite them.",
     requires_kits: [],
     authorization: "public",
+    links: [
+      {
+        title: "Netresec public pcap index",
+        url: "https://www.netresec.com/?page=PcapFiles",
+        last_verified: V_2026_09,
+      },
+      {
+        title: "Digital Corpora",
+        url: "https://digitalcorpora.org/",
+        last_verified: V_2026_09,
+      },
+    ],
     first_move:
       "Download one capture and answer a single question about it before you decide what the project is.",
     failure_mode:
@@ -387,6 +435,13 @@ const targets: Target[] = [
       "Some specs cost hundreds of dollars. Check before you commit to one; there is always an open protocol that teaches the same lesson.",
     requires_kits: [],
     authorization: "public",
+    links: [
+      {
+        title: "MQTT specification",
+        url: "https://mqtt.org/mqtt-specification/",
+        last_verified: V_2026_09,
+      },
+    ],
     first_move:
       "Read the packet-structure section of the spec and hand-decode one real message byte by byte on paper.",
     failure_mode:
@@ -427,6 +482,18 @@ const targets: Target[] = [
       "Read the scope page, stay inside it, and understand that the program's rules beat anything this tool says. Out-of-scope testing is not a technicality — it is unauthorized access, and the program's safe harbour does not cover it.",
     requires_kits: [],
     authorization: "scoped-program",
+    links: [
+      {
+        title: "HackerOne programs",
+        url: "https://hackerone.com/opportunities/all",
+        last_verified: V_2026_09,
+      },
+      {
+        title: "Bugcrowd engagements",
+        url: "https://bugcrowd.com/engagements",
+        last_verified: V_2026_09,
+      },
+    ],
     first_move:
       "Pick one program and read its entire scope and rules page before touching a single asset. Write down what's in and what's out.",
     failure_mode:

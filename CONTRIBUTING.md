@@ -16,7 +16,7 @@ src/bench/
   checks.ts           the seven coherence checks + closing sentence
   url.ts              bench state ⇄ URL
   tiles/
-    patterns.ts       11 verbs
+    patterns.ts       17 verbs
     targets.ts        21 objects
     artifacts.ts      9 outputs
     kits.ts           6 prerequisites
@@ -112,6 +112,8 @@ Plain language. No jargon that the tile itself is supposed to teach. Say what th
 
 Resources are **pooled at the domain**, not per skill. A `DOM-RE` pool serves all four RE skills; a skill carries only the two or three things unique to it. This is the whole reason the link list stays maintainable instead of becoming 1,000 rotting URLs.
 
+All eight domains ship a pool. The `depth: "stub"` state and its contribute copy stay in the schema for any domain added later, but nothing currently uses it — a student who picks a skill and finds nothing has hit a dead end, and a dead end reads as neglect however politely it's worded.
+
 Each type is capped, and the validator enforces it:
 
 | Type | Role | Max |
@@ -136,6 +138,18 @@ This means **you opened the link and confirmed it is still the thing the note de
 Entries past twelve months grey out and show a "verify this" link that opens a pre-filled issue. Checking one takes thirty seconds.
 
 ---
+
+## Adding a link to a tile
+
+Separate from resources. `links` on a target or a prove tile is "go here to do this thing" — the official certification page, where to buy the device, the protocol spec. Not slot-capped and not pooled, because they aren't a learning path.
+
+```ts
+links: [
+  { title: "CompTIA Security+", url: "https://...", last_verified: V_2026_09 },
+],
+```
+
+Same honesty rule as resources: the date means you opened it.
 
 ## Suggesting a tile without writing code
 

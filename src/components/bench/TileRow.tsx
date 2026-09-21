@@ -1,5 +1,5 @@
-import { Check, Info } from "lucide-react";
-import { TileBase } from "@/bench/types";
+import { Check, ExternalLink, Info } from "lucide-react";
+import { TileBase, TileLink } from "@/bench/types";
 import { cn } from "@/lib/utils";
 
 interface TileRowProps {
@@ -16,6 +16,8 @@ interface TileRowProps {
   onToggleBrief: () => void;
   /** Extra line under the name — cost, tier, authorization. */
   meta?: React.ReactNode;
+  /** Somewhere concrete to go: the official page, where to get one, the spec. */
+  links?: TileLink[];
   /** Rendered inside the open brief, under first move and failure mode. */
   children?: React.ReactNode;
 }
@@ -37,6 +39,7 @@ const TileRow = ({
   onSelect,
   onToggleBrief,
   meta,
+  links,
   children,
 }: TileRowProps) => (
   <div
@@ -115,6 +118,28 @@ const TileRow = ({
         </p>
 
         {children}
+
+        {links && links.length > 0 && (
+          <p>
+            <span className="font-semibold uppercase tracking-[0.15em] text-muted-foreground">
+              Go here
+            </span>
+            <span className="mt-1 block space-y-1">
+              {links.map((link) => (
+                <a
+                  key={link.url}
+                  href={link.url}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="flex items-start gap-1.5 text-primary/90 hover:text-primary hover:underline"
+                >
+                  <ExternalLink className="mt-0.5 h-3 w-3 shrink-0 opacity-70" />
+                  {link.title}
+                </a>
+              ))}
+            </span>
+          </p>
+        )}
       </div>
     )}
   </div>

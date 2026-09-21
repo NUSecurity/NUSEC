@@ -1,8 +1,8 @@
 import { getArtifact, getKit, getPattern, getProve, getSkill, getTarget } from "@/bench";
 import {
   BenchState,
+  TERM_MONTHS,
   authorizationAttestation,
-  horizonMonths,
   selfSatisfiable,
 } from "@/bench/types";
 
@@ -142,16 +142,13 @@ export function runChecks(state: BenchState): CheckResult[] {
   /* 7 — Prove lead time fits the horizon. Advisory. */
   if (state.prove) {
     const prove = getProve(state.prove);
-    const available = horizonMonths[state.horizon];
 
-    if (prove.lead_time_months > available) {
+    if (prove.lead_time_months > TERM_MONTHS) {
       results.push({
         id: "lead-time",
         severity: "advisory",
-        message: `${prove.name} needs about ${prove.lead_time_months} months — longer than ${
-          state.horizon === "term" ? "a term" : "a year"
-        }.`,
-        detail: prove.window.note,
+        message: `This one runs longer than a term — about ${prove.lead_time_months} months.`,
+        detail: `${prove.window.note} Worth starting now even though it lands later.`,
       });
     }
   }

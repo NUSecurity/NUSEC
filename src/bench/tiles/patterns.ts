@@ -1,7 +1,7 @@
 import { Pattern } from "@/bench/types";
 
 /**
- * The 11 verbs. Each declares the target classes it accepts, so the composer
+ * The 17 verbs. Each declares the target classes it accepts, so the composer
  * can only offer combinations that mean something — "tear down a vulnerable web
  * app" is unreachable rather than merely discouraged.
  *
@@ -177,6 +177,105 @@ const patterns: Pattern[] = [
       "SKL-APPSEC-THREATMODEL",
       "SKL-OFFSEC-FINDING",
     ],
+    effort: 2,
+  },
+  {
+    id: "PAT-DOCUMENT",
+    name: "Document",
+    verb: "documenting",
+    brief:
+      "Write down how something works when nobody has written it down properly. No exploit, no break — just a clear account of a thing, good enough that the next person doesn't have to work it out from scratch. This is the friendliest way into security work and it's genuinely valuable.",
+    first_move:
+      "Pick one thing you had to figure out the hard way this month and write the page you wish had existed.",
+    failure_mode:
+      "Assuming it's too obvious to be worth writing. If it took you an afternoon, it will take the next person an afternoon, and nobody has written it down.",
+    accepts: [
+      "physical-device",
+      "embedded",
+      "firmware-image",
+      "protocol",
+      "web-app",
+      "network-service",
+      "cloud-env",
+      "process",
+    ],
+    yields: ["ART-WRITEUP", "ART-TEACHING", "ART-REPO"],
+    demands: ["SKL-APPSEC-THREATMODEL", "SKL-RE-FORMAT", "SKL-HW-DATASHEET"],
+    effort: 1,
+  },
+  {
+    id: "PAT-DETECT",
+    name: "Build a detection",
+    verb: "building a detection for",
+    brief:
+      "Write something that notices when a specific bad thing happens — a rule, a script, a query. You need to understand the attack well enough to describe what it leaves behind, which is a different and often deeper skill than performing it.",
+    first_move:
+      "Do the thing you want to detect, once, on a machine you own, and write down every trace it left.",
+    failure_mode:
+      "A detection you never tested against the real thing. Run the attack, confirm it fires, then run normal activity and confirm it doesn't.",
+    accepts: ["network-service", "process", "binary", "cloud-env"],
+    yields: ["ART-TOOL", "ART-REPO", "ART-WRITEUP"],
+    demands: ["SKL-NET-CAPTURE", "SKL-DFIR-TIMELINE", "SKL-LINUX-TRACE"],
+    effort: 2,
+  },
+  {
+    id: "PAT-COMPARE",
+    name: "Compare",
+    verb: "comparing",
+    brief:
+      "Put two things side by side and report what differs — two firmware versions, two cloud accounts, two implementations of the same protocol. Differences are where the interesting things hide, and comparing is much easier than analyzing one thing in isolation.",
+    first_move:
+      "Get both versions and diff them with whatever tool fits. The first surprising difference is your project.",
+    failure_mode:
+      "Comparing things that are too different to line up. Two versions of the same thing teaches; two unrelated things just produces noise.",
+    accepts: ["firmware-image", "binary", "web-app", "protocol", "dataset", "cloud-env"],
+    yields: ["ART-WRITEUP", "ART-DATASET"],
+    demands: ["SKL-RE-FORMAT", "SKL-RE-GHIDRA", "SKL-CLOUD-BASELINE"],
+    effort: 2,
+  },
+  {
+    id: "PAT-RECOVER",
+    name: "Recover",
+    verb: "recovering data from",
+    brief:
+      "Get back something that was deleted, corrupted, or hidden. Deleted files, a damaged archive, data in a format nothing still reads. Satisfying in a way few projects are, because you either got it back or you didn't.",
+    first_move:
+      "Make a copy first and work only on the copy. Then look at the raw bytes before reaching for a recovery tool.",
+    failure_mode:
+      "Working on the original and making it worse. Image it, hash it, work on the copy — every time.",
+    accepts: ["binary", "dataset", "physical-device", "firmware-image"],
+    yields: ["ART-WRITEUP", "ART-TOOL", "ART-REPO"],
+    demands: ["SKL-DFIR-ACQUIRE", "SKL-RE-FORMAT", "SKL-DFIR-MEMORY"],
+    effort: 2,
+  },
+  {
+    id: "PAT-VISUALIZE",
+    name: "Visualize",
+    verb: "visualizing",
+    brief:
+      "Turn data nobody can read into a picture that makes something obvious. A graph of who talks to whom, a timeline of an incident, a map of permissions. Often the fastest way to find something everyone else missed in the same data.",
+    first_move:
+      "Plot ten rows by hand — on paper is fine. If the picture tells you nothing at ten rows, it won't at ten thousand.",
+    failure_mode:
+      "Making it pretty before making it true. Decide the one question the picture answers, then draw only that.",
+    accepts: ["dataset", "network-service", "process", "protocol"],
+    yields: ["ART-TOOL", "ART-REPO", "ART-WRITEUP"],
+    demands: ["SKL-NET-CAPTURE", "SKL-LINUX-SHELL", "SKL-DFIR-TIMELINE"],
+    effort: 2,
+  },
+  {
+    id: "PAT-PORT",
+    name: "Port",
+    verb: "porting",
+    brief:
+      "Make something run where it didn't — a tool onto a new platform, an old exploit against a current version, a library onto an architecture it never targeted. You inherit a working design and spend your time on the part that actually teaches.",
+    first_move:
+      "Build the original on its own platform first. You need a working reference before you can tell a port bug from a you bug.",
+    failure_mode:
+      "Porting something you don't understand. Get the original working and read it properly, or every failure will be a mystery.",
+    accepts: ["binary", "firmware-image", "protocol", "process"],
+    yields: ["ART-REPO", "ART-TOOL"],
+    demands: ["SKL-LINUX-BUILD", "SKL-RE-DISASM", "SKL-RE-FORMAT"],
     effort: 2,
   },
 ];

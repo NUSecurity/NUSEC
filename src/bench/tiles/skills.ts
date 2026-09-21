@@ -204,7 +204,7 @@ const skills: Skill[] = [
       teach:
         "You've sat with someone during their first serious terminal session and they finished the task.",
     },
-    exercised_by: ["PAT-AUTOMATE", "PAT-MEASURE", "PAT-INSTRUMENT"],
+    exercised_by: ["PAT-AUTOMATE", "PAT-MEASURE", "PAT-INSTRUMENT", "PAT-VISUALIZE"],
     first_move:
       "Do tonight's one GUI task in the terminal instead. Not a tutorial — a real task.",
     failure_mode:
@@ -292,7 +292,7 @@ const skills: Skill[] = [
       teach:
         "You've shown someone how to trace a failing program and they diagnosed the next one alone.",
     },
-    exercised_by: ["PAT-INSTRUMENT", "PAT-BREAK", "PAT-MEASURE"],
+    exercised_by: ["PAT-INSTRUMENT", "PAT-BREAK", "PAT-MEASURE", "PAT-DETECT"],
     first_move:
       "Run `strace -f -e trace=openat ls` and read what a program as simple as `ls` actually opens.",
     failure_mode:
@@ -336,7 +336,7 @@ const skills: Skill[] = [
       teach:
         "You've helped someone through a build failure by teaching them to read the error, not by fixing it for them.",
     },
-    exercised_by: ["PAT-REIMPLEMENT", "PAT-FIRMWARE", "PAT-SIMULATE", "PAT-AUTOMATE"],
+    exercised_by: ["PAT-REIMPLEMENT", "PAT-FIRMWARE", "PAT-SIMULATE", "PAT-AUTOMATE", "PAT-PORT"],
     first_move:
       "Clone a tool you use, build it from source, and run your build rather than the packaged one.",
     failure_mode:
@@ -465,7 +465,7 @@ const skills: Skill[] = [
       teach:
         "You've walked someone through a datasheet for a part they needed and they wired it correctly.",
     },
-    exercised_by: ["PAT-TEARDOWN", "PAT-SIMULATE", "PAT-BRIDGE"],
+    exercised_by: ["PAT-TEARDOWN", "PAT-SIMULATE", "PAT-BRIDGE", "PAT-DOCUMENT"],
     first_move:
       "Take the part number off any chip in front of you, find its datasheet, and locate the pinout diagram.",
     failure_mode:
@@ -543,7 +543,7 @@ const skills: Skill[] = [
       teach:
         "You've taught someone to read a stack frame and they traced the next function themselves.",
     },
-    exercised_by: ["PAT-BREAK", "PAT-REIMPLEMENT"],
+    exercised_by: ["PAT-BREAK", "PAT-REIMPLEMENT", "PAT-PORT"],
     first_move:
       "Compile a five-line C function, run `objdump -d` on it, and match every line of assembly to your source.",
     failure_mode:
@@ -565,7 +565,7 @@ const skills: Skill[] = [
       teach:
         "You've shown someone the strings-to-xrefs workflow and they used it to find their own starting point.",
     },
-    exercised_by: ["PAT-FIRMWARE", "PAT-BREAK", "PAT-REIMPLEMENT"],
+    exercised_by: ["PAT-FIRMWARE", "PAT-BREAK", "PAT-REIMPLEMENT", "PAT-COMPARE"],
     first_move:
       "Install Ghidra, open any binary from /usr/bin, and find one string in the listing.",
     failure_mode:
@@ -609,7 +609,7 @@ const skills: Skill[] = [
       teach:
         "You've taught someone the change-one-thing-and-diff method and they mapped a field with it.",
     },
-    exercised_by: ["PAT-REIMPLEMENT", "PAT-BRIDGE", "PAT-SIMULATE", "PAT-FIRMWARE"],
+    exercised_by: ["PAT-REIMPLEMENT", "PAT-BRIDGE", "PAT-SIMULATE", "PAT-FIRMWARE", "PAT-DOCUMENT", "PAT-COMPARE", "PAT-RECOVER", "PAT-PORT"],
     first_move:
       "Save a game twice with one thing different and diff the two files in a hex editor.",
     failure_mode:
@@ -634,7 +634,7 @@ const skills: Skill[] = [
       teach:
         "You've taught someone the acquisition procedure and they followed it without prompting.",
     },
-    exercised_by: ["PAT-INSTRUMENT", "PAT-MEASURE"],
+    exercised_by: ["PAT-INSTRUMENT", "PAT-MEASURE", "PAT-RECOVER"],
     first_move:
       "Image a USB stick you own, hash it, and verify the hash. Fifteen minutes, whole procedure.",
     failure_mode:
@@ -656,7 +656,7 @@ const skills: Skill[] = [
       teach:
         "You've taught someone to normalize timestamps before merging, and their timeline held up.",
     },
-    exercised_by: ["PAT-MEASURE", "PAT-INSTRUMENT", "PAT-AUDIT"],
+    exercised_by: ["PAT-MEASURE", "PAT-INSTRUMENT", "PAT-AUDIT", "PAT-DETECT", "PAT-VISUALIZE"],
     first_move:
       "Take your own shell history and your auth log and merge an hour of them into one ordered list.",
     failure_mode:
@@ -677,7 +677,7 @@ const skills: Skill[] = [
       teach:
         "You've walked someone through their first memory analysis and they found the process.",
     },
-    exercised_by: ["PAT-INSTRUMENT", "PAT-BREAK"],
+    exercised_by: ["PAT-INSTRUMENT", "PAT-BREAK", "PAT-RECOVER"],
     first_move:
       "Download a published sample memory image and run a process listing against it.",
     failure_mode:
@@ -745,7 +745,7 @@ const skills: Skill[] = [
       teach:
         "You've taught someone to run and interpret a baseline audit and they did the next one.",
     },
-    exercised_by: ["PAT-AUDIT", "PAT-HARDEN", "PAT-AUTOMATE", "PAT-MEASURE"],
+    exercised_by: ["PAT-AUDIT", "PAT-HARDEN", "PAT-AUTOMATE", "PAT-MEASURE", "PAT-COMPARE"],
     first_move:
       "Pick a published baseline for your provider and check your own account against its first five controls by hand.",
     failure_mode:
@@ -791,7 +791,7 @@ const skills: Skill[] = [
       teach:
         "You've taught someone display filters and they found what they were looking for.",
     },
-    exercised_by: ["PAT-MEASURE", "PAT-INSTRUMENT", "PAT-BRIDGE", "PAT-SIMULATE"],
+    exercised_by: ["PAT-MEASURE", "PAT-INSTRUMENT", "PAT-BRIDGE", "PAT-SIMULATE", "PAT-DETECT", "PAT-VISUALIZE"],
     first_move:
       "Capture thirty seconds of your own traffic and find the DNS query for a site you just opened.",
     failure_mode:
@@ -858,7 +858,7 @@ const skills: Skill[] = [
       teach:
         "You've facilitated a session where someone else did the modeling and it produced usable threats.",
     },
-    exercised_by: ["PAT-AUDIT", "PAT-HARDEN"],
+    exercised_by: ["PAT-AUDIT", "PAT-HARDEN", "PAT-DOCUMENT"],
     first_move:
       "Draw something you built on one page and mark every place data crosses a trust boundary.",
     failure_mode:

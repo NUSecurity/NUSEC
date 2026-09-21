@@ -1,4 +1,5 @@
 import { ProveTile } from "@/bench/types";
+import { V_2026_09 } from "./verified";
 
 /**
  * The gates.
@@ -37,6 +38,18 @@ const proveTiles: ProveTile[] = [
     lead_time: "Days to a couple of months, depending on how alive the project is",
     lead_time_months: 1,
     cost: "Free",
+    links: [
+      {
+        title: "First Contributions — a guided first PR",
+        url: "https://firstcontributions.github.io/",
+        last_verified: V_2026_09,
+      },
+      {
+        title: "Good First Issue",
+        url: "https://goodfirstissue.dev/",
+        last_verified: V_2026_09,
+      },
+    ],
     first_move:
       "Find a project you actually use, build it from source, and fix the smallest real thing you hit.",
     failure_mode:
@@ -55,6 +68,13 @@ const proveTiles: ProveTile[] = [
     lead_time: "Weeks to months from report to fix",
     lead_time_months: 2,
     cost: "Free",
+    links: [
+      {
+        title: "How to Report Bugs Effectively",
+        url: "https://www.chiark.greenend.org.uk/~sgtatham/bugs.html",
+        last_verified: V_2026_09,
+      },
+    ],
     first_move:
       "Write the reproduction steps before the prose. If you can't reproduce it on demand, you don't have a report yet.",
     failure_mode:
@@ -98,6 +118,13 @@ const proveTiles: ProveTile[] = [
     lead_time: "1–2 weeks after the CTF",
     lead_time_months: 1,
     cost: "Free",
+    links: [
+      {
+        title: "CTFtime — upcoming events and team writeups",
+        url: "https://ctftime.org/",
+        last_verified: V_2026_09,
+      },
+    ],
     first_move:
       "Take notes during the CTF, not after. Reconstructing a solve from memory on Tuesday is how writeups die.",
     failure_mode:
@@ -150,6 +177,13 @@ const proveTiles: ProveTile[] = [
     lead_time: "Days to weeks",
     lead_time_months: 1,
     cost: "Free",
+    links: [
+      {
+        title: "Good First Issue",
+        url: "https://goodfirstissue.dev/",
+        last_verified: V_2026_09,
+      },
+    ],
     first_move:
       "Follow a project's install docs exactly as written on a clean machine. Every place they're wrong is a contribution.",
     failure_mode:
@@ -180,6 +214,13 @@ const proveTiles: ProveTile[] = [
     lead_time: "2–4 months from submission to stage",
     lead_time_months: 3,
     cost: "Free to low",
+    links: [
+      {
+        title: "BSides global chapter list",
+        url: "https://bsides.org/",
+        last_verified: V_2026_09,
+      },
+    ],
     first_move:
       "Find three chapters with open CFPs. Read their past talk lists before you write a word of the submission.",
     failure_mode:
@@ -200,6 +241,13 @@ const proveTiles: ProveTile[] = [
     lead_time: "2–5 months",
     lead_time_months: 4,
     cost: "Travel, sometimes offset for staff",
+    links: [
+      {
+        title: "DEF CON — villages and calls",
+        url: "https://defcon.org/",
+        last_verified: V_2026_09,
+      },
+    ],
     first_move:
       "Pick the village matching what you already do and find who runs it. Most publish a call or an email address.",
     failure_mode:
@@ -241,6 +289,13 @@ const proveTiles: ProveTile[] = [
     lead_time: "1–3 months including the season",
     lead_time_months: 2,
     cost: "A registration fee, sometimes covered by the club or department",
+    links: [
+      {
+        title: "National Cyber League",
+        url: "https://nationalcyberleague.org/",
+        last_verified: V_2026_09,
+      },
+    ],
     first_move:
       "Find this season's registration deadline and put it in your calendar today. That date is the binding constraint.",
     failure_mode:
@@ -261,6 +316,13 @@ const proveTiles: ProveTile[] = [
     lead_time: "3–6 months from tryout to competition",
     lead_time_months: 4,
     cost: "Free to compete; travel for regionals and beyond",
+    links: [
+      {
+        title: "Collegiate Penetration Testing Competition",
+        url: "https://cptc.io/",
+        last_verified: null,
+      },
+    ],
     first_move:
       "Find out who runs the team this year and when tryouts are. Ask at a meeting.",
     failure_mode:
@@ -281,6 +343,13 @@ const proveTiles: ProveTile[] = [
     lead_time: "4–6 months including the competition",
     lead_time_months: 5,
     cost: "Free; hardware usually supplied",
+    links: [
+      {
+        title: "MITRE Embedded CTF",
+        url: "https://ectf.mitre.org/",
+        last_verified: V_2026_09,
+      },
+    ],
     first_move:
       "Ask who is organizing this year's team in the fall — by January it has already started.",
     failure_mode:
@@ -301,6 +370,13 @@ const proveTiles: ProveTile[] = [
     lead_time: "4–6 months of practice before qualifiers",
     lead_time_months: 5,
     cost: "Free to compete; travel if you advance",
+    links: [
+      {
+        title: "National CCDC",
+        url: "https://www.nationalccdc.org/",
+        last_verified: null,
+      },
+    ],
     first_move:
       "Show up to a practice in the fall. Rosters come out of who has been practising, not who applied.",
     failure_mode:
@@ -365,6 +441,13 @@ const proveTiles: ProveTile[] = [
     lead_time: "1–3 months of study",
     lead_time_months: 2,
     cost: "Voucher in the mid hundreds; student discounts and bundles exist",
+    links: [
+      {
+        title: "CompTIA Security+",
+        url: "https://www.comptia.org/certifications/security",
+        last_verified: V_2026_09,
+      },
+    ],
     first_move:
       "Take a free practice exam cold, today. Your score tells you whether this is six weeks or three months.",
     failure_mode:
@@ -382,6 +465,13 @@ const proveTiles: ProveTile[] = [
     lead_time: "1–3 months of study",
     lead_time_months: 2,
     cost: "Low to mid hundreds, usually bundled with course access",
+    links: [
+      {
+        title: "INE — eJPT certification",
+        url: "https://security.ine.com/certifications/ejpt-certification/",
+        last_verified: V_2026_09,
+      },
+    ],
     first_move:
       "Do a handful of easy boot2root boxes first. If those are comfortable, you're close.",
     failure_mode:
@@ -402,6 +492,13 @@ const proveTiles: ProveTile[] = [
     lead_time: "4–8 months of serious preparation",
     lead_time_months: 6,
     cost: "Four figures for the course-and-exam bundle",
+    links: [
+      {
+        title: "OffSec PEN-200 / OSCP",
+        url: "https://www.offsec.com/courses/pen-200/",
+        last_verified: V_2026_09,
+      },
+    ],
     first_move:
       "Before spending anything, do ten easy boxes with no walkthroughs. If that's a grind, build the foundation first — this is a lot of money to spend early.",
     failure_mode:
@@ -422,6 +519,13 @@ const proveTiles: ProveTile[] = [
     lead_time: "3–6 months",
     lead_time_months: 4,
     cost: "Very high — four figures standalone, far more with the SANS course",
+    links: [
+      {
+        title: "GIAC GCIH",
+        url: "https://www.giac.org/certifications/certified-incident-handler-gcih/",
+        last_verified: V_2026_09,
+      },
+    ],
     first_move:
       "Look for funding before anything else: work study, employer sponsorship, or a SANS scholarship programme. Paying retail as a student rarely makes sense.",
     failure_mode:
@@ -442,6 +546,13 @@ const proveTiles: ProveTile[] = [
     lead_time: "3–6 months",
     lead_time_months: 4,
     cost: "Very high — four figures standalone, far more with the SANS course",
+    links: [
+      {
+        title: "GIAC GCFA",
+        url: "https://www.giac.org/certifications/certified-forensic-analyst-gcfa/",
+        last_verified: V_2026_09,
+      },
+    ],
     first_move:
       "Do the free and cheap DFIR practice first and confirm you want this specialization before anyone spends this much.",
     failure_mode:
@@ -462,6 +573,13 @@ const proveTiles: ProveTile[] = [
     lead_time: "2–4 months",
     lead_time_months: 3,
     cost: "Low hundreds; student and free-retake promotions come around",
+    links: [
+      {
+        title: "AWS Certified Security — Specialty",
+        url: "https://aws.amazon.com/certification/certified-security-specialty/",
+        last_verified: V_2026_09,
+      },
+    ],
     first_move:
       "Pick the provider you already have an account with and download its current exam guide.",
     failure_mode:

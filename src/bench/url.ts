@@ -6,7 +6,7 @@ import {
   isSkillId,
   isTargetId,
 } from "@/bench";
-import { BenchState, Horizon, Rung, rungOrder } from "@/bench/types";
+import { BenchState, Rung, rungOrder } from "@/bench/types";
 
 /**
  * Bench state lives in the URL. No accounts, no database, no privacy surface,
@@ -32,7 +32,6 @@ export const emptyBench: BenchState = {
   prove: null,
   kits: [],
   authorized: false,
-  horizon: "term",
 };
 
 const isRung = (value: string): value is Rung =>
@@ -75,7 +74,6 @@ export function encodeBench(state: BenchState): string {
   if (state.prove) params.set("v", state.prove);
   if (state.kits.length > 0) params.set("k", state.kits.join("."));
   if (state.authorized) params.set("a", "1");
-  if (state.horizon !== "term") params.set("h", state.horizon);
 
   return params.toString();
 }
@@ -114,9 +112,6 @@ export function decodeBench(search: string): BenchState {
 
   state.kits = (params.get("k") ?? "").split(".").filter(isKitId);
   state.authorized = params.get("a") === "1";
-
-  const horizon = params.get("h");
-  if (horizon === "term" || horizon === "year") state.horizon = horizon as Horizon;
 
   return state;
 }
