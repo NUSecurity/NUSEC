@@ -5,6 +5,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import MeetingPage from "./pages/ctf/MeetingPage";
 import ChallengePage from "./pages/ctf/ChallengePage";
+import CareerBench from "./pages/bench/CareerBench";
 import PcapAnalyzer from "./pages/tools/PcapAnalyzer";
 import CipherBench from "./pages/tools/CipherBench";
 
@@ -29,6 +30,13 @@ const App = () => (
             path="/challenges/:meetingSlug/:challengeSlug"
             element={<ChallengePage />}
           />
+
+          {/*
+            The Career Bench is public and linked from the nav, unlike
+            everything below it — a bench is meant to be pasted into Slack and
+            into co-op applications, which only works if the page is real.
+          */}
+          <Route path="/bench" element={<CareerBench />} />
 
           {/*
             Challenge tooling, kept outside /challenges so a tool can be reused

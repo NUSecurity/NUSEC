@@ -67,3 +67,35 @@ All colors MUST be HSL.
     font-feature-settings: "liga" 0, "calt" 0;
   }
 }
+
+/* Print: the Career Bench.
+   Students at a meeting want to leave with something physical. This renders
+   the three sentences plus the three first moves on one page — cheap, and
+   disproportionately useful. The site is dark on screen and has to be light on
+   paper, so the tokens are overridden rather than every rule rewritten. */
+@media print {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 10%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 35%;
+    --secondary: 0 0% 96%;
+    --primary: 270 70% 40%;
+    --border: 0 0% 80%;
+  }
+
+  @page {
+    margin: 1.5cm;
+  }
+
+  body {
+    background: #fff;
+  }
+
+  /* Links print as their text; the bench's own URL is not useful on paper. */
+  a[href]::after {
+    content: "";
+  }
+}
