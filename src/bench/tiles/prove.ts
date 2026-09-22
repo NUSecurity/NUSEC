@@ -384,6 +384,11 @@ const proveTiles: ProveTile[] = [
         url: "https://ctftime.org/event/list/upcoming",
         last_verified: V_2026_09,
       },
+      {
+        title: "picoCTF — beginner-friendly, runs in a browser",
+        url: "https://picoctf.org/",
+        last_verified: V_2026_09,
+      },
     ],
     first_move:
       "Pick a beginner-friendly event on CTFtime that's more than two weeks out and register a team.",
@@ -906,6 +911,44 @@ const proveTiles: ProveTile[] = [
       "Joining with no embedded experience and no time. This one is a real term-long commitment; do a dev board project first.",
   },
   {
+    id: "PRV-GOOGLECYBER",
+    phrase: "the Google Cybersecurity Certificate",
+    name: "Google Cybersecurity Certificate",
+    tier: 3,
+    brief:
+      "A structured beginner course covering the fundamentals. Worth being clear about what it is: a training course, not a proctored exam certification.",
+    detail: {
+      overview: [
+        "Good at what it's for — giving someone with no background an ordered path through the basics, with hands-on exercises, at low cost. If you're starting from nothing it will save you a lot of wandering.",
+        "It is not equivalent to Security+ or anything else with a proctored exam, and nobody in hiring treats it as though it were. It sits at the bottom of this tier because it's a completion rather than a test you can fail — take it as scaffolding, then sit a real exam.",
+        "Often free through a subscription trial or a university arrangement. Check before paying.",
+      ],
+      examples: [
+        "Use it as a structured syllabus, then book Security+ or ISC2 CC.",
+        "Check whether your university or a trial gives you free access.",
+        "Do the hands-on portions properly rather than skipping to the quizzes.",
+      ],
+    },
+    gatekeeper:
+      "Course completion requirements — lighter than a proctored exam, and honest about it",
+    consumes_artifacts: [],
+    window: { type: "rolling", note: "Self-paced, start whenever." },
+    lead_time: "2–6 months part-time",
+    lead_time_months: 3,
+    cost: "Low monthly subscription; often free through a trial or a university",
+    links: [
+      {
+        title: "Google Cybersecurity Professional Certificate",
+        url: "https://www.coursera.org/professional-certificates/google-cybersecurity",
+        last_verified: V_2026_09,
+      },
+    ],
+    first_move:
+      "Check whether you can access it free before paying for a subscription.",
+    failure_mode:
+      "Treating it as a substitute for a real certification. It's a course — finish it and then go and sit an exam.",
+  },
+  {
     id: "PRV-ISC2CC",
     phrase: "the ISC2 Certified in Cybersecurity",
     name: "ISC2 Certified in Cybersecurity (CC)",
@@ -985,6 +1028,86 @@ const proveTiles: ProveTile[] = [
       "Studying indefinitely without booking. Book the exam first — the date is what makes the studying happen.",
   },
   {
+    id: "PRV-NETPLUS",
+    phrase: "Network+",
+    name: "Network+",
+    tier: 3,
+    brief:
+      "CompTIA's networking certification. Entry level and similar in difficulty to Security+, covering the fundamentals that most security work quietly assumes you already have.",
+    detail: {
+      overview: [
+        "Networking is the thing people skip and then keep hitting. A large share of confusion in offensive and defensive work traces back to not really understanding routing, segmentation or what a protocol is doing on the wire.",
+        "As a certification it's most useful either as a stepping stone before Security+ if you're coming in with no IT background, or alongside it if you want infrastructure-leaning roles.",
+        "If you already read captures comfortably, skip it and spend the money on something practical.",
+      ],
+      examples: [
+        "Take a practice exam cold — if you score well, skip it and do something else.",
+        "Pair the studying with real captures so the layers mean something.",
+        "Build a small segmented network while you study it.",
+      ],
+    },
+    gatekeeper: "A proctored exam you can fail",
+    consumes_artifacts: [],
+    window: {
+      type: "rolling",
+      note: "Book whenever. Check which exam version is current.",
+    },
+    lead_time: "1–3 months of study",
+    lead_time_months: 2,
+    cost: "Voucher in the mid hundreds; student discounts exist",
+    links: [
+      {
+        title: "CompTIA Network+",
+        url: "https://www.comptia.org/certifications/network",
+        last_verified: V_2026_09,
+      },
+    ],
+    first_move:
+      "Take a free practice exam cold. If you already know this material, that's a few hundred dollars saved.",
+    failure_mode:
+      "Collecting it as a box to tick when you already understand networking. It's for filling a real gap, not for the list.",
+  },
+  {
+    id: "PRV-AWSCLF",
+    phrase: "the AWS Cloud Practitioner certification",
+    name: "AWS Cloud Practitioner",
+    tier: 3,
+    brief:
+      "AWS's entry-level certification. Cloud literacy rather than cloud security — how AWS works, what the services are, how billing and the shared responsibility model fit together.",
+    detail: {
+      overview: [
+        "Not a security certification, and worth being honest about that. It's the foundation underneath one: you cannot secure an environment whose services you can't name.",
+        "It's cheap, quick, and it makes the AWS Security Specialty materially easier afterwards. For someone with no cloud background it's a sensible first step rather than a detour.",
+        "Everything on it can be practised free-tier in your own account, which makes the studying productive rather than abstract.",
+      ],
+      examples: [
+        "Build one of each major service in your own account while you study.",
+        "Learn the shared responsibility model properly — it's the whole basis of cloud security.",
+        "Go straight on to the Security Specialty material afterwards.",
+      ],
+    },
+    gatekeeper: "A proctored exam you can fail",
+    consumes_artifacts: [],
+    window: {
+      type: "rolling",
+      note: "Book whenever. AWS revises exam content regularly — use the current guide.",
+    },
+    lead_time: "3–8 weeks of study",
+    lead_time_months: 2,
+    cost: "Around a hundred dollars; promotions and free retakes come around",
+    links: [
+      {
+        title: "AWS Certified Cloud Practitioner",
+        url: "https://aws.amazon.com/certification/certified-cloud-practitioner/",
+        last_verified: V_2026_09,
+      },
+    ],
+    first_move:
+      "Create a free-tier account with a billing alarm, then learn each service by building one.",
+    failure_mode:
+      "Presenting it as a security credential. It's literacy — say so, and pair it with something that isn't.",
+  },
+  {
     id: "PRV-EJPT",
     phrase: "the eJPT",
     name: "eJPT",
@@ -1059,6 +1182,46 @@ const proveTiles: ProveTile[] = [
       "Take a free practice exam cold and let the score tell you how long this is.",
     failure_mode:
       "Studying it as theory. The scenario questions assume you've actually looked at logs.",
+  },
+  {
+    id: "PRV-PENTESTPLUS",
+    phrase: "PenTest+",
+    name: "PenTest+",
+    tier: 3,
+    brief:
+      "CompTIA's offensive certification, sitting alongside Security+ in the same family. Covers the planning, scoping and reporting side as well as the technique.",
+    detail: {
+      overview: [
+        "Vendor-neutral and exam-based rather than hands-on, which makes it easier than the practical offensive certifications and more recognisable to HR systems that already know CompTIA.",
+        "It carries real weight in one specific place: it's named as qualifying applied learning for the VICEROY DECREE programme, alongside Security+. If you're on that pathway, this is the box it ticks.",
+        "If you want to prove you can actually do the work rather than pass an exam about it, eJPT or PNPT demonstrate more. This one is about recognition and pathway requirements.",
+      ],
+      examples: [
+        "Take a practice exam cold to size the study.",
+        "Pair it with actual boxes so the scenario questions aren't abstract.",
+        "Check whether a scholarship pathway you're on names it specifically.",
+      ],
+    },
+    gatekeeper: "A proctored exam you can fail",
+    consumes_artifacts: ["ART-WRITEUP"],
+    window: {
+      type: "rolling",
+      note: "Book whenever. Check which exam version is current — CompTIA retires versions on a schedule.",
+    },
+    lead_time: "2–4 months of study",
+    lead_time_months: 3,
+    cost: "Voucher in the mid hundreds; student discounts exist",
+    links: [
+      {
+        title: "CompTIA PenTest+",
+        url: "https://www.comptia.org/certifications/pentest",
+        last_verified: V_2026_09,
+      },
+    ],
+    first_move:
+      "Do a handful of easy boxes first — the exam's scenarios make far more sense if you've done the thing.",
+    failure_mode:
+      "Taking it instead of doing any practical work. An exam-only offensive certification with no boxes behind it is thin in an interview.",
   },
   {
     id: "PRV-BLUETEAM",
@@ -1140,6 +1303,46 @@ const proveTiles: ProveTile[] = [
       "Studying the exam guide without touching the console. These exams ask scenario questions that punish people who never built anything.",
   },
   {
+    id: "PRV-CCNA",
+    phrase: "the CCNA",
+    name: "CCNA",
+    tier: 3,
+    brief:
+      "Cisco's networking certification. Deeper and more practical than Network+, with real configuration rather than multiple choice about concepts.",
+    detail: {
+      overview: [
+        "Harder than Network+ and more respected for it, particularly anywhere with real network infrastructure. You come out able to configure equipment rather than describe it, which is a meaningful difference.",
+        "For security specifically it's most valuable if you're heading toward network security, infrastructure or anything touching segmentation and access control at the network layer.",
+        "The lab work is the point. Free emulators mean you can practise the configuration without buying any hardware.",
+      ],
+      examples: [
+        "Build the topologies in an emulator rather than reading about them.",
+        "Configure segmentation, then test whether it actually holds.",
+        "Pair it with packet captures so you see what your configuration produces.",
+      ],
+    },
+    gatekeeper: "A proctored exam you can fail",
+    consumes_artifacts: ["ART-REFBUILD"],
+    window: {
+      type: "rolling",
+      note: "Book whenever. Cisco revises the exam blueprint periodically — check the current one.",
+    },
+    lead_time: "3–6 months of study",
+    lead_time_months: 4,
+    cost: "Low hundreds for the exam, plus study material",
+    links: [
+      {
+        title: "Cisco CCNA",
+        url: "https://www.cisco.com/site/us/en/learn/training-certifications/certifications/enterprise/ccna/index.html",
+        last_verified: V_2026_09,
+      },
+    ],
+    first_move:
+      "Install a network emulator and build a two-router topology before you buy any study material.",
+    failure_mode:
+      "Reading about configuration instead of doing it. This exam rewards hands-on lab time more than reading.",
+  },
+  {
     id: "PRV-PNPT",
     phrase: "the PNPT",
     name: "PNPT",
@@ -1218,6 +1421,205 @@ const proveTiles: ProveTile[] = [
       "Before spending anything, do ten easy boxes with no walkthroughs. If that's a grind, build the foundation first — this is a lot of money to spend early.",
     failure_mode:
       "Buying it too early. Also: neglecting the report. People fail on the writeup after passing the machines.",
+  },
+  {
+    id: "PRV-GCIH",
+    phrase: "the GCIH",
+    name: "GCIH",
+    tier: 3,
+    brief:
+      "GIAC's incident handling certification. Well regarded in defensive and response work — and expensive enough that it's usually an employer-funded certification rather than a student one.",
+    gatekeeper: "A proctored GIAC exam",
+    consumes_artifacts: [],
+    window: {
+      type: "rolling",
+      note: "Attempts are tied to a time window once purchased.",
+    },
+    lead_time: "3–6 months",
+    lead_time_months: 4,
+    cost: "Very high — four figures standalone, far more with the SANS course",
+    detail: {
+      overview: [
+        "GIAC's incident handling certification. Well regarded in defensive and response work, and expensive enough that it is normally employer-funded rather than student-funded.",
+        "Self-funding this as an undergraduate is almost always the wrong allocation of your money. Look for work-study, employer sponsorship or a SANS scholarship programme before anything else.",
+      ],
+      examples: [
+        "Look for funding routes before you look at the syllabus.",
+        "Do the free DFIR practice first and confirm you want this specialisation.",
+      ],
+    },
+    links: [
+      {
+        title: "GIAC GCIH",
+        url: "https://www.giac.org/certifications/certified-incident-handler-gcih/",
+        last_verified: V_2026_09,
+      },
+    ],
+    first_move:
+      "Look for funding before anything else: work study, employer sponsorship, or a SANS scholarship programme. Paying retail as a student rarely makes sense.",
+    failure_mode:
+      "Self-funding this as an undergraduate. Almost always the wrong allocation of your money at this stage.",
+  },
+  {
+    id: "PRV-GCFA",
+    phrase: "the GCFA",
+    name: "GCFA",
+    tier: 3,
+    brief:
+      "GIAC's forensic analyst certification. The recognized credential for deep DFIR work, with the same funding problem as GCIH.",
+    gatekeeper: "A proctored GIAC exam",
+    consumes_artifacts: [],
+    window: {
+      type: "rolling",
+      note: "Attempts are tied to a time window once purchased.",
+    },
+    lead_time: "3–6 months",
+    lead_time_months: 4,
+    cost: "Very high — four figures standalone, far more with the SANS course",
+    detail: {
+      overview: [
+        "GIAC's forensic analyst certification. The recognised credential for deep DFIR work, with the same funding problem as GCIH.",
+        "A GCFA with no case experience reads as a purchase rather than an achievement. Do the work first — published images, practice cases, a writeup — and the certification then confirms something real.",
+      ],
+      examples: [
+        "Work through published memory and disk images first.",
+        "Find out whether an employer or the department would fund it.",
+      ],
+    },
+    links: [
+      {
+        title: "GIAC GCFA",
+        url: "https://www.giac.org/certifications/certified-forensic-analyst-gcfa/",
+        last_verified: V_2026_09,
+      },
+    ],
+    first_move:
+      "Do the free and cheap DFIR practice first and confirm you want this specialization before anyone spends this much.",
+    failure_mode:
+      "Certifying before you've done the work. A GCFA with no case experience reads as a purchase rather than an achievement.",
+  },
+  {
+    id: "PRV-SFS",
+    phrase: "a CyberCorps Scholarship for Service place",
+    name: "CyberCorps Scholarship for Service (SFS)",
+    tier: 3,
+    brief:
+      "A federal scholarship that pays for your cybersecurity education in exchange for working in government afterwards. Full tuition, a substantial annual stipend, professional development funds, and advising.",
+    detail: {
+      overview: [
+        "The most valuable single thing on this list for anyone open to government work. Full tuition, a stipend, professional development funding, and a route into agencies that are otherwise hard to enter as a new graduate.",
+        "The commitment is symmetrical: you serve with an approved SFS employer for the same amount of time the scholarship supported you. Approved employers span federal executive branch agencies, state, local and tribal agencies, national laboratories, academic institutions and FFRDCs — a much wider list than people assume.",
+        "Northeastern participates, and William Robertson is the primary PI here, which means there is someone on campus to actually ask.",
+      ],
+      examples: [
+        "Read the eligibility requirements and check them against your own situation honestly.",
+        "Email the campus PI with a specific question rather than a general expression of interest.",
+        "Ask a current or former scholar what their application actually said.",
+      ],
+    },
+    gatekeeper:
+      "A selection committee and the programme's eligibility requirements, which turn most applicants down",
+    consumes_artifacts: ["ART-REPO", "ART-WRITEUP", "ART-TOOL"],
+    window: {
+      type: "annual",
+      note: "One application cycle a year, run through the participating university. Deadlines are fixed and early.",
+    },
+    lead_time: "6–12 months from deciding to starting",
+    lead_time_months: 9,
+    cost: "Free to apply — it pays you",
+    links: [
+      {
+        title: "CyberCorps: Scholarship for Service",
+        url: "https://www.sfs.opm.gov/",
+        last_verified: V_2026_09,
+      },
+    ],
+    first_move:
+      "Read the eligibility criteria on the official site and check whether you qualify before doing anything else.",
+    failure_mode:
+      "Not applying because the service commitment sounds daunting. For a lot of people it's a funded degree plus a guaranteed first job in a field that's hard to break into.",
+  },
+  {
+    id: "PRV-VICEROY",
+    phrase: "a place as a VICEROY DECREE scholar",
+    name: "VICEROY DECREE scholar",
+    tier: 3,
+    brief:
+      "A Northeastern-led, Department of Defense supported programme combining academic work, hands-on cybersecurity experience and career development. Runs here, which makes it unusually reachable.",
+    detail: {
+      overview: [
+        "Scholars follow an approved academic pathway, keep their grades up, stay eligible for a security clearance, participate in a cybersecurity club and cyber competitions, and complete applied learning such as Security+ or PenTest+. Much of that overlaps with what a bench here would have you doing anyway.",
+        "The areas covered go wider than most programmes — cybersecurity, cryptography, data science, and the security of wireless communications.",
+        "An optional designation adds mentorship, a defense-related internship and the annual VICEROY symposium. Benefits include access to specialised courses across partner universities, mentors, internship and co-op opportunities, a completion stipend subject to funding, and formal recognition.",
+      ],
+      examples: [
+        "Check the academic pathway requirements against the courses you were going to take anyway.",
+        "Join a cyber competition team — it's a programme requirement and a bench item in its own right.",
+        "Work toward Security+ or PenTest+, which the programme counts as applied learning.",
+      ],
+    },
+    gatekeeper:
+      "Programme selection, plus academic and clearance-eligibility requirements",
+    consumes_artifacts: ["ART-REPO", "ART-WRITEUP", "ART-TOOL"],
+    window: {
+      type: "annual",
+      note: "Runs on an annual cycle through Northeastern. Ask early — the pathway requirements affect course choices.",
+    },
+    lead_time: "6–12 months, and the academic pathway runs alongside your degree",
+    lead_time_months: 9,
+    cost: "Free to apply; a completion stipend is part of it",
+    links: [
+      {
+        title: "VICEROY DECREE",
+        url: "https://viceroydecree.org/",
+        last_verified: V_2026_09,
+      },
+    ],
+    first_move:
+      "Read the academic pathway requirements and work out how much of it you're already doing.",
+    failure_mode:
+      "Finding out about the pathway requirements too late to fit them into your remaining semesters.",
+  },
+  {
+    id: "PRV-SMART",
+    phrase: "a DoD SMART scholarship",
+    name: "DoD SMART Scholarship",
+    tier: 3,
+    brief:
+      "Science, Mathematics and Research for Transformation — a scholarship-for-service programme that funds your STEM degree and prepares you for a civilian defense career.",
+    detail: {
+      overview: [
+        "Full tuition and approved education-related fees, an annual stipend that scales with degree level, book and supply allowances, and health insurance. Also mentorship and practical experience, and employment after successfully completing the requirements.",
+        "Scholars continue their approved degree and complete summer internships at a sponsoring facility. After graduation you work as a civilian employee for one year per year of funding — two funded academic years means two years of paid civilian employment. The summer internships are separate from that commitment.",
+        "Key requirements include an eligible STEM degree and security clearance eligibility. Worth checking both before investing time in the application.",
+      ],
+      examples: [
+        "Check your degree is on the eligible list and that you'd be clearance-eligible.",
+        "Work out the real commitment: years funded equals years employed afterwards.",
+        "Look at which sponsoring facilities take interns in what you want to do.",
+      ],
+    },
+    gatekeeper:
+      "A competitive selection process plus degree and clearance eligibility requirements",
+    consumes_artifacts: ["ART-REPO", "ART-WRITEUP"],
+    window: {
+      type: "annual",
+      note: "One application cycle per year, typically opening in late summer and closing in the autumn.",
+    },
+    lead_time: "6–12 months from applying to starting",
+    lead_time_months: 9,
+    cost: "Free to apply — it pays you",
+    links: [
+      {
+        title: "SMART Scholarship",
+        url: "https://www.smartscholarship.org/smart",
+        last_verified: V_2026_09,
+      },
+    ],
+    first_move:
+      "Check the eligible degree list and the clearance requirement before writing anything.",
+    failure_mode:
+      "Treating the post-graduation commitment as fine print. It's a real multi-year obligation — good value if you want that career, expensive if you don't.",
   },
   {
     id: "PRV-RA",
@@ -1355,82 +1757,6 @@ const proveTiles: ProveTile[] = [
       "Read one recent paper from a group you'd want to join and email the author a specific question about it.",
     failure_mode:
       "Applying with grades and no research. The committee is choosing people to do research with.",
-  },
-  {
-    id: "PRV-GCIH",
-    phrase: "the GCIH",
-    name: "GCIH",
-    tier: 3,
-    brief:
-      "GIAC's incident handling certification. Well regarded in defensive and response work — and expensive enough that it's usually an employer-funded certification rather than a student one.",
-    gatekeeper: "A proctored GIAC exam",
-    consumes_artifacts: [],
-    window: {
-      type: "rolling",
-      note: "Attempts are tied to a time window once purchased.",
-    },
-    lead_time: "3–6 months",
-    lead_time_months: 4,
-    cost: "Very high — four figures standalone, far more with the SANS course",
-    detail: {
-      overview: [
-        "GIAC's incident handling certification. Well regarded in defensive and response work, and expensive enough that it is normally employer-funded rather than student-funded.",
-        "Self-funding this as an undergraduate is almost always the wrong allocation of your money. Look for work-study, employer sponsorship or a SANS scholarship programme before anything else.",
-      ],
-      examples: [
-        "Look for funding routes before you look at the syllabus.",
-        "Do the free DFIR practice first and confirm you want this specialisation.",
-      ],
-    },
-    links: [
-      {
-        title: "GIAC GCIH",
-        url: "https://www.giac.org/certifications/certified-incident-handler-gcih/",
-        last_verified: V_2026_09,
-      },
-    ],
-    first_move:
-      "Look for funding before anything else: work study, employer sponsorship, or a SANS scholarship programme. Paying retail as a student rarely makes sense.",
-    failure_mode:
-      "Self-funding this as an undergraduate. Almost always the wrong allocation of your money at this stage.",
-  },
-  {
-    id: "PRV-GCFA",
-    phrase: "the GCFA",
-    name: "GCFA",
-    tier: 3,
-    brief:
-      "GIAC's forensic analyst certification. The recognized credential for deep DFIR work, with the same funding problem as GCIH.",
-    gatekeeper: "A proctored GIAC exam",
-    consumes_artifacts: [],
-    window: {
-      type: "rolling",
-      note: "Attempts are tied to a time window once purchased.",
-    },
-    lead_time: "3–6 months",
-    lead_time_months: 4,
-    cost: "Very high — four figures standalone, far more with the SANS course",
-    detail: {
-      overview: [
-        "GIAC's forensic analyst certification. The recognised credential for deep DFIR work, with the same funding problem as GCIH.",
-        "A GCFA with no case experience reads as a purchase rather than an achievement. Do the work first — published images, practice cases, a writeup — and the certification then confirms something real.",
-      ],
-      examples: [
-        "Work through published memory and disk images first.",
-        "Find out whether an employer or the department would fund it.",
-      ],
-    },
-    links: [
-      {
-        title: "GIAC GCFA",
-        url: "https://www.giac.org/certifications/certified-forensic-analyst-gcfa/",
-        last_verified: V_2026_09,
-      },
-    ],
-    first_move:
-      "Do the free and cheap DFIR practice first and confirm you want this specialization before anyone spends this much.",
-    failure_mode:
-      "Certifying before you've done the work. A GCFA with no case experience reads as a purchase rather than an achievement.",
   },
 ];
 

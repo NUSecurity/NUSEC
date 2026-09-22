@@ -2,7 +2,7 @@ import { Domain } from "@/bench/types";
 import { V_2026_09 } from "./verified";
 
 /**
- * The 8 domains, which own the pooled resources.
+ * The 10 domains, which own the pooled resources.
  *
  * Pooling is the sustainability design. A per-skill link list means 1,000+
  * entries, which is not a curation problem but a decay problem — it would make
@@ -398,6 +398,154 @@ const domains: Domain[] = [
   /* ---------------------------------------------------------------- *
    * Stubs — honestly labeled
    * ---------------------------------------------------------------- */
+  {
+    id: "DOM-AI",
+    name: "AI Security",
+    depth: "deep",
+    brief:
+      "Attacking and defending systems that have a model in them — prompt injection, data and model supply chain, and what happens when an LLM is wired to tools it can actually use.",
+    detail: {
+      overview: [
+        "The newest field on this list and the one with the least competition. Almost nobody applying for jobs can demonstrate this yet, the tooling is immature enough that a careful student can find real things, and every company shipping an AI feature has the same handful of problems.",
+        "Most of it is not machine learning research. It is ordinary application security applied to a component that is non-deterministic and unusually trusting — which means if you can already threat model and find injection bugs, you are most of the way there.",
+        "Wide open territory, and it is moving fast enough that a writeup from this term is still current next term.",
+      ],
+      examples: [
+        "Play Gandalf for an hour and write down which techniques worked and why.",
+        "Take an LLM feature you built and see what it will do that you did not intend.",
+        "Map an AI product against the OWASP LLM Top 10 and report the gaps.",
+      ],
+    },
+    first_move:
+      "Play Gandalf for twenty minutes tonight. It is free, runs in a browser, and it is a real prompt injection exercise.",
+    failure_mode:
+      "Treating it as machine learning research. Almost all of the security work here is application security on an unusually trusting component.",
+    resources: [
+      {
+        title: "OWASP Top 10 for LLM Applications",
+        url: "https://owasp.org/www-project-top-10-for-large-language-model-applications/",
+        type: "foundation",
+        note: "The shared vocabulary for this field, and the closest thing to an agreed list of what goes wrong. Start here.",
+        last_verified: V_2026_09,
+      },
+      {
+        title: "NIST AI Risk Management Framework",
+        url: "https://www.nist.gov/itl/ai-risk-management-framework",
+        type: "foundation",
+        note: "Free, and the framework organisations are actually being measured against. Useful for the governance side of AI work.",
+        last_verified: V_2026_09,
+      },
+      {
+        title: "Gandalf",
+        url: "https://gandalf.lakera.ai/",
+        type: "hands-on",
+        note: "A prompt injection game with escalating defences. The friendliest possible way in, and genuinely instructive by level four.",
+        last_verified: V_2026_09,
+      },
+      {
+        title: "garak — LLM vulnerability scanner",
+        url: "https://github.com/NVIDIA/garak",
+        type: "hands-on",
+        note: "Point it at a model and it probes for known failure classes. Read what it checks — that list is the curriculum.",
+        last_verified: V_2026_09,
+      },
+      {
+        title: "Adversarial Robustness Toolbox",
+        url: "https://github.com/Trusted-AI/adversarial-robustness-toolbox",
+        type: "hands-on",
+        note: "Attacks and defences for classifiers, not just language models. Where to go if the model you care about is not an LLM.",
+        last_verified: V_2026_09,
+      },
+      {
+        title: "MITRE ATLAS",
+        url: "https://atlas.mitre.org/",
+        type: "reference",
+        note: "ATT&CK for machine learning systems — a catalogue of real techniques against real deployments, with case studies.",
+        last_verified: V_2026_09,
+      },
+      {
+        title: "AI Village",
+        url: "https://aivillage.org/",
+        type: "community",
+        note: "The community that runs the AI security village at the big conferences. Where the work in this field gets shown first.",
+        last_verified: V_2026_09,
+      },
+      {
+        title: "r/MachineLearning",
+        url: "https://www.reddit.com/r/MachineLearning/",
+        type: "community",
+        note: "For the model side of the question, when you need to understand what you are attacking.",
+        last_verified: V_2026_09,
+      },
+    ],
+  },
+  {
+    id: "DOM-GRC",
+    name: "GRC and Governance",
+    depth: "deep",
+    brief:
+      "Governance, risk and compliance — the policy side. Keeping an organisation compliant and its risks managed, and being able to show it.",
+    detail: {
+      overview: [
+        "One of the most beginner-accessible ways into security, and the one students dismiss fastest. It needs no lab, no exploitation skill and no hardware; it needs you to be organised, to write clearly, and to be able to hold a conversation with someone who does not work in security.",
+        "It is also where a lot of the jobs are. Every regulated company needs people who can map what they do against a framework and evidence it, and the supply of people who both understand technology and will write the document is small.",
+        "The work is real: an audit that finds a control nobody was actually performing has prevented something, even though nothing was exploited.",
+      ],
+      examples: [
+        "Map something you run against the CIS Controls and report the gaps.",
+        "Write the risk assessment for a process your team depends on.",
+        "Turn an informal team practice into a written policy people can follow.",
+      ],
+    },
+    first_move:
+      "Open the CIS Controls, pick the first five, and check them honestly against a system you already run.",
+    failure_mode:
+      "Writing a document nobody adopts. Agree up front who decides whether it gets used, or you have written an essay.",
+    resources: [
+      {
+        title: "NIST Cybersecurity Framework",
+        url: "https://www.nist.gov/cyberframework",
+        type: "foundation",
+        note: "Free, readable, and the framework most conversations start from. Learn its five functions and you can follow any GRC discussion.",
+        last_verified: V_2026_09,
+      },
+      {
+        title: "CIS Critical Security Controls",
+        url: "https://www.cisecurity.org/controls",
+        type: "foundation",
+        note: "Prioritised and concrete where other frameworks are abstract. The best first framework to actually apply to something.",
+        last_verified: V_2026_09,
+      },
+      {
+        title: "NIST SP 800-53 Rev. 5",
+        url: "https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final",
+        type: "reference",
+        note: "The full control catalogue federal systems are measured against. Enormous — use it as a reference, never read it through.",
+        last_verified: V_2026_09,
+      },
+      {
+        title: "ISO/IEC 27001",
+        url: "https://www.iso.org/standard/27001",
+        type: "reference",
+        note: "The international standard for information security management. The standard itself is paywalled; summaries are not.",
+        last_verified: null,
+      },
+      {
+        title: "The FAIR Institute",
+        url: "https://www.fairinstitute.org/",
+        type: "reference",
+        note: "How to put numbers on risk instead of calling things high, medium and low. The quantitative end of this field.",
+        last_verified: V_2026_09,
+      },
+      {
+        title: "r/grc",
+        url: "https://www.reddit.com/r/grc/",
+        type: "community",
+        note: "Practitioners, including people who will tell you which certifications are worth anything in this corner.",
+        last_verified: V_2026_09,
+      },
+    ],
+  },
   {
     id: "DOM-RE",
     name: "Reverse Engineering",

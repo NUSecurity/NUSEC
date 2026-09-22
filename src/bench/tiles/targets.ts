@@ -2,7 +2,7 @@ import { Target } from "@/bench/types";
 import { V_2026_09 } from "./verified";
 
 /**
- * The 29 objects, ordered by how many students will actually want them.
+ * The 31 objects, ordered by how many students will actually want them.
  *
  * Software targets come first because that is what the room is here for; the
  * hardware ones sit at the bottom for the people who want them. Nothing about
@@ -985,6 +985,82 @@ const targets: Target[] = [
         "Document a handover process that currently only exists in one person's head.",
       ],
     },
+  },
+  {
+    id: "TGT-LLMAPP",
+    name: "An LLM feature you built",
+    phrase: "an LLM feature I built",
+    brief:
+      "Anything you wired a model into — a chatbot, a summariser, a tool-calling agent. You wrote it, you own the keys, and you can attack it as hard as you like. The most accessible target in AI security by a wide margin.",
+    detail: {
+      overview: [
+        "Every AI security technique that matters can be practised on something you built in an afternoon. A small app that takes user text, sends it to a model, and does something with the answer already has the full problem in it.",
+        "Give it a tool — file access, a web request, a database lookup — and it stops being a toy. The moment the model's output causes an action, prompt injection has consequences, and you can study those consequences safely because it's your application.",
+        "Watch your API spend. A loop that calls a model repeatedly is the AI equivalent of leaving a cloud instance running.",
+      ],
+      examples: [
+        "Build a summariser, then feed it a document containing instructions and see what happens.",
+        "Give an agent one tool, then try to make it call that tool in a way you didn't intend.",
+        "Add guardrails to your own feature and measure how often they're bypassed.",
+      ],
+    },
+    classes: ["web-app", "process", "protocol"],
+    cost: "Free to a few dollars of API credit",
+    sourcing:
+      "Build the smallest possible one yourself, or run a local model so there's no per-call cost at all.",
+    gotchas:
+      "Set a spend limit on any API key before you start — an accidental loop can run up a bill fast. If you give the feature real tools or real data, keep both fake while you're attacking it.",
+    requires_kits: [],
+    authorization: "owned",
+    first_move:
+      "Write the smallest thing that sends user text to a model and does something with the reply. Twenty lines is enough.",
+    failure_mode:
+      "Attacking a commercial product instead of your own. Testing someone else's AI feature needs a bug bounty scope like anything else.",
+    effort: 2,
+    links: [
+      {
+        title: "OWASP Top 10 for LLM Applications",
+        url: "https://owasp.org/www-project-top-10-for-large-language-model-applications/",
+        last_verified: V_2026_09,
+      },
+      {
+        title: "Gandalf — practise prompt injection first",
+        url: "https://gandalf.lakera.ai/",
+        last_verified: V_2026_09,
+      },
+    ],
+  },
+  {
+    id: "TGT-RCDEVICE",
+    name: "A drone or RC vehicle you own",
+    phrase: "a drone I own",
+    brief:
+      "A hobby drone, an RC car, or anything else you control over radio. Embedded firmware, a radio protocol and motors that move — one of the few targets where a bug has a visible physical result.",
+    detail: {
+      overview: [
+        "These combine everything the hardware domain teaches: a microcontroller running firmware, a radio link with a protocol nobody documented, and telemetry going back the other way. Cheap models are well-studied enough that you can check your findings.",
+        "The radio link is usually the interesting part. Analysing what the controller sends, and how the vehicle decides to trust it, is a complete project that needs an SDR and no soldering.",
+        "It is also the target on this list where carelessness has the most obvious consequences, because the thing has propellers.",
+      ],
+      examples: [
+        "Capture the control link with an SDR and work out the packet structure.",
+        "Pull the firmware off the flight controller and look at how it handles a lost link.",
+        "Document the telemetry protocol for a model nobody has written up.",
+      ],
+    },
+    classes: ["physical-device", "embedded", "protocol"],
+    cost: "$30–150 for a cheap model",
+    sourcing:
+      "A cheap toy-grade drone or RC car is fine and often more interesting than an expensive one, because the cheap ones cut more corners.",
+    gotchas:
+      "Props off for any bench work — a drone that arms unexpectedly with blades on causes real injuries. Fly only where you're allowed to, and register it if your country requires that. Receiving the control link is fine; transmitting on those bands is regulated.",
+    requires_kits: ["KIT-SDR", "KIT-HWBENCH"],
+    authorization: "owned",
+    first_move:
+      "Take the propellers off, then capture one control input with an SDR and look at the waveform.",
+    failure_mode:
+      "Bench-testing with the props on. Also: transmitting to see what happens, which on these bands is both regulated and a good way to lose the vehicle.",
+    effort: 2,
   },
   {
     id: "TGT-IPCAM",

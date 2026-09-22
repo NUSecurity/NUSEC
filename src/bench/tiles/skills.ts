@@ -2,7 +2,7 @@ import { Skill } from "@/bench/types";
 import { V_2026_09 } from "./verified";
 
 /**
- * The 29 skills, four per deep domain and three or four per stub.
+ * The 37 skills, three or four per domain.
  *
  * Every rung test is phrased as something you did or didn't do. Never a
  * self-rating: students overrate themselves on sliders and underrate themselves
@@ -102,6 +102,13 @@ const skills: Skill[] = [
     failure_mode:
       "Running a scanner and reporting its output. Scanner findings aren't yours and don't survive a follow-up question.",
     resources: [
+      {
+        title: "picoCTF",
+        url: "https://picoctf.org/",
+        type: "hands-on",
+        note: "Browser-based free challenges from easy to hard, built for beginners. Now hosted as CyLab Security Academy.",
+        last_verified: V_2026_09,
+      },
       {
         title: "OWASP Top Ten",
         url: "https://owasp.org/www-project-top-ten/",
@@ -1209,6 +1216,324 @@ const skills: Skill[] = [
       "Fuzz a small parsing library with a default harness for an hour and look at what comes out.",
     failure_mode:
       "Reporting every crash. Most are the same bug; triage and deduplicate before you tell anyone.",
+    resources: [],
+  },
+  /* ---------------------------------------------------------------- *
+   * DOM-AI
+   * ---------------------------------------------------------------- */
+  {
+    id: "SKL-AI-PROMPT",
+    domain: "DOM-AI",
+    name: "Find a prompt injection in an LLM feature",
+    brief:
+      "Getting a model-backed feature to ignore its instructions and do something its author didn't intend — leak its system prompt, call a tool it shouldn't, or act on text that came from somewhere untrusted.",
+    detail: {
+      overview: [
+        "The defining vulnerability class of this field, and the one nobody has properly solved. It matters most when the model is wired to tools, because then the output isn't just words — it's actions.",
+        "Indirect injection is the interesting case: the hostile text arrives inside a document, a web page or an email the model was asked to summarise, rather than being typed by the user. That's where real incidents come from.",
+      ],
+      examples: [
+        "Clear the first four Gandalf levels and write down what changed between them.",
+        "Get an LLM feature you built to reveal its own system prompt.",
+        "Plant instructions in a document and see whether a summarising feature follows them.",
+      ],
+    },
+    rungs: {
+      recognize:
+        "You've looked at an AI feature and identified where untrusted text reaches the model.",
+      use: "You've made a model ignore its instructions on a practice target like Gandalf.",
+      build:
+        "You've found an injection in an application nobody told you was vulnerable, and shown real impact.",
+      teach:
+        "You've walked someone through their first injection and they found the next one alone.",
+    },
+    exercised_by: ["PAT-BREAK", "PAT-AUDIT", "PAT-DOCUMENT"],
+    first_move:
+      "Play Gandalf for twenty minutes and write down each technique that worked.",
+    failure_mode:
+      "Stopping at making the model say something rude. The finding is what the model can *do* — which tool it calls, what data it reaches.",
+    resources: [
+      {
+        title: "LetsDefend",
+        url: "https://letsdefend.io/",
+        type: "hands-on",
+        note: "A guided SOC simulator — alerts arrive in a queue and you work them. The closest thing to sitting at the desk.",
+        last_verified: V_2026_09,
+      },
+      {
+        title: "OWASP LLM Top 10 — LLM01 Prompt Injection",
+        url: "https://owasp.org/www-project-top-10-for-large-language-model-applications/",
+        type: "reference",
+        note: "The canonical description of the class, with mitigations that are honest about not fully working.",
+        last_verified: V_2026_09,
+      },
+    ],
+  },
+  {
+    id: "SKL-AI-REDTEAM",
+    domain: "DOM-AI",
+    name: "Red-team a model methodically",
+    brief:
+      "Probing a model for harmful output, leaked training data or unsafe behaviour — systematically, with a recorded method, rather than by poking at it until something interesting happens.",
+    detail: {
+      overview: [
+        "The difference between red-teaming and messing about is the record. A method someone else can repeat, a set of prompts, and a rate rather than an anecdote — because models are non-deterministic and a single bad output proves very little.",
+        "Automated tooling does the breadth; your judgement does the part that matters, which is deciding which failures are actually a problem in this deployment.",
+      ],
+      examples: [
+        "Run garak against a local model and read every failure class it checks.",
+        "Design twenty prompts for one failure mode and report how often it fires.",
+        "Compare two models on the same prompt set and write up the difference.",
+      ],
+    },
+    rungs: {
+      recognize:
+        "You can say why one bad output isn't a finding and a measured rate is.",
+      use: "You've run an automated red-teaming tool against a model and read its results.",
+      build:
+        "You've designed your own prompt set for a specific failure mode and measured how often it succeeds.",
+      teach:
+        "You've taught someone to red-team with a written method and their results were reproducible.",
+    },
+    exercised_by: ["PAT-BREAK", "PAT-MEASURE", "PAT-AUDIT"],
+    first_move:
+      "Pick one failure you care about and write ten prompts aimed at it before running anything automated.",
+    failure_mode:
+      "Reporting a single screenshot. One output from a non-deterministic system is an anecdote — report a rate over a fixed prompt set.",
+    resources: [
+      {
+        title: "garak",
+        url: "https://github.com/NVIDIA/garak",
+        type: "hands-on",
+        note: "The practical starting point for automated probing, and its probe list doubles as a syllabus.",
+        last_verified: V_2026_09,
+      },
+    ],
+  },
+  {
+    id: "SKL-AI-PIPELINE",
+    domain: "DOM-AI",
+    name: "Threat model an AI system end to end",
+    brief:
+      "Mapping everything an AI feature depends on — training data, model weights, the prompt, retrieved documents, the tools it can call — and finding which of those an attacker can influence.",
+    detail: {
+      overview: [
+        "AI systems have a wider supply chain than people expect. A downloaded model, a vector database anyone can write to, a plugin with its own credentials: each is a trust boundary, and most teams have never drawn them.",
+        "This is ordinary threat modelling applied to an unfamiliar shape, which makes it one of the fastest ways for someone with appsec instincts to become useful in AI security.",
+      ],
+      examples: [
+        "Draw the full data flow of an AI feature on one page, including where each document comes from.",
+        "Map a product against MITRE ATLAS and mark which techniques apply.",
+        "Work out what a poisoned document in a retrieval index could reach.",
+      ],
+    },
+    rungs: {
+      recognize:
+        "You can name the parts of an AI system an attacker might influence.",
+      use: "You've drawn the data flow for an AI feature and marked its trust boundaries.",
+      build:
+        "You've produced a threat model for a real AI system that changed a decision.",
+      teach:
+        "You've run a modelling session for an AI feature and someone else did the modelling.",
+    },
+    exercised_by: ["PAT-AUDIT", "PAT-DOCUMENT", "PAT-HARDEN"],
+    first_move:
+      "Pick any AI feature you use and write down every place its input could have come from someone else.",
+    failure_mode:
+      "Modelling only the prompt. The model weights, the retrieval index and the tool credentials are all part of the system.",
+    resources: [
+      {
+        title: "MITRE ATLAS",
+        url: "https://atlas.mitre.org/",
+        type: "reference",
+        note: "Real techniques against real ML deployments, with case studies. The closest thing to an attack catalogue for this.",
+        last_verified: V_2026_09,
+      },
+    ],
+  },
+  {
+    id: "SKL-AI-DEFEND",
+    domain: "DOM-AI",
+    name: "Put guardrails on an LLM feature and test them",
+    brief:
+      "Adding input filtering, output checking, tool permission limits and logging around a model — then demonstrating what they actually block, rather than assuming.",
+    detail: {
+      overview: [
+        "The defensive side, and the one companies are hiring for right now because everyone shipped an AI feature and nobody constrained it. The highest-value control is almost always the least glamorous: limiting what the model is allowed to call.",
+        "Prompt-level defences are partial by nature. Being honest in your writeup about what a guardrail does and doesn't stop is more valuable than claiming it works.",
+      ],
+      examples: [
+        "Constrain an LLM feature's tool permissions and show the injection failing.",
+        "Add output checks and measure what they catch and what they miss.",
+        "Log every model call and analyse a week of them.",
+      ],
+    },
+    rungs: {
+      recognize:
+        "You can name the layers a guardrail could sit at — input, output, tools, logging.",
+      use: "You've added a filter to an AI feature and confirmed it blocks a specific attempt.",
+      build:
+        "You've designed guardrails for something you built and measured what they stop.",
+      teach:
+        "You've taught someone to test their own guardrails rather than trust them.",
+    },
+    exercised_by: ["PAT-HARDEN", "PAT-DETECT", "PAT-INSTRUMENT"],
+    first_move:
+      "Take an AI feature and write down every tool or piece of data it can currently reach. That list is the attack surface.",
+    failure_mode:
+      "Shipping a prompt that says \"ignore malicious instructions\" and calling it a control. Test it, and report the bypass rate.",
+    resources: [],
+  },
+
+  /* ---------------------------------------------------------------- *
+   * DOM-GRC
+   * ---------------------------------------------------------------- */
+  {
+    id: "SKL-GRC-FRAMEWORK",
+    domain: "DOM-GRC",
+    name: "Map a system to a control framework",
+    brief:
+      "Taking a published framework and working out, control by control, what a real system does and doesn't satisfy — with evidence for each verdict.",
+    detail: {
+      overview: [
+        "The core GRC skill and the most immediately employable thing in this domain. Every regulated organisation needs it continuously, and it needs no lab — just a system, a framework, and the patience to go all the way across.",
+        "The verdicts that take judgement are the not-applicables. Anyone can mark a pass; explaining why a control doesn't apply here, defensibly, is the actual work.",
+      ],
+      examples: [
+        "Map something you run against the first ten CIS Controls with evidence for each.",
+        "Map a cloud account against a benchmark and report pass, fail and N/A.",
+        "Compare two frameworks on the same system and report where they disagree.",
+      ],
+    },
+    rungs: {
+      recognize:
+        "You can name a published framework and say what kind of system it's for.",
+      use: "You've checked a system against a handful of controls and recorded a verdict for each.",
+      build:
+        "You've mapped a real system across a full framework, with evidence and defensible N/As.",
+      teach:
+        "You've taught someone to map a system and their verdicts held up to questioning.",
+    },
+    exercised_by: ["PAT-AUDIT", "PAT-DOCUMENT", "PAT-COMPARE"],
+    first_move:
+      "Open the CIS Controls, take the first five, and check them honestly against something you already run.",
+    failure_mode:
+      "Marking controls compliant because the capability exists somewhere. The question is whether it's actually operating, with evidence.",
+    resources: [
+      {
+        title: "CIS Critical Security Controls",
+        url: "https://www.cisecurity.org/controls",
+        type: "hands-on",
+        note: "Prioritised and concrete. The best framework to try this on first because you can act on control one immediately.",
+        last_verified: V_2026_09,
+      },
+    ],
+  },
+  {
+    id: "SKL-GRC-RISK",
+    domain: "DOM-GRC",
+    name: "Write a risk assessment someone can act on",
+    brief:
+      "Naming what could go wrong, how likely it is, what it would cost, and what to do — in a form a decision-maker can act on rather than file.",
+    detail: {
+      overview: [
+        "Most risk registers are colour-coded lists nobody reads. A useful assessment names a specific scenario, is honest about uncertainty, and ends in a recommendation someone can approve or reject.",
+        "The quantitative end of this — putting ranges on likelihood and cost instead of calling things high — is where the field is moving and where the shortage of people is worst.",
+      ],
+      examples: [
+        "Write a one-page assessment for a real scenario your team faces.",
+        "Take a colour-coded risk and re-express it as a range of likelihood and cost.",
+        "Present a risk to someone non-technical and see whether they can decide from it.",
+      ],
+    },
+    rungs: {
+      recognize:
+        "You can tell the difference between a threat, a vulnerability and a risk.",
+      use: "You've written a risk assessment following an existing template.",
+      build:
+        "You've assessed a real risk with your own scenario and defended the rating.",
+      teach:
+        "You've reviewed someone else's assessment and their next one was better.",
+    },
+    exercised_by: ["PAT-AUDIT", "PAT-MEASURE", "PAT-DOCUMENT"],
+    first_move:
+      "Pick one thing that could plausibly go wrong for your team and write the single page: scenario, likelihood, cost, recommendation.",
+    failure_mode:
+      "Rating everything high. If nothing is low, the assessment has ranked nothing and nobody can prioritise from it.",
+    resources: [
+      {
+        title: "The FAIR Institute",
+        url: "https://www.fairinstitute.org/",
+        type: "foundation",
+        note: "How to put numbers on risk rather than adjectives. Free material, and the direction serious risk work is going.",
+        last_verified: V_2026_09,
+      },
+    ],
+  },
+  {
+    id: "SKL-GRC-POLICY",
+    domain: "DOM-GRC",
+    name: "Write a policy people will actually follow",
+    brief:
+      "Turning an intention into a written rule that's specific enough to check and reasonable enough that people don't route around it.",
+    detail: {
+      overview: [
+        "A policy nobody follows is worse than none, because it creates the appearance of a control where there isn't one. The craft is writing something enforceable that doesn't make the ordinary path so painful that people invent a worse one.",
+        "Student organisations are an unusually good place to practise: real people, real consequences, and you can watch whether it gets followed.",
+      ],
+      examples: [
+        "Write your team's credential handling policy as one page.",
+        "Take an unwritten practice and write it down, then check whether people follow it.",
+        "Rewrite a policy that's being routed around, and find out why it was.",
+      ],
+    },
+    rungs: {
+      recognize:
+        "You can read a policy and say which parts are checkable and which are aspiration.",
+      use: "You've written a policy section using an existing template.",
+      build:
+        "You've written a policy that a team adopted and that you've seen followed.",
+      teach:
+        "You've helped someone else write one and it was adopted.",
+    },
+    exercised_by: ["PAT-DOCUMENT", "PAT-HARDEN", "PAT-AUTOMATE"],
+    first_move:
+      "Ask your team what rule everyone assumes exists but nobody has written down, and write that one.",
+    failure_mode:
+      "Writing what people should do rather than what they will. If the compliant path is harder than the alternative, you've written a wish.",
+    resources: [],
+  },
+  {
+    id: "SKL-GRC-EVIDENCE",
+    domain: "DOM-GRC",
+    name: "Collect audit evidence that holds up",
+    brief:
+      "Gathering proof that a control is actually operating — not that it exists — in a form an auditor or a sceptical reader can check independently.",
+    detail: {
+      overview: [
+        "The unglamorous half of compliance and the half that fails audits. \"We have MFA\" is a claim; a report showing MFA enrolment across every account with the date it was pulled is evidence.",
+        "It automates well, which is why this skill pairs so naturally with scripting: the person who can both explain the control and produce the evidence on demand is worth a great deal to a compliance team.",
+      ],
+      examples: [
+        "Produce evidence that one control is operating on a system you run.",
+        "Automate that collection so it can be re-run on demand.",
+        "Hand your evidence to someone sceptical and see whether it convinces them.",
+      ],
+    },
+    rungs: {
+      recognize:
+        "You can tell the difference between a control existing and a control operating.",
+      use: "You've collected evidence for a control and dated and labelled it.",
+      build:
+        "You've automated evidence collection for a set of controls.",
+      teach:
+        "You've taught someone what counts as evidence and their next submission was accepted.",
+    },
+    exercised_by: ["PAT-AUDIT", "PAT-AUTOMATE", "PAT-INSTRUMENT"],
+    first_move:
+      "Pick one control on a system you run and produce dated proof that it's operating today.",
+    failure_mode:
+      "Screenshots with no date, no scope and no source. Evidence has to say when it was taken and what it covers.",
     resources: [],
   },
 ];

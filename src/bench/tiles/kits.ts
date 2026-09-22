@@ -1,7 +1,7 @@
 import { Kit } from "@/bench/types";
 
 /**
- * The 6 prerequisites.
+ * The 7 prerequisites.
  *
  * Kit exists because "home lab" broke the grammar. A home lab is not a project
  * — it's the floor a project stands on. Making it a project means half the room
@@ -137,6 +137,29 @@ const kits: Kit[] = [
       "Build the VM, set its network adapter to host-only or disabled, and take the clean snapshot. Verify from inside the VM that it genuinely cannot reach the internet.",
     failure_mode:
       "Trusting the isolation you didn't test, or forgetting to revert between samples. Check the isolation from inside, and revert every single time.",
+  },
+  {
+    id: "KIT-SITE",
+    name: "Somewhere to publish",
+    brief:
+      "A blog, a personal site, or just a repo you write in. Not a project — the floor every writeup, teardown and finding stands on. Having somewhere public for your work is what makes the rest of this visible to anyone.",
+    detail: {
+      overview: [
+        "Every artifact in this tool needs an address. A writeup nobody can link to is a document on your laptop, and the whole point of a Tier-0 artifact is that someone can look at it without you in the room.",
+        "It does not need to be impressive. A GitHub Pages site with three posts beats a beautifully designed one with none, and the people who look at these are reading the content, not judging the CSS.",
+        "Start it before you have something to put on it. The friction of setting a site up is exactly the friction that stops a finished project from ever being published.",
+      ],
+      examples: [
+        "Put up a GitHub Pages site today with one post about something you already did.",
+        "Write up the last thing you figured out the hard way.",
+        "Link it from your résumé and your profile, which is the entire point.",
+      ],
+    },
+    cost: "Free",
+    first_move:
+      "Create the repo and publish one post — even a short one — before you have anything you think is worth publishing.",
+    failure_mode:
+      "Spending three weekends on the theme and never writing a post. Also: waiting until you have something impressive, which never arrives.",
   },
 ];
 
