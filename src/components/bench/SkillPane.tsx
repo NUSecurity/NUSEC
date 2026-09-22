@@ -114,10 +114,10 @@ const SkillPane = ({ state, open, onOpen, onChange, onNext }: SkillPaneProps) =>
         ready,
       }}
     >
-      <div className="grid min-h-0 gap-5 lg:h-full lg:grid-cols-[minmax(0,1fr)_22rem]">
-        <div className="grid min-h-0 gap-5 sm:grid-cols-2">
+      <div className="grid min-h-0 gap-6 lg:h-full lg:grid-cols-[minmax(0,1fr)_22rem]">
+        <div className="grid min-h-0 gap-6 sm:grid-cols-2">
           {[0, 1].map((half) => (
-            <div key={half} className="flex min-h-0 flex-col gap-4 lg:overflow-y-auto lg:pr-1">
+            <div key={half} className="flex min-h-0 flex-col gap-5 lg:overflow-y-auto lg:pr-2">
               {skillsByDomain
                 .filter((_, index) => index % 2 === half)
                 .map(({ domain: group, skills: groupSkills }) => (
@@ -125,7 +125,7 @@ const SkillPane = ({ state, open, onOpen, onChange, onNext }: SkillPaneProps) =>
                     <h3 className="mb-1.5 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-foreground/80">
                       {group.name}
                     </h3>
-                    <div className="space-y-1.5">
+                    <div className="space-y-2.5">
                       {groupSkills.map((tile) => (
                         <TileRow
                           key={tile.id}
@@ -148,7 +148,7 @@ const SkillPane = ({ state, open, onOpen, onChange, onNext }: SkillPaneProps) =>
           ))}
         </div>
 
-        <div className="flex min-h-0 flex-col lg:overflow-y-auto lg:pr-1">
+        <div className="flex min-h-0 flex-col lg:overflow-y-auto lg:pr-2">
           {skill && domain ? (
             <div className="rounded-lg border border-primary/40 bg-primary/5 p-4">
               <h3 className="text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-primary">

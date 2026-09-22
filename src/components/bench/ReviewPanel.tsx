@@ -71,7 +71,7 @@ const ReviewPanel = ({
   const prove = state.prove ? getProve(state.prove) : null;
 
   return (
-    <div className="min-h-0 flex-1 space-y-5 lg:overflow-y-auto lg:pr-1">
+    <div className="min-h-0 flex-1 space-y-5 lg:overflow-y-auto lg:pr-2">
       <section className="rounded-lg border border-primary/40 bg-primary/5 p-5">
         <h2 className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-primary">
           Your bench

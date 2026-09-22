@@ -56,7 +56,7 @@ const ProvePane = ({ state, open, onOpen, onChange, onNext }: ProvePaneProps) =>
       }}
     >
       <div className="flex min-h-0 flex-col gap-4 lg:h-full">
-        <div className="grid min-h-0 flex-1 gap-5 lg:grid-cols-3">
+        <div className="grid min-h-0 flex-1 gap-6 lg:grid-cols-3">
           {tiers.map((tier) => (
             <TileGroup
               key={tier}

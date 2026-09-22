@@ -114,8 +114,8 @@ const CareerBench = () => {
           </div>
         </header>
 
-        <div className="container mx-auto grid min-h-0 max-w-[110rem] flex-1 gap-6 px-4 py-5 lg:grid-cols-[16rem_minmax(0,1fr)]">
-          <div className="min-h-0 lg:overflow-y-auto lg:pr-1">
+        <div className="container mx-auto grid min-h-0 max-w-[110rem] flex-1 gap-7 px-5 py-6 lg:grid-cols-[16rem_minmax(0,1fr)]">
+          <div className="min-h-0 lg:overflow-y-auto lg:pr-2">
             <BenchRail
               state={state}
               step={step}

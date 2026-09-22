@@ -46,7 +46,7 @@ const Panel = ({
     <div
       className={
         scrollBody
-          ? "min-h-0 flex-1 space-y-5 lg:overflow-y-auto lg:pr-1"
+          ? "min-h-0 flex-1 space-y-5 lg:overflow-y-auto lg:pr-2"
           : "min-h-0 flex-1"
       }
     >
@@ -108,7 +108,7 @@ export const TileGroup = ({
     {/* Each column keeps its own scroll on a large screen; on a phone the
         page scrolls normally, because a locked viewport there fights the
         browser chrome and loses. */}
-    <div className="min-h-0 flex-1 space-y-1.5 pb-1 lg:overflow-y-auto lg:pr-1">
+    <div className="min-h-0 flex-1 space-y-2.5 pb-2 lg:overflow-y-auto lg:pr-2">
       {children}
     </div>
   </div>
