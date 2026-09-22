@@ -270,14 +270,34 @@ export interface TileLink {
   last_verified: string | null;
 }
 
+/**
+ * What the tile's full-screen view shows.
+ *
+ * The card is deliberately small — a name and a line of context — because a
+ * grid of paragraphs is unreadable. Everything that used to be crammed onto
+ * the card lives here instead, along with the depth there was never room for:
+ * what the thing looks like in different settings, and concrete examples.
+ * Nothing is lost by shrinking the card; there is more here than there was.
+ */
+export interface TileDetail {
+  /** Paragraphs expanding the brief. */
+  overview: string[];
+  /** The same idea in different settings — audit a network vs audit firmware. */
+  contexts?: { label: string; body: string }[];
+  /** Concrete things someone could actually go and do. */
+  examples?: string[];
+}
+
 export interface TileBase {
   name: string;
   /** 2–3 sentences, plain language, no jargon the tile itself teaches. */
   brief: string;
   /** The smallest physical action that starts this. Never "research X". */
   first_move: string;
-  /** How people actually lose here. */
+  /** How people actually lose here. Shown as "common pitfalls". */
   failure_mode: string;
+  /** The full-screen view. */
+  detail: TileDetail;
 }
 
 export const resourceTypeCaps: Record<ResourceType, number> = {
@@ -489,6 +509,13 @@ export const windowTypeLabels: Record<WindowType, string> = {
 
 export interface ProveTile extends TileBase {
   id: ProveId;
+  /**
+   * How it reads mid-sentence: "I am going for <phrase>". Tile names are noun
+   * phrases written for a list, and dropping one into a sentence produced
+   * things like "putting a writeup through Merged PR to a project you don't
+   * own". The sentence gets its own wording.
+   */
+  phrase: string;
   tier: 1 | 2 | 3;
   /** Named so the sorting question answers itself: who could have rejected this? */
   gatekeeper: string;

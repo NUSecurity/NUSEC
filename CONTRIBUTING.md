@@ -96,6 +96,30 @@ Plain language. No jargon that the tile itself is supposed to teach. Say what th
 
 **If there is a safety issue, it goes here and it goes first.** Mains voltage, transmitting on regulated bands, cloning access credentials, cloud billing. Be blunt.
 
+### `detail` — what the full-screen view shows
+
+The card on the board is just a name and one line. Everything else lives behind the ⓘ, and this is that everything:
+
+```ts
+detail: {
+  overview: [
+    "What this really is, beyond the one-line brief.",
+    "Why someone would pick it, and what makes it hard.",
+  ],
+  contexts: [
+    { label: "Web application", body: "How this plays out here specifically." },
+    { label: "Firmware", body: "And how it differs here." },
+  ],
+  examples: [
+    "A concrete thing someone could go and do this week.",
+  ],
+},
+```
+
+`overview` is required; `contexts` and `examples` are optional but a tile without at least examples is thin. `contexts` is the field that earns the full-screen view — the same verb applied to a network and to firmware are genuinely different jobs, and saying so is most of the teaching.
+
+Write it for someone who has never heard the term. This is the only place they will get depth, so don't be brief here — brevity belongs on the card.
+
 ---
 
 ## Rules that aren't negotiable

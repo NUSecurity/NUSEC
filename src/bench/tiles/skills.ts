@@ -31,6 +31,16 @@ const skills: Skill[] = [
       teach:
         "You've watched someone else enumerate a box and corrected their method, and they finished it.",
     },
+    detail: {
+      overview: [
+        "Working out what's on a network and what it's running, the same way every time, so you don't miss the one service that mattered. Method beats cleverness here by a wide margin.",
+        "Almost every stuck moment on a box is a service, a directory or a virtual host nobody enumerated properly — not a technique nobody knows. People who get good at this have a written procedure and follow it even when it's boring.",
+      ],
+      examples: [
+        "Run a full port scan alongside your quick one and compare what the quick one missed.",
+        "Write your own enumeration checklist and use it on three boxes without skipping steps.",
+      ],
+    },
     exercised_by: ["PAT-BREAK", "PAT-AUDIT", "PAT-MEASURE"],
     first_move:
       "Run `nmap -sC -sV` against a box you own and read every line of the output, including the ones you don't understand.",
@@ -74,6 +84,17 @@ const skills: Skill[] = [
         "You've found and exploited a bug in an application nobody told you was vulnerable.",
       teach:
         "You've walked someone through finding their first injection, and they found the next one alone.",
+    },
+    detail: {
+      overview: [
+        "Finding and exploiting the common web vulnerability classes manually — injection, broken access control, SSRF, deserialization — without a scanner telling you where to look.",
+        "By hand is the requirement. A scanner finding it teaches you nothing and the finding isn't yours; it won't survive the first follow-up question in an interview.",
+        "Access control is the most valuable class to get good at, because scanners are worst at it and it is the most common serious finding in real applications.",
+      ],
+      examples: [
+        "Complete PortSwigger labs in three classes you've never tried.",
+        "Find an access-control flaw in an app nobody told you was vulnerable.",
+      ],
     },
     exercised_by: ["PAT-BREAK", "PAT-AUDIT"],
     first_move:
@@ -119,6 +140,26 @@ const skills: Skill[] = [
       teach:
         "You've taught someone the enumerate-then-escalate loop and watched them do it unaided.",
     },
+    detail: {
+      overview: [
+        "Turning a foothold into administrative control. Both operating systems, because the jobs want both and students almost always skip Windows.",
+        "The enumeration scripts find it; you have to read what they found. Running linPEAS and scrolling past the answer is the standard failure, and it happens because people don't know what they're looking at.",
+      ],
+      contexts: [
+        {
+          label: "Linux",
+          body: "sudo rules, SUID binaries, writable service files, cron, capabilities. GTFOBins tells you what to do with each once you spot it.",
+        },
+        {
+          label: "Windows",
+          body: "Service permissions, unquoted paths, token privileges, stored credentials. Less familiar to most students and more valuable for exactly that reason.",
+        },
+      ],
+      examples: [
+        "Run sudo -l and a SUID search on a box you own, and work out what each result would let you do.",
+        "Escalate on an unseen box on both operating systems with no hints.",
+      ],
+    },
     exercised_by: ["PAT-BREAK", "PAT-HARDEN"],
     first_move:
       "On any Linux box you own, run `sudo -l` and `find / -perm -4000 2>/dev/null` and work out what each result would let you do.",
@@ -163,6 +204,17 @@ const skills: Skill[] = [
       teach:
         "You've reviewed someone else's finding, sent it back with specific changes, and they improved it.",
     },
+    detail: {
+      overview: [
+        "The part that turns access into value. A finding names the issue, proves it reproducibly, explains real business impact, and says what to do — written for someone who wasn't there.",
+        "This is the most underrated skill in offensive security and the one that most separates people who get hired from people who are technically capable. CPTC scores it heavily for exactly that reason.",
+        "\"An attacker could gain access\" is not impact. Say what they'd reach and why that costs the client something.",
+      ],
+      examples: [
+        "Take a box you already solved and write one finding from it, one page, with reproduction steps.",
+        "Read three real pentest reports from different firms and note what the good findings share.",
+      ],
+    },
     exercised_by: ["PAT-BREAK", "PAT-AUDIT", "PAT-HARDEN"],
     first_move:
       "Take a box you already solved and write one finding from it. One page, with reproduction steps.",
@@ -203,6 +255,16 @@ const skills: Skill[] = [
         "You've written a script that chains several tools to do something you actually needed done.",
       teach:
         "You've sat with someone during their first serious terminal session and they finished the task.",
+    },
+    detail: {
+      overview: [
+        "Doing real work over SSH on a machine with no desktop — editing, searching, moving data, managing long-running jobs. Every remote system you will ever touch is this.",
+        "The people who are good at this know the model, not the commands. They know where things live and why, so they can work out the command they don't remember.",
+      ],
+      examples: [
+        "Do one thing you'd normally do in a GUI in the terminal instead, tonight.",
+        "Work through OverTheWire Bandit until the levels stop being puzzles.",
+      ],
     },
     exercised_by: ["PAT-AUTOMATE", "PAT-MEASURE", "PAT-INSTRUMENT", "PAT-VISUALIZE"],
     first_move:
@@ -248,6 +310,16 @@ const skills: Skill[] = [
       teach:
         "You've explained the unit lifecycle to someone and they wrote a working unit afterwards.",
     },
+    detail: {
+      overview: [
+        "Understanding how services start, what they run as, what happens when they fail, and how to write a unit yourself. Every modern Linux service is a unit file, including the ones you'll be asked to secure.",
+        "The sandboxing directives are where the security lives and almost nobody uses them. Knowing that systemd.exec page well is a genuine differentiator for an operations or platform role.",
+      ],
+      examples: [
+        "Run systemctl cat on a service that's been running on your machine all along and read it.",
+        "Write a unit from scratch for something you wrote, with hardening directives, and test each one.",
+      ],
+    },
     exercised_by: ["PAT-HARDEN", "PAT-AUTOMATE", "PAT-INSTRUMENT"],
     first_move:
       "Run `systemctl cat ssh` (or `sshd`) and read the unit that's been running on your machine all along.",
@@ -292,6 +364,16 @@ const skills: Skill[] = [
       teach:
         "You've shown someone how to trace a failing program and they diagnosed the next one alone.",
     },
+    detail: {
+      overview: [
+        "Watching what a program actually does rather than what it says it does. The fastest way to answer \"why is this failing\" and \"what is this binary touching\".",
+        "Filter before you read. An unfiltered strace is a screenful per second and drowning in it is how people decide this is too hard.",
+      ],
+      examples: [
+        "strace ls filtered to file opens, and read what a program that simple actually touches.",
+        "Diagnose a real failure — a program that won't start — by finding the file it couldn't open.",
+      ],
+    },
     exercised_by: ["PAT-INSTRUMENT", "PAT-BREAK", "PAT-MEASURE", "PAT-DETECT"],
     first_move:
       "Run `strace -f -e trace=openat ls` and read what a program as simple as `ls` actually opens.",
@@ -335,6 +417,16 @@ const skills: Skill[] = [
         "You've fixed a build that failed, where the fix wasn't in the project's documentation.",
       teach:
         "You've helped someone through a build failure by teaching them to read the error, not by fixing it for them.",
+    },
+    detail: {
+      overview: [
+        "Compiling software yourself and fixing it when it fails — missing headers, wrong toolchain, broken configure. This gates an enormous amount of security work and it's where most people quietly give up.",
+        "The first error is the real one; the rest are its consequences. Reading it before pasting it into a search engine is most of the skill.",
+      ],
+      examples: [
+        "Clone a tool you use, build from source, and run your build instead of the packaged one.",
+        "Fix a build that fails, where the fix isn't in the project's documentation, and upstream it.",
+      ],
     },
     exercised_by: ["PAT-REIMPLEMENT", "PAT-FIRMWARE", "PAT-SIMULATE", "PAT-AUTOMATE", "PAT-PORT"],
     first_move:
@@ -384,6 +476,16 @@ const skills: Skill[] = [
       teach:
         "You've sat with someone while they found their first UART and they got output.",
     },
+    detail: {
+      overview: [
+        "Locating the serial console a vendor left on the board and getting a terminal on it. The single highest-value hardware skill — it's how most device projects actually begin.",
+        "Leave the adapter's VCC alone. You want ground, TX and RX; let the board power itself.",
+      ],
+      examples: [
+        "Find the four-pad row on an old router board and measure which pad sits at 3.3V constant.",
+        "Find a UART on an unlabelled board, work out the baud rate, and get a shell.",
+      ],
+    },
     exercised_by: ["PAT-TEARDOWN", "PAT-BRIDGE", "PAT-FIRMWARE"],
     first_move:
       "Find the four-pad row on any old router board and measure which pad sits at 3.3V constant — that's usually VCC, and TX is usually next to it.",
@@ -428,6 +530,16 @@ const skills: Skill[] = [
       teach:
         "You've guided someone through their first in-circuit dump and it worked.",
     },
+    detail: {
+      overview: [
+        "Reading a device's flash chip while it's still soldered to the board, using a clip and a programmer. How you get firmware from a device whose vendor published nothing.",
+        "Read the chip twice and compare hashes. In-circuit reads fail partially and silently, and a bad dump wastes days of analysis.",
+      ],
+      examples: [
+        "Identify the flash chip on a board you own and look up its datasheet pinout.",
+        "Pull a dump that binwalk recognises, verified against a second read.",
+      ],
+    },
     exercised_by: ["PAT-TEARDOWN", "PAT-FIRMWARE"],
     first_move:
       "Identify the flash chip on a board you already own and look up its datasheet. Reading the pinout is free.",
@@ -465,6 +577,16 @@ const skills: Skill[] = [
       teach:
         "You've walked someone through a datasheet for a part they needed and they wired it correctly.",
     },
+    detail: {
+      overview: [
+        "Getting enough from a chip's documentation to know what it will do before you power anything. Saves hardware, and it's the difference between experimenting and guessing.",
+        "Datasheets are reference documents, not books. Go to the pinout, the electrical characteristics, and the one section you need.",
+      ],
+      examples: [
+        "Take a part number off any chip in front of you and find its pinout diagram.",
+        "Predict a behaviour from a datasheet, test it, and find out precisely why you were wrong.",
+      ],
+    },
     exercised_by: ["PAT-TEARDOWN", "PAT-SIMULATE", "PAT-BRIDGE", "PAT-DOCUMENT"],
     first_move:
       "Take the part number off any chip in front of you, find its datasheet, and locate the pinout diagram.",
@@ -501,6 +623,16 @@ const skills: Skill[] = [
         "You've decoded a bus nobody labeled, worked out the message format, and documented it.",
       teach:
         "You've taught someone to hook up an analyzer and capture a clean trace, and they read it.",
+    },
+    detail: {
+      overview: [
+        "Capturing the digital traffic between two chips and working out what protocol it is and what it's saying. Turns an opaque board into a conversation you can read.",
+        "Sample at least four times the bus clock and always capture ground. Sampling too slowly and decoding noise is the classic first attempt.",
+      ],
+      examples: [
+        "Capture a transaction on a dev board whose content you already know.",
+        "Decode a bus nobody labelled, work out the message format, and document it.",
+      ],
     },
     exercised_by: ["PAT-TEARDOWN", "PAT-INSTRUMENT", "PAT-BRIDGE"],
     first_move:
@@ -543,6 +675,16 @@ const skills: Skill[] = [
       teach:
         "You've taught someone to read a stack frame and they traced the next function themselves.",
     },
+    detail: {
+      overview: [
+        "Following assembly directly — calling conventions, stack frames, control flow. The decompiler is a hypothesis; this is how you check it.",
+        "The decompiler is confidently wrong often enough that being unable to check it is a real limitation, not a theoretical one.",
+      ],
+      examples: [
+        "Compile a five-line C function, objdump it, and match every line to your source.",
+        "Understand a function whose decompilation was unreadable, by reading the assembly.",
+      ],
+    },
     exercised_by: ["PAT-BREAK", "PAT-REIMPLEMENT", "PAT-PORT"],
     first_move:
       "Compile a five-line C function, run `objdump -d` on it, and match every line of assembly to your source.",
@@ -564,6 +706,16 @@ const skills: Skill[] = [
         "You've reverse engineered a meaningful chunk of a stripped binary, naming functions as you went.",
       teach:
         "You've shown someone the strings-to-xrefs workflow and they used it to find their own starting point.",
+    },
+    detail: {
+      overview: [
+        "Finding your way around a binary with no symbols — locating interesting functions, naming things as you learn them, and building a map that holds between sessions.",
+        "Rename everything you understand. Every function you leave as FUN_00401a30 is one you'll work out again next week.",
+      ],
+      examples: [
+        "Open any binary from /usr/bin and follow a string reference to the function that uses it.",
+        "Reverse a meaningful chunk of a stripped binary, naming as you go.",
+      ],
     },
     exercised_by: ["PAT-FIRMWARE", "PAT-BREAK", "PAT-REIMPLEMENT", "PAT-COMPARE"],
     first_move:
@@ -587,6 +739,16 @@ const skills: Skill[] = [
       teach:
         "You've taught someone to spot a packed binary and they unpacked one themselves.",
     },
+    detail: {
+      overview: [
+        "Getting past what a binary does to resist you — debugger detection, packing, string encryption, control flow flattening.",
+        "Often you can go around rather than through. Letting it run and taking the result is frequently faster than defeating the check.",
+      ],
+      examples: [
+        "Pack a hello-world binary with UPX and unpack it by hand rather than with upx -d.",
+        "Defeat an anti-debugging check you hadn't seen before and document how.",
+      ],
+    },
     exercised_by: ["PAT-BREAK", "PAT-FIRMWARE"],
     first_move:
       "Pack a hello-world binary with UPX and unpack it by hand rather than with `upx -d`.",
@@ -608,6 +770,16 @@ const skills: Skill[] = [
         "You've documented an undocumented format well enough to write a working parser.",
       teach:
         "You've taught someone the change-one-thing-and-diff method and they mapped a field with it.",
+    },
+    detail: {
+      overview: [
+        "Working out the structure of data nobody published a spec for — headers, lengths, offsets, checksums — usually by changing one thing and watching which bytes move.",
+        "One controlled change at a time. Guessing at structure instead of generating differences is slower and produces wrong answers you believe.",
+      ],
+      examples: [
+        "Save a file twice with one known change and diff them in a hex editor.",
+        "Document an undocumented format well enough to write a working parser.",
+      ],
     },
     exercised_by: ["PAT-REIMPLEMENT", "PAT-BRIDGE", "PAT-SIMULATE", "PAT-FIRMWARE", "PAT-DOCUMENT", "PAT-COMPARE", "PAT-RECOVER", "PAT-PORT"],
     first_move:
@@ -634,6 +806,16 @@ const skills: Skill[] = [
       teach:
         "You've taught someone the acquisition procedure and they followed it without prompting.",
     },
+    detail: {
+      overview: [
+        "Getting data off a system in a way that holds up later — imaging, hashing, write blocking, and recording what you did and when.",
+        "Image it, hash it, work on the copy. Every time, including when it doesn't matter, because the habit is the skill.",
+      ],
+      examples: [
+        "Image a USB stick, hash it, verify the hash matched. Fifteen minutes, whole procedure.",
+        "Acquire from a running system in the right order of volatility and document it.",
+      ],
+    },
     exercised_by: ["PAT-INSTRUMENT", "PAT-MEASURE", "PAT-RECOVER"],
     first_move:
       "Image a USB stick you own, hash it, and verify the hash. Fifteen minutes, whole procedure.",
@@ -656,6 +838,16 @@ const skills: Skill[] = [
       teach:
         "You've taught someone to normalize timestamps before merging, and their timeline held up.",
     },
+    detail: {
+      overview: [
+        "Merging filesystem timestamps, application logs and system events into one ordered account of what happened.",
+        "Timezones and clock drift are most of the difficulty. Convert everything to UTC at ingest and record what each source claimed, or your timeline will be confidently wrong.",
+      ],
+      examples: [
+        "Merge an hour of your own shell history and auth log into one ordered list.",
+        "Reconstruct a published incident across several sources and defend the ordering.",
+      ],
+    },
     exercised_by: ["PAT-MEASURE", "PAT-INSTRUMENT", "PAT-AUDIT", "PAT-DETECT", "PAT-VISUALIZE"],
     first_move:
       "Take your own shell history and your auth log and merge an hour of them into one ordered list.",
@@ -676,6 +868,16 @@ const skills: Skill[] = [
         "You've found evidence of injection or a hidden process in an image nobody annotated for you.",
       teach:
         "You've walked someone through their first memory analysis and they found the process.",
+    },
+    detail: {
+      overview: [
+        "Pulling processes, network connections, injected code and keys out of a RAM capture. Everything that was never written to disk lives here.",
+        "Confirm the OS build before concluding an image is broken. Wrong symbols is the first-hour failure for almost everyone.",
+      ],
+      examples: [
+        "List processes and connections from a published image.",
+        "Find evidence of injection in an image nobody annotated for you.",
+      ],
     },
     exercised_by: ["PAT-INSTRUMENT", "PAT-BREAK", "PAT-RECOVER"],
     first_move:
@@ -698,6 +900,16 @@ const skills: Skill[] = [
         "You've detonated a sample safely and documented its behavior and indicators.",
       teach:
         "You've taught someone to set up isolation properly and verified their VM was actually isolated.",
+    },
+    detail: {
+      overview: [
+        "Deciding quickly whether a file is dangerous and roughly what it does, without running it anywhere it can hurt you.",
+        "Verify the isolation from inside the VM before you obtain anything, and revert between samples. Isolation you assumed rather than tested is the one that fails.",
+      ],
+      examples: [
+        "Build the isolated VM and prove from inside that it can't reach the internet.",
+        "Statically triage an old sample and compare your findings to a published analysis.",
+      ],
     },
     exercised_by: ["PAT-BREAK", "PAT-INSTRUMENT"],
     first_move:
@@ -724,6 +936,17 @@ const skills: Skill[] = [
       teach:
         "You've taught someone to read a policy and they found an over-permission themselves.",
     },
+    detail: {
+      overview: [
+        "Reading permission documents and working out what they actually allow — which is regularly much more than whoever wrote them intended.",
+        "The resource and condition blocks decide the real scope. Reading the action list alone is how over-permissive policies get approved.",
+        "Identity is where cloud security actually lives, and this is the single most transferable cloud skill.",
+      ],
+      examples: [
+        "Read the policy attached to your own user and write out exactly what it permits.",
+        "Map a privilege escalation path through chained permissions in an account you built.",
+      ],
+    },
     exercised_by: ["PAT-AUDIT", "PAT-HARDEN", "PAT-BREAK"],
     first_move:
       "Open your own cloud account's IAM console and read the policy attached to your own user.",
@@ -745,6 +968,16 @@ const skills: Skill[] = [
       teach:
         "You've taught someone to run and interpret a baseline audit and they did the next one.",
     },
+    detail: {
+      overview: [
+        "Checking a cloud account completely against a published standard and reporting what complies and what doesn't. Completeness is the deliverable.",
+        "Reporting a tool's output verbatim isn't an audit. The judgement about which findings matter here is the thing being bought.",
+      ],
+      examples: [
+        "Check your own account against the first five controls of a benchmark, by hand.",
+        "Run Prowler, then go through every finding and decide which actually matter.",
+      ],
+    },
     exercised_by: ["PAT-AUDIT", "PAT-HARDEN", "PAT-AUTOMATE", "PAT-MEASURE", "PAT-COMPARE"],
     first_move:
       "Pick a published baseline for your provider and check your own account against its first five controls by hand.",
@@ -765,6 +998,16 @@ const skills: Skill[] = [
         "You've demonstrated the SSRF-to-credentials path end to end in your own account.",
       teach:
         "You've explained the path to someone and they reproduced it in their own account.",
+    },
+    detail: {
+      overview: [
+        "The endpoint every cloud instance can reach that hands out credentials. Understanding it is how an SSRF stops being a curiosity and becomes an account compromise.",
+        "Test this only in your own account. On someone else's infrastructure it is straightforwardly unauthorized access.",
+      ],
+      examples: [
+        "Start an instance in your own account and curl the metadata endpoint from inside it.",
+        "Demonstrate the full SSRF-to-credentials path in your own environment.",
+      ],
     },
     exercised_by: ["PAT-BREAK", "PAT-AUDIT", "PAT-HARDEN"],
     first_move:
@@ -791,6 +1034,17 @@ const skills: Skill[] = [
       teach:
         "You've taught someone display filters and they found what they were looking for.",
     },
+    detail: {
+      overview: [
+        "Opening a packet capture and telling the story in it — who talked to whom, what they asked for, what came back, and where it went wrong.",
+        "Decide the question, then write the display filter. Capturing everything and filtering nothing produces a file you'll never open again.",
+        "This underpins detection, forensics and most debugging. It is probably the highest-leverage single skill on this list.",
+      ],
+      examples: [
+        "Capture thirty seconds of your own traffic and find the DNS query for a site you just opened.",
+        "Follow a TCP stream and describe the whole exchange in plain language.",
+      ],
+    },
     exercised_by: ["PAT-MEASURE", "PAT-INSTRUMENT", "PAT-BRIDGE", "PAT-SIMULATE", "PAT-DETECT", "PAT-VISUALIZE"],
     first_move:
       "Capture thirty seconds of your own traffic and find the DNS query for a site you just opened.",
@@ -812,6 +1066,16 @@ const skills: Skill[] = [
       teach:
         "You've walked someone through proxy setup and CA trust and their traffic decrypted.",
     },
+    detail: {
+      overview: [
+        "How the handshake works, what certificates actually prove, and how to put yourself in the middle of your own traffic on purpose — which is how all web testing works.",
+        "Install a testing CA into a separate browser profile, not your everyday system trust store, and remember to remove it.",
+      ],
+      examples: [
+        "Configure a proxy with its CA and watch one HTTPS request decrypt.",
+        "Intercept traffic from an app that resists it — pinning, or a non-browser client.",
+      ],
+    },
     exercised_by: ["PAT-BREAK", "PAT-INSTRUMENT", "PAT-HARDEN", "PAT-MEASURE"],
     first_move:
       "Install a proxy's CA in a browser profile you use for testing and watch one HTTPS request decrypt.",
@@ -832,6 +1096,16 @@ const skills: Skill[] = [
         "You've segmented a real network and demonstrated by testing that the isolation holds.",
       teach:
         "You've taught someone to design and then verify a segment, and theirs held.",
+    },
+    detail: {
+      overview: [
+        "Splitting a network so a compromise in one part can't reach another — then testing from inside each segment to prove it, rather than assuming it.",
+        "Untested isolation usually has a hole. Configuring the segmentation is half the job; the half that counts is trying to cross it.",
+      ],
+      examples: [
+        "Put an untrusted device on a guest network and try to reach your laptop from it.",
+        "Build a segmented topology in Containerlab and demonstrate the rules hold.",
+      ],
     },
     exercised_by: ["PAT-HARDEN", "PAT-AUDIT", "PAT-MEASURE"],
     first_move:
@@ -858,6 +1132,16 @@ const skills: Skill[] = [
       teach:
         "You've facilitated a session where someone else did the modeling and it produced usable threats.",
     },
+    detail: {
+      overview: [
+        "Drawing a system, finding where trust boundaries are crossed, and naming what could go wrong — fast enough that people will actually do it during design rather than after.",
+        "A complete list of threats with no ranking and no decisions is a writing exercise. A threat model that changes one decision has paid for itself.",
+      ],
+      examples: [
+        "Draw something you built on one page and mark every trust boundary.",
+        "Run a session for a real system and record what decision it changed.",
+      ],
+    },
     exercised_by: ["PAT-AUDIT", "PAT-HARDEN", "PAT-DOCUMENT"],
     first_move:
       "Draw something you built on one page and mark every place data crosses a trust boundary.",
@@ -879,6 +1163,16 @@ const skills: Skill[] = [
       teach:
         "You've taught someone the sources-and-sinks method and they swept a codebase with it.",
     },
+    detail: {
+      overview: [
+        "Sweeping a codebase for one kind of bug at a time — every place user input reaches a query, every deserialization call — rather than reading hopefully from the top.",
+        "Pick the sink, find every call, check each one. Reading a codebase front to back hoping to notice something does not work and never has.",
+      ],
+      examples: [
+        "Grep a project you use for its database query calls and check each one's inputs.",
+        "Sweep a small codebase for one vulnerability class and report what you find.",
+      ],
+    },
     exercised_by: ["PAT-AUDIT", "PAT-BREAK"],
     first_move:
       "Grep a project you use for its database query calls and check each one's inputs.",
@@ -899,6 +1193,16 @@ const skills: Skill[] = [
         "You've written a harness for a library and triaged the crashes it produced.",
       teach:
         "You've taught someone to write a harness and theirs found something.",
+    },
+    detail: {
+      overview: [
+        "Throwing generated input at a program until it misbehaves, then working out whether a crash is a bug worth reporting and why it happens.",
+        "Most crashes are the same bug. Triage and deduplicate before telling anyone, or you'll burn a maintainer's goodwill on twenty reports of one thing.",
+      ],
+      examples: [
+        "Fuzz a small parsing library with a default harness for an hour and look at what comes out.",
+        "Write a harness for a library and triage the crashes it produces.",
+      ],
     },
     exercised_by: ["PAT-BREAK", "PAT-INSTRUMENT", "PAT-MEASURE"],
     first_move:

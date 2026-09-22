@@ -85,7 +85,7 @@ const BenchRail = ({ state, step, onStep, complete, blocked }: BenchRailProps) =
   };
 
   return (
-    <nav className="flex flex-col gap-2 lg:sticky lg:top-6">
+    <nav className="flex flex-col gap-2">
       <button
         type="button"
         onClick={() => onStep("examples")}

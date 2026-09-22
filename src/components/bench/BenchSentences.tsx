@@ -74,11 +74,22 @@ const BenchSentences = ({ state }: { state: BenchState }) => {
         .
       </Line>
 
+      {/*
+        This used to read "I am putting a technical writeup through Merged PR
+        to a project you don't own, which can reject it" — a list label shoved
+        into a sentence. Prove stands on its own now and names who does the
+        rejecting rather than routing the artifact through the gate.
+      */}
       <Line label="Prove" done={Boolean(prove)}>
-        I am putting{" "}
-        {artifact ? <Pick>{artifact.phrase}</Pick> : <Blank>my artifact</Blank>}{" "}
-        through {prove ? <Pick>{prove.name}</Pick> : <Blank>a gate</Blank>}, which
-        can reject it.
+        I am going for{" "}
+        {prove ? <Pick>{prove.phrase}</Pick> : <Blank>a gate</Blank>}
+        {prove && (
+          <span className="text-muted-foreground">
+            {" "}
+            — {prove.gatekeeper.charAt(0).toLowerCase() + prove.gatekeeper.slice(1)}
+          </span>
+        )}
+        .
       </Line>
     </div>
   );

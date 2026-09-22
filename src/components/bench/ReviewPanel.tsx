@@ -16,10 +16,12 @@ import ResourceList from "@/components/bench/ResourceList";
 const Card = ({
   label,
   title,
+  onOpen,
   children,
 }: {
   label: string;
   title: string;
+  onOpen?: () => void;
   children: React.ReactNode;
 }) => (
   <section className="rounded-lg border border-border bg-card/40 p-4">
@@ -28,6 +30,15 @@ const Card = ({
     </h3>
     <p className="mt-1 text-base font-medium text-foreground">{title}</p>
     <div className="mt-3 space-y-3 text-xs leading-relaxed">{children}</div>
+    {onOpen && (
+      <button
+        type="button"
+        onClick={onOpen}
+        className="mt-3 text-xs text-primary underline underline-offset-2 hover:text-primary/80"
+      >
+        Read more →
+      </button>
+    )}
   </section>
 );
 
@@ -47,7 +58,14 @@ const Field = ({ label, children }: { label: string; children: React.ReactNode }
  * sentences, what each choice commits them to, where each one starts, and the
  * resources behind the skill they picked.
  */
-const ReviewPanel = ({ state }: { state: BenchState }) => {
+const ReviewPanel = ({
+  state,
+  onOpen,
+}: {
+  state: BenchState;
+  /** Opens a tile's full-screen view from the summary cards. */
+  onOpen: (id: string) => void;
+}) => {
   const checks = runChecks(state);
 
   const pattern = state.pattern ? getPattern(state.pattern) : null;
@@ -57,7 +75,7 @@ const ReviewPanel = ({ state }: { state: BenchState }) => {
   const prove = state.prove ? getProve(state.prove) : null;
 
   return (
-    <div className="space-y-5">
+    <div className="min-h-0 flex-1 space-y-5 lg:overflow-y-auto lg:pr-1">
       <section className="rounded-lg border border-primary/40 bg-primary/5 p-5">
         <h2 className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-primary">
           Your bench
@@ -76,7 +94,11 @@ const ReviewPanel = ({ state }: { state: BenchState }) => {
 
       <div className="grid gap-4 md:grid-cols-3">
         {pattern && target && artifact && (
-          <Card label="Project" title={`${pattern.name} · ${target.name}`}>
+          <Card
+            label="Project"
+            title={`${pattern.name} · ${target.name}`}
+            onOpen={() => onOpen(pattern.id)}
+          >
             <Field label="Where to start">{pattern.first_move}</Field>
             <Field label="Where to get one">{target.sourcing}</Field>
             <Field label="Common pitfalls">{target.gotchas}</Field>
@@ -88,6 +110,7 @@ const ReviewPanel = ({ state }: { state: BenchState }) => {
           <Card
             label="Skill"
             title={`${skill.name} → ${rungLabels[state.to]}`}
+            onOpen={() => onOpen(skill.id)}
           >
             <Field label="Where to start">{skill.first_move}</Field>
             <Field label={`What ${rungLabels[state.to]} means`}>
@@ -98,7 +121,11 @@ const ReviewPanel = ({ state }: { state: BenchState }) => {
         )}
 
         {prove && (
-          <Card label="Prove" title={prove.name}>
+          <Card
+            label="Prove"
+            title={prove.name}
+            onOpen={() => onOpen(prove.id)}
+          >
             <Field label="Where to start">{prove.first_move}</Field>
             <Field label="Who can say no">{prove.gatekeeper}</Field>
             <Field label={`Timing — ${windowTypeLabels[prove.window.type]}`}>

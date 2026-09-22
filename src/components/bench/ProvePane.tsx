@@ -8,111 +8,116 @@ import {
 } from "@/bench/types";
 import ChecksList from "@/components/bench/ChecksList";
 import Panel, { TileGroup } from "@/components/bench/Panel";
+import TileDetail, { Fact } from "@/components/bench/TileDetail";
 import TileRow from "@/components/bench/TileRow";
 
 interface ProvePaneProps {
   state: BenchState;
   open: string | null;
-  onToggleBrief: (id: string) => void;
+  onOpen: (id: string | null) => void;
   onChange: (patch: Partial<BenchState>) => void;
   onNext: () => void;
 }
 
 const tiers: (1 | 2 | 3)[] = [1, 2, 3];
 
-const ProvePane = ({
-  state,
-  open,
-  onToggleBrief,
-  onChange,
-  onNext,
-}: ProvePaneProps) => {
+/** Three tiers, three independently scrolling columns. */
+const ProvePane = ({ state, open, onOpen, onChange, onNext }: ProvePaneProps) => {
   const checks = runChecks(state).filter(
     (check) => check.id === "artifact-join" || check.id === "lead-time",
   );
+  const openProve = proveTiles.find((p) => p.id === open);
+
+  const proveFacts = (p: NonNullable<typeof openProve>): Fact[] => [
+    { label: "Tier", value: `${p.tier} — ${tierLabels[p.tier]}` },
+    { label: "Who can say no", value: p.gatekeeper },
+    { label: "Lead time", value: p.lead_time },
+    { label: "Cost", value: p.cost },
+    { label: `Timing`, value: `${windowTypeLabels[p.window.type]} — ${p.window.note}` },
+    {
+      label: "Takes",
+      value:
+        p.consumes_artifacts.length > 0
+          ? p.consumes_artifacts.map((a) => getArtifact(a).name).join(", ")
+          : "Nothing your project makes — this one stands on its own",
+    },
+  ];
 
   return (
     <Panel
       step="Step 3 of 3"
       title="Pick something that could say no"
-      intro="Anyone can say they built a thing. This step answers a different question: who else agreed? Put what you made in front of someone with the standing to turn it down."
+      intro="Anyone can say they built a thing. This step answers a different question: who else agreed? Put what you made in front of someone with the standing to turn it down. The tiers are about who's doing the judging, not about how impressive it is."
+      scrollBody={false}
       next={{
-        label: state.prove ? "See your bench" : "See your bench",
+        label: "See your bench",
         onClick: onNext,
         ready: Boolean(state.prove),
       }}
     >
-      <div className="grid gap-5 lg:grid-cols-3">
-        {tiers.map((tier) => (
-          <TileGroup
-            key={tier}
-            label={`Tier ${tier} — ${tierLabels[tier]}`}
-            hint={tierExamples[tier]}
-            count={
-              tier === 1 ? "Most reachable" : tier === 3 ? "Longest lead time" : undefined
-            }
-          >
-            {proveTiles
-              .filter((tile) => tile.tier === tier)
-              .map((tile) => {
-                // Does this gate take what the project makes? Marked, not
-                // enforced — a cert that consumes nothing is a fine choice.
-                const joins =
-                  state.artifact &&
-                  tile.consumes_artifacts.includes(state.artifact);
+      <div className="flex min-h-0 flex-col gap-4 lg:h-full">
+        <div className="grid min-h-0 flex-1 gap-5 lg:grid-cols-3">
+          {tiers.map((tier) => (
+            <TileGroup
+              key={tier}
+              label={`Tier ${tier} — ${tierLabels[tier]}`}
+              hint={tierExamples[tier]}
+              count={
+                tier === 1
+                  ? "Start here"
+                  : tier === 3
+                    ? "Longest lead time"
+                    : undefined
+              }
+            >
+              {proveTiles
+                .filter((tile) => tile.tier === tier)
+                .map((tile) => {
+                  // Does this gate take what the project makes? Marked with a
+                  // glow, never enforced — a cert that consumes nothing is a
+                  // perfectly reasonable choice.
+                  const joins =
+                    state.artifact &&
+                    tile.consumes_artifacts.includes(state.artifact);
 
-                return (
-                  <TileRow
-                    key={tile.id}
-                    tile={tile}
-                    selected={state.prove === tile.id}
-                    common={Boolean(joins)}
-                    open={open === tile.id}
-                    onSelect={() =>
-                      onChange({
-                        prove: state.prove === tile.id ? null : tile.id,
-                      })
-                    }
-                    onToggleBrief={() => onToggleBrief(tile.id)}
-                    meta={`${tile.lead_time} · ${tile.cost}`}
-                    links={tile.links}
-                  >
-                    <p>
-                      <span className="font-semibold uppercase tracking-[0.15em] text-muted-foreground">
-                        Who can say no
-                      </span>
-                      <span className="mt-0.5 block text-foreground/90">
-                        {tile.gatekeeper}
-                      </span>
-                    </p>
-                    <p>
-                      <span className="font-semibold uppercase tracking-[0.15em] text-muted-foreground">
-                        Timing — {windowTypeLabels[tile.window.type]}
-                      </span>
-                      <span className="mt-0.5 block text-foreground/90">
-                        {tile.window.note}
-                      </span>
-                    </p>
-                    <p>
-                      <span className="font-semibold uppercase tracking-[0.15em] text-muted-foreground">
-                        Takes
-                      </span>
-                      <span className="mt-0.5 block text-foreground/90">
-                        {tile.consumes_artifacts.length > 0
-                          ? tile.consumes_artifacts
-                              .map((id) => getArtifact(id).name)
-                              .join(", ")
-                          : "Nothing your project makes — this one stands on its own."}
-                      </span>
-                    </p>
-                  </TileRow>
-                );
-              })}
-          </TileGroup>
-        ))}
+                  return (
+                    <TileRow
+                      key={tile.id}
+                      tile={tile}
+                      selected={state.prove === tile.id}
+                      common={Boolean(joins)}
+                      onSelect={() =>
+                        onChange({
+                          prove: state.prove === tile.id ? null : tile.id,
+                        })
+                      }
+                      onOpen={() => onOpen(tile.id)}
+                      meta={`${tile.lead_time} · ${tile.cost}`}
+                    />
+                  );
+                })}
+            </TileGroup>
+          ))}
+        </div>
+
+        {checks.length > 0 && (
+          <div className="shrink-0 border-t border-border pt-3 lg:max-h-32 lg:overflow-y-auto">
+            <ChecksList checks={checks} />
+          </div>
+        )}
       </div>
 
-      {checks.length > 0 && <ChecksList checks={checks} />}
+      {openProve && (
+        <TileDetail
+          tile={openProve}
+          kind={`Tier ${openProve.tier} · ${tierLabels[openProve.tier]}`}
+          facts={proveFacts(openProve)}
+          links={openProve.links}
+          selected={state.prove === openProve.id}
+          onSelect={() => onChange({ prove: openProve.id })}
+          onClose={() => onOpen(null)}
+        />
+      )}
     </Panel>
   );
 };

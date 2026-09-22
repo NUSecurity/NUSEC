@@ -28,6 +28,17 @@ const domains: Domain[] = [
     id: "DOM-OFFSEC",
     name: "Offensive",
     depth: "deep",
+    detail: {
+      overview: [
+        "Finding and exploiting flaws in systems, then explaining them to the people who have to fix them. The highest-demand domain among students and the one with the richest free practice ecosystem — you can go a long way here without spending anything.",
+        "The people who get good at this enumerate the same way every time and can say why. Collecting tools instead of building method is the standard trap, and it's visible instantly in an interview.",
+        "It is also the domain where the writing matters most and gets practised least. Access without a report anyone can act on is worth very little commercially.",
+      ],
+      examples: [
+        "PortSwigger Academy for web, TryHackMe then HackTheBox for boxes, pwn.college if you want depth.",
+        "Practise writing one finding for every box you solve.",
+      ],
+    },
     brief:
       "Finding and exploiting flaws in systems, then explaining them to the people who have to fix them. The highest-demand domain among students and the one with the richest free practice ecosystem.",
     first_move:
@@ -147,6 +158,17 @@ const domains: Domain[] = [
     id: "DOM-LINUX",
     name: "Systems",
     depth: "deep",
+    detail: {
+      overview: [
+        "Being genuinely comfortable on a Linux system — the shell, services, processes, building from source. Everyone needs it, nobody teaches it deliberately, and it quietly gates most of the other domains.",
+        "The people who are good at this learned the model, not a list of commands. They know where things live and why, so they can derive the command they don't remember.",
+        "If you're unsure where to start in security generally, start here. Nothing else you learn will be wasted.",
+      ],
+      examples: [
+        "OverTheWire Bandit until the levels stop being puzzles.",
+        "Run one real internet-facing server for a month and fix everything that breaks.",
+      ],
+    },
     brief:
       "Being genuinely comfortable on a Linux system — the shell, services, processes, and building things from source. Everyone needs it, and nobody teaches it deliberately.",
     first_move:
@@ -259,6 +281,17 @@ const domains: Domain[] = [
     id: "DOM-HW",
     name: "Hardware",
     depth: "deep",
+    detail: {
+      overview: [
+        "Getting inside physical devices — finding debug interfaces, reading chips, decoding buses. The only domain here with a real hardware cost, and the one fewest students pursue.",
+        "That scarcity is the argument for it if it appeals to you: almost nobody applying for a job can do this, and the entry cost is about twelve dollars for a UART adapter. It is genuinely not for everyone, and nothing else in this tool depends on it.",
+        "Adapter first, one device, one finding. Buying a full bench before doing a small project is how the money gets wasted.",
+      ],
+      examples: [
+        "Microcorruption in a browser, free, before buying anything at all.",
+        "An old router from a closet, a $12 adapter, and one serial console.",
+      ],
+    },
     brief:
       "Getting inside physical devices — finding debug interfaces, reading chips, decoding buses. This is the club's differentiator: no other student career tool has a hardware path.",
     first_move:
@@ -369,6 +402,17 @@ const domains: Domain[] = [
     id: "DOM-RE",
     name: "Reverse Engineering",
     depth: "deep",
+    detail: {
+      overview: [
+        "Working out what a program does without its source — reading disassembly, navigating stripped binaries, recovering undocumented formats.",
+        "The decompiler is a hypothesis, not a transcript. It is confidently wrong often enough that being unable to check it against the assembly is a real limitation.",
+        "Slower to become useful in than the other domains, and unusually satisfying once it clicks. Start below your level and climb.",
+      ],
+      examples: [
+        "Compile small C functions and read their assembly until the patterns are familiar.",
+        "crackmes.one one level below where you think you are.",
+      ],
+    },
     brief:
       "Working out what a program does without its source — reading disassembly, navigating stripped binaries, and recovering undocumented formats.",
     first_move:
@@ -481,6 +525,17 @@ const domains: Domain[] = [
     id: "DOM-DFIR",
     name: "Forensics and Response",
     depth: "deep",
+    detail: {
+      overview: [
+        "Finding out what happened after something went wrong — acquiring evidence intact, building timelines, analysing memory and suspicious files.",
+        "The entry cost is near zero: published memory images and log sets mean you can do real work tonight with one tool and no lab. That makes it one of the most accessible domains here and one of the least crowded.",
+        "Image it, hash it, work on the copy. The habit matters more than any tool, and it's what distinguishes someone who has been trained from someone who has been watching videos.",
+      ],
+      examples: [
+        "MemLabs for memory, CyberDefenders for full cases, both free.",
+        "Build one timeline across two log sources and get the timezones right.",
+      ],
+    },
     brief:
       "Finding out what happened after something went wrong — acquiring evidence intact, building timelines, and analyzing memory and suspicious files.",
     first_move:
@@ -592,6 +647,17 @@ const domains: Domain[] = [
     id: "DOM-CLOUD",
     name: "Cloud",
     depth: "deep",
+    detail: {
+      overview: [
+        "Security in someone else's datacenter — identity and permissions, baselines, and the metadata services that turn a small flaw into a large one.",
+        "Demand substantially exceeds supply here, and the free tier means you can learn nearly all of it in your own account for almost nothing. Set a billing alarm first.",
+        "Learn the permission model, not the product catalogue. Identity is where cloud security actually lives, and every real incident review comes back to it.",
+      ],
+      examples: [
+        "flaws.cloud, free, in a browser, this evening.",
+        "Deliberately create a bad IAM role in your own account and then go and find it.",
+      ],
+    },
     brief:
       "Security in someone else's datacenter — identity and permissions, baselines, and the metadata services that turn a small flaw into a large one.",
     first_move:
@@ -703,6 +769,17 @@ const domains: Domain[] = [
     id: "DOM-NETWORK",
     name: "Networking",
     depth: "deep",
+    detail: {
+      overview: [
+        "Understanding what's actually on the wire — reading captures, intercepting TLS deliberately, and proving segmentation does what it claims.",
+        "This underpins detection, forensics and most debugging. Twenty minutes with a real capture teaches more than a chapter about the protocol.",
+        "Free in every direction: published captures, free tools, and a network you already own to practise on.",
+      ],
+      examples: [
+        "Capture your own traffic and narrate one TCP stream in plain language.",
+        "Build a segmented topology and prove the isolation from inside it.",
+      ],
+    },
     brief:
       "Understanding what's actually on the wire — reading captures, intercepting TLS deliberately, and proving that segmentation does what it claims.",
     first_move:
@@ -808,6 +885,17 @@ const domains: Domain[] = [
     id: "DOM-APPSEC",
     name: "Application Security",
     depth: "deep",
+    detail: {
+      overview: [
+        "Finding problems in software before it ships — threat modelling, targeted code review, and fuzzing.",
+        "The most useful domain if you can already write code, because you already have the hardest prerequisite. It's also the one where a student's own projects are legitimate practice material.",
+        "Review for one vulnerability class at a time. Reading a codebase hoping to notice something does not work.",
+      ],
+      examples: [
+        "Threat model something you built, on one page, in twenty minutes.",
+        "Sweep one of your own projects for a single bug class.",
+      ],
+    },
     brief:
       "Finding problems in software before it ships — threat modeling, targeted code review, and fuzzing.",
     first_move:
