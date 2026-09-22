@@ -46,8 +46,8 @@ const ProvePane = ({ state, open, onOpen, onChange, onNext }: ProvePaneProps) =>
   return (
     <Panel
       step="Step 3 of 3"
-      title="Pick something that could say no"
-      intro="Anyone can say they built a thing. This step answers a different question: who else agreed? Put what you made in front of someone with the standing to turn it down. The tiers are about who's doing the judging, not about how impressive it is."
+      title="Prove your skills"
+      intro="Obtain and demonstrate objective proof of your skills. Anyone can say they built a thing — this is where someone else confirms it. The tiers are about who does the confirming, not about how impressive it is, and Tier 1 is where almost everyone should start."
       scrollBody={false}
       next={{
         label: "See your bench",

@@ -228,6 +228,7 @@ export type ProveId =
   | "PRV-TEACH"
   | "PRV-WIKI"
   | "PRV-TRANSLATE"
+  | "PRV-HALLOFFAME"
   // Tier 2
   | "PRV-BSIDES"
   | "PRV-VILLAGE"
@@ -238,6 +239,11 @@ export type ProveId =
   | "PRV-CCDC"
   | "PRV-POSTER"
   | "PRV-COHORT"
+  | "PRV-CTFPLACE"
+  | "PRV-CVE"
+  | "PRV-BOUNTYPAID"
+  | "PRV-MAINTAINER"
+  | "PRV-HACKATHON"
   // Tier 3
   | "PRV-SECPLUS"
   | "PRV-EJPT"
@@ -247,7 +253,12 @@ export type ProveId =
   | "PRV-CLOUDSEC"
   | "PRV-RA"
   | "PRV-PAPER"
-  | "PRV-COOP";
+  | "PRV-COOP"
+  | "PRV-ISC2CC"
+  | "PRV-CYSA"
+  | "PRV-BLUETEAM"
+  | "PRV-PNPT"
+  | "PRV-GRADSCHOOL";
 
 /* ------------------------------------------------------------------ *
  * The base every tile shares

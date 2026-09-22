@@ -7,6 +7,7 @@ import {
   getTarget,
   resourcesFor,
 } from "@/bench";
+import { runChecks } from "@/bench/checks";
 import { BenchState, rungLabels, rungOrder } from "@/bench/types";
 import BenchSentences from "@/components/bench/BenchSentences";
 
@@ -48,6 +49,11 @@ const PrintSheet = ({ state }: { state: BenchState }) => {
   const artifact = state.artifact ? getArtifact(state.artifact) : null;
   const skill = state.skill ? getSkill(state.skill) : null;
   const prove = state.prove ? getProve(state.prove) : null;
+
+  // The advisories live here rather than on the finished bench on screen. On
+  // screen they already appeared in the panel they apply to; on paper there was
+  // no panel, so this is the only place they can be said.
+  const checks = runChecks(state);
 
   // A handful, not the whole pool — this has to fit on paper.
   const resources = skill
@@ -168,6 +174,25 @@ const PrintSheet = ({ state }: { state: BenchState }) => {
           </Section>
         )}
       </div>
+
+      {checks.length > 0 && (
+        <div className="mt-3">
+          <Section label="Worth knowing">
+            <ul className="mt-1 space-y-0.5">
+              {checks.map((check) => (
+                <li key={check.id} className="text-[0.7rem] leading-snug">
+                  <span className="font-semibold text-neutral-600">
+                    {check.message}
+                  </span>
+                  {check.detail && (
+                    <span className="text-black"> {check.detail}</span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </Section>
+        </div>
+      )}
 
       <footer className="mt-4 border-t border-neutral-300 pt-2 text-[0.6rem] leading-snug text-neutral-500">
         When any one of the three finishes, rebuild all three — finishing one

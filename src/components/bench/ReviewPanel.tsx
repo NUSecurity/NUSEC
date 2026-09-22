@@ -7,10 +7,8 @@ import {
   getTarget,
   resourcesFor,
 } from "@/bench";
-import { runChecks } from "@/bench/checks";
 import { BenchState, rungLabels, windowTypeLabels } from "@/bench/types";
 import BenchSentences from "@/components/bench/BenchSentences";
-import ChecksList from "@/components/bench/ChecksList";
 import ResourceList from "@/components/bench/ResourceList";
 
 const Card = ({
@@ -66,8 +64,6 @@ const ReviewPanel = ({
   /** Opens a tile's full-screen view from the summary cards. */
   onOpen: (id: string) => void;
 }) => {
-  const checks = runChecks(state);
-
   const pattern = state.pattern ? getPattern(state.pattern) : null;
   const target = state.target ? getTarget(state.target) : null;
   const artifact = state.artifact ? getArtifact(state.artifact) : null;
@@ -82,15 +78,6 @@ const ReviewPanel = ({
         </h2>
         <BenchSentences state={state} />
       </section>
-
-      {checks.length > 0 && (
-        <section>
-          <h2 className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-            Worth knowing
-          </h2>
-          <ChecksList checks={checks} />
-        </section>
-      )}
 
       <div className="grid gap-4 md:grid-cols-3">
         {pattern && target && artifact && (

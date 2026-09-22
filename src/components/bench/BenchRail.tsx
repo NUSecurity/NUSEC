@@ -69,7 +69,7 @@ const BenchRail = ({ state, step, onStep, complete, blocked }: BenchRailProps) =
       id: "prove",
       n: 3,
       label: "Prove",
-      hint: "Show it to someone who could say no",
+      hint: "Get objective proof of it",
       value: proveValue,
     },
   ];

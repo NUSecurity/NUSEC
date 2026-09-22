@@ -128,6 +128,44 @@ const proveTiles: ProveTile[] = [
       "A report with no reproduction, no version, and no environment. Those get closed unread, and reasonably so.",
   },
   {
+    id: "PRV-HALLOFFAME",
+    phrase: "a place in a vendor's security acknowledgements",
+    name: "Named in a vendor's security acknowledgements",
+    tier: 1,
+    brief:
+      "A company published your name for reporting a security issue to them. Most organisations of any size maintain a page like this, and they validate a report before adding anyone to it.",
+    detail: {
+      overview: [
+        "A hall of fame entry, a security acknowledgements page, a thanks line in a release note. The company confirmed your report was real and chose to credit you publicly — which is a gate, because they decline far more reports than they credit.",
+        "This is one of the most reachable proofs on the whole list and almost nobody goes looking for it. Plenty of organisations have a security.txt file or a published contact and no bounty programme at all, which means far less competition than a paid bounty platform.",
+        "It is also the safest way to practise disclosure. You are working with people who asked to be contacted, on a channel they published, with no money involved to complicate the conversation.",
+      ],
+      examples: [
+        "Find a security.txt on a site you already use and read what it asks for.",
+        "Report something real through a published contact, follow up politely, and ask whether they credit reporters.",
+        "Turn the report and the correspondence into a writeup once the fix ships.",
+      ],
+    },
+    gatekeeper:
+      "The vendor's security team, who validate a report before crediting anyone",
+    consumes_artifacts: ["ART-DISCLOSURE", "ART-WRITEUP"],
+    window: { type: "rolling", note: "Open whenever you have something to report." },
+    lead_time: "Weeks to a few months from report to listing",
+    lead_time_months: 2,
+    cost: "Free",
+    links: [
+      {
+        title: "security.txt — how to find a company's security contact",
+        url: "https://securitytxt.org/",
+        last_verified: V_2026_09,
+      },
+    ],
+    first_move:
+      "Check for a security.txt or a published security contact on a service you already use, and read what they ask reporters to do.",
+    failure_mode:
+      "Reporting something that isn't a vulnerability. Missing headers and a scanner's informational findings get declined, politely, forever.",
+  },
+  {
     id: "PRV-CTFWRITEUP",
     phrase: "a writeup published on a CTF team's blog",
     name: "Writeup published on a team's blog",
@@ -313,6 +351,46 @@ const proveTiles: ProveTile[] = [
       "Rewriting docs to your taste without asking. Open an issue describing the gap first — unrequested rewrites get closed.",
   },
   {
+    id: "PRV-CTFPLACE",
+    phrase: "a placement in a ranked CTF",
+    name: "A team placement in a ranked CTF",
+    tier: 2,
+    brief:
+      "A finish in a competition that ranks teams publicly. Hundreds of these run every year, most are free, and the scoreboard is about as objective as evidence gets.",
+    detail: {
+      overview: [
+        "CTFs run most weekends and the results are permanent and public. A placement is a number you didn't award yourself, measured against everyone else who entered, which makes it unusually easy to point at.",
+        "Team events are the accessible route. You don't have to carry the team — solving two challenges in a competition where your team placed well is a real contribution and a real story about working with other people under time pressure.",
+        "The categories also map onto the rest of this tool, so a CTF is a fast way to find out which domain you actually enjoy before committing a term to it.",
+      ],
+      examples: [
+        "Find a beginner-friendly event on CTFtime and enter with two other people.",
+        "Enter alone, solve what you can, and write up one challenge properly afterwards.",
+        "Track which category you solved most in and let that pick your next skill.",
+      ],
+    },
+    gatekeeper: "The scoreboard, and every other team on it",
+    consumes_artifacts: ["ART-WRITEUP", "ART-TOOL"],
+    window: {
+      type: "recurring-cfp",
+      note: "Events run most weekends and are listed weeks ahead. Registration is usually open until the start.",
+    },
+    lead_time: "A weekend, plus whatever practice you do first",
+    lead_time_months: 1,
+    cost: "Almost always free",
+    links: [
+      {
+        title: "CTFtime — upcoming events",
+        url: "https://ctftime.org/event/list/upcoming",
+        last_verified: V_2026_09,
+      },
+    ],
+    first_move:
+      "Pick a beginner-friendly event on CTFtime that's more than two weeks out and register a team.",
+    failure_mode:
+      "Entering alone with no preparation, solving nothing, and concluding you're not good enough. Go with people, and pick an event rated for beginners.",
+  },
+  {
     id: "PRV-NCL",
     phrase: "a placement in the National Cyber League",
     name: "National Cyber League placement",
@@ -402,6 +480,46 @@ const proveTiles: ProveTile[] = [
         last_verified: V_2026_09,
       },
     ],
+  },
+  {
+    id: "PRV-HACKATHON",
+    phrase: "a placement at a hackathon",
+    name: "A placement at a hackathon",
+    tier: 2,
+    brief:
+      "Judges ranked what you built against everyone else who built something that weekend. Security tracks and prizes are common, and the events are free and frequent.",
+    detail: {
+      overview: [
+        "Hackathons are judged, which makes a placement a selection rather than a participation record. Many have a dedicated security or privacy track, and those tracks are usually far less crowded than the general one.",
+        "They also force something this tool otherwise can't: shipping a demo in a fixed window in front of people. That's a genuinely different skill from a term-long project and it shows up in interviews.",
+        "Build something small that works completely. A finished small thing beats an ambitious broken one in every judging room there has ever been.",
+      ],
+      examples: [
+        "Find a hackathon with a security or privacy track and go with two other people.",
+        "Build a small security tool and make sure the demo works before you polish anything.",
+        "Enter with the thing you already half-built, if the rules allow it.",
+      ],
+    },
+    gatekeeper: "Judges, ranking against everyone else who built that weekend",
+    consumes_artifacts: ["ART-TOOL", "ART-REPO", "ART-VIDEO"],
+    window: {
+      type: "seasonal",
+      note: "Cluster in autumn and spring. Registration usually opens a month or two ahead and fills.",
+    },
+    lead_time: "A weekend, plus registration a month or two before",
+    lead_time_months: 2,
+    cost: "Usually free, sometimes with travel covered",
+    links: [
+      {
+        title: "Major League Hacking — event calendar",
+        url: "https://mlh.io/",
+        last_verified: V_2026_09,
+      },
+    ],
+    first_move:
+      "Find one within travelling distance in the next three months and register before it fills.",
+    failure_mode:
+      "Starting something too ambitious on Friday night and demoing something broken on Sunday. Scope it to what you can finish by Saturday evening.",
   },
   {
     id: "PRV-CPTC",
@@ -525,6 +643,128 @@ const proveTiles: ProveTile[] = [
       "Find three chapters with open CFPs. Read their past talk lists before you write a word of the submission.",
     failure_mode:
       "Waiting until you have something 'worth' talking about. Submit the thing you already did.",
+  },
+  {
+    id: "PRV-BOUNTYPAID",
+    phrase: "a paid bug bounty",
+    name: "A paid bug bounty",
+    tier: 2,
+    brief:
+      "A company paid you for a vulnerability report. A triage team validated it, rated it, and decided it was worth money — after closing most of what they receive as duplicate or informative.",
+    detail: {
+      overview: [
+        "Payment is the gate. Triage teams reject the overwhelming majority of submissions, so a paid report means professionals looked at your work and agreed it was both real and new.",
+        "The amount does not matter. A small bounty on a small programme is the same proof as a large one and considerably easier to get — newer programmes have far less picked-over surface than the famous ones.",
+        "Everything about scope from the bug bounty target applies here and applies harder, because money makes people careless about boundaries.",
+      ],
+      examples: [
+        "Pick one newly launched programme and read its entire scope page before touching anything.",
+        "Spend a week on a single asset rather than a day on twenty.",
+        "Write the report as though the triager has never seen the application, because they probably haven't.",
+      ],
+    },
+    gatekeeper:
+      "A triage team that closes most submissions as duplicate, informative, or out of scope",
+    consumes_artifacts: ["ART-DISCLOSURE", "ART-WRITEUP"],
+    window: { type: "rolling", note: "Programmes run continuously; scopes change without notice." },
+    lead_time: "Weeks to months, and highly uncertain",
+    lead_time_months: 3,
+    cost: "Free to enter",
+    links: [
+      {
+        title: "HackerOne programmes",
+        url: "https://hackerone.com/opportunities/all",
+        last_verified: V_2026_09,
+      },
+      {
+        title: "Bugcrowd engagements",
+        url: "https://bugcrowd.com/engagements",
+        last_verified: V_2026_09,
+      },
+    ],
+    first_move:
+      "Read one programme's full scope and rules page and write down what's in and what's out before testing anything.",
+    failure_mode:
+      "Treating this as a reliable plan. Bounties are genuinely uncertain — make it the proof on a bench whose project stands on its own.",
+  },
+  {
+    id: "PRV-CVE",
+    phrase: "a CVE assigned for something I found",
+    name: "A CVE assigned for something you found",
+    tier: 2,
+    brief:
+      "An identifier issued for a vulnerability you reported. A numbering authority reviewed it and agreed it qualifies — they decline requests that don't.",
+    detail: {
+      overview: [
+        "A CVE is a permanent, citable record with your finding attached to it. It is the clearest possible evidence that you found something real, and it travels further than almost anything else on this list.",
+        "The route is ordinary: find something in software people use, report it responsibly to the vendor or to a numbering authority, and work through the process. Most first CVEs come from small or unmaintained open-source projects rather than from anything famous.",
+        "Not every valid bug qualifies, and that's fine. Requesting one for something that doesn't meet the bar wastes a reviewer's time and teaches you nothing.",
+      ],
+      examples: [
+        "Find a vulnerability in a small open-source project you already use.",
+        "Report it through the project's security policy and ask about CVE assignment.",
+        "Write the advisory yourself — clear impact, affected versions, and the fix.",
+      ],
+    },
+    gatekeeper:
+      "A CVE Numbering Authority, who reject requests that don't meet the bar",
+    consumes_artifacts: ["ART-DISCLOSURE", "ART-WRITEUP"],
+    window: {
+      type: "rolling",
+      note: "Open whenever you have a qualifying finding, though assignment can take a while.",
+    },
+    lead_time: "1–6 months from report to publication",
+    lead_time_months: 4,
+    cost: "Free",
+    links: [
+      {
+        title: "CVE Program — requesting an identifier",
+        url: "https://www.cve.org/ResourcesSupport/ReportRequest",
+        last_verified: null,
+      },
+    ],
+    first_move:
+      "Read a published advisory for a project like the one you're looking at, so you know what the finished thing looks like.",
+    failure_mode:
+      "Requesting one for a finding the vendor hasn't confirmed, or for something that isn't a vulnerability. Get the vendor's agreement first.",
+  },
+  {
+    id: "PRV-MAINTAINER",
+    phrase: "commit or triage rights on a project I don't own",
+    name: "Commit or triage rights on a project you don't own",
+    tier: 2,
+    brief:
+      "A project gave you the ability to merge, label or close things. Someone decided to trust you with their repository, which is a far higher bar than a single merged change.",
+    detail: {
+      overview: [
+        "This is what repeated contribution turns into. Maintainers hand out triage and commit rights to people who keep showing up, review well, and don't break things — and it is a genuinely selective decision because the cost of getting it wrong is theirs.",
+        "It is also one of the strongest signals available to a student, because it says other engineers chose to work with you over time rather than that you completed something once.",
+        "The path is unglamorous: contribute repeatedly to one project rather than once to five, and help other people's contributions land as well as your own.",
+      ],
+      examples: [
+        "Pick one project you use and contribute to it three times over a term.",
+        "Start reviewing other people's pull requests and issues, helpfully.",
+        "Ask the maintainers what would be most useful, then do that.",
+      ],
+    },
+    gatekeeper:
+      "Existing maintainers, deciding whether to trust you with their repository",
+    consumes_artifacts: ["ART-TOOL", "ART-REPO", "ART-TEACHING"],
+    window: { type: "rolling", note: "Earned over months of contribution, not applied for." },
+    lead_time: "3–12 months of consistent contribution",
+    lead_time_months: 6,
+    cost: "Free",
+    links: [
+      {
+        title: "Good First Issue",
+        url: "https://goodfirstissue.dev/",
+        last_verified: V_2026_09,
+      },
+    ],
+    first_move:
+      "Pick one project — not five — and make your second contribution to it.",
+    failure_mode:
+      "Asking for the rights. They get offered to people who were already doing the work.",
   },
   {
     id: "PRV-POSTER",
@@ -666,6 +906,46 @@ const proveTiles: ProveTile[] = [
       "Joining with no embedded experience and no time. This one is a real term-long commitment; do a dev board project first.",
   },
   {
+    id: "PRV-ISC2CC",
+    phrase: "the ISC2 Certified in Cybersecurity",
+    name: "ISC2 Certified in Cybersecurity (CC)",
+    tier: 3,
+    brief:
+      "An entry-level certification from ISC2, aimed at people starting out. Historically the most affordable route to a recognised credential, and frequently free for students through their programme.",
+    detail: {
+      overview: [
+        "The most reachable formal credential on this list. It covers the fundamentals broadly and exists specifically for people who don't have experience yet, which is a rare and useful thing in a field where most certifications assume years of it.",
+        "Check their free-for-students or candidate programme before paying anything — the cost has often been zero for the exam and the training material, which changes the calculation entirely.",
+        "It won't teach you to do the job. It gets a recognisable name onto a résumé that doesn't have one yet, which for a first internship is a real problem it solves.",
+      ],
+      examples: [
+        "Check whether their free candidate or student programme is currently open.",
+        "Take a practice exam cold to find out how much study you actually need.",
+        "Book the date before buying study material.",
+      ],
+    },
+    gatekeeper: "A proctored exam you can fail",
+    consumes_artifacts: [],
+    window: {
+      type: "rolling",
+      note: "Book whenever you're ready. Check the current free-for-newcomers programme before paying.",
+    },
+    lead_time: "3–8 weeks of study",
+    lead_time_months: 2,
+    cost: "Low, and often free for students through their programme",
+    links: [
+      {
+        title: "ISC2 Certified in Cybersecurity",
+        url: "https://www.isc2.org/certifications/cc",
+        last_verified: V_2026_09,
+      },
+    ],
+    first_move:
+      "Check whether the free programme is open before you spend anything at all.",
+    failure_mode:
+      "Paying full price without checking for the student or candidate programme first.",
+  },
+  {
     id: "PRV-SECPLUS",
     phrase: "Security+",
     name: "Security+",
@@ -741,6 +1021,86 @@ const proveTiles: ProveTile[] = [
       "Skipping enumeration practice. The exam punishes an incomplete sweep harder than it punishes not knowing an exploit.",
   },
   {
+    id: "PRV-CYSA",
+    phrase: "CySA+",
+    name: "CySA+",
+    tier: 3,
+    brief:
+      "CompTIA's defensive analyst certification. The natural step after Security+ if detection, monitoring and response are the direction you want.",
+    detail: {
+      overview: [
+        "Where Security+ is broad and general, CySA+ is specifically about analyst work — reading telemetry, triaging alerts, responding to incidents. It maps directly onto SOC and detection roles, which is where a lot of first security jobs actually are.",
+        "It also pairs unusually well with the defensive side of this tool. Building detections, working published log sets and running investigations is exactly the material the exam covers, so the project work and the studying reinforce each other.",
+        "Do the hands-on work alongside it. The exam asks scenario questions that punish people who only read.",
+      ],
+      examples: [
+        "Work a published log set into a timeline while you study the response material.",
+        "Write detections for a handful of ATT&CK techniques as revision.",
+        "Take a practice exam cold first to size the study.",
+      ],
+    },
+    gatekeeper: "A proctored exam you can fail",
+    consumes_artifacts: [],
+    window: {
+      type: "rolling",
+      note: "Book whenever. Check which exam version is current — CompTIA retires versions on a schedule.",
+    },
+    lead_time: "2–4 months of study",
+    lead_time_months: 3,
+    cost: "Voucher in the mid hundreds; student discounts exist",
+    links: [
+      {
+        title: "CompTIA CySA+",
+        url: "https://www.comptia.org/certifications/cybersecurity-analyst",
+        last_verified: V_2026_09,
+      },
+    ],
+    first_move:
+      "Take a free practice exam cold and let the score tell you how long this is.",
+    failure_mode:
+      "Studying it as theory. The scenario questions assume you've actually looked at logs.",
+  },
+  {
+    id: "PRV-BLUETEAM",
+    phrase: "a practical defensive certification",
+    name: "A practical defensive certification",
+    tier: 3,
+    brief:
+      "A hands-on blue-team credential — you investigate a real scenario in a lab rather than answering questions about one. Blue Team Level 1 is the best-known example and it's priced within reach.",
+    detail: {
+      overview: [
+        "Practical defensive certifications are the counterpart to the eJPT and OSCP on the offensive side, and there are far fewer of them. That scarcity works in your favour: very few applicants for defensive roles can show a hands-on credential.",
+        "The exam format is an investigation — you're given an incident and you have to work it and report what happened. That's the actual job, which makes the preparation directly useful rather than exam-shaped.",
+        "Providers and product names in this space change; check the current offering and price before committing, and confirm what the exam actually involves.",
+      ],
+      examples: [
+        "Work published memory images and log sets first to see whether this is the direction you want.",
+        "Check the current syllabus and price before buying anything.",
+        "Practise writing the investigation up, not just reaching the answer.",
+      ],
+    },
+    gatekeeper: "A practical exam with an investigation you can fail",
+    consumes_artifacts: ["ART-WRITEUP"],
+    window: {
+      type: "rolling",
+      note: "Book whenever. Course access is usually time-boxed once purchased.",
+    },
+    lead_time: "2–4 months of study",
+    lead_time_months: 3,
+    cost: "Low to mid hundreds, usually bundled with training",
+    links: [
+      {
+        title: "Security Blue Team (now trading as Centri) — defensive certifications",
+        url: "https://www.securityblue.team/",
+        last_verified: V_2026_09,
+      },
+    ],
+    first_move:
+      "Do a couple of free CyberDefenders cases first and see whether the work appeals before spending money.",
+    failure_mode:
+      "Buying a defensive certification before you've ever worked a case. The free practice will tell you whether you want this.",
+  },
+  {
     id: "PRV-CLOUDSEC",
     phrase: "a cloud provider's security certification",
     name: "A cloud provider's security certification",
@@ -778,6 +1138,47 @@ const proveTiles: ProveTile[] = [
       "Pick the provider you already have an account with and download its current exam guide.",
     failure_mode:
       "Studying the exam guide without touching the console. These exams ask scenario questions that punish people who never built anything.",
+  },
+  {
+    id: "PRV-PNPT",
+    phrase: "the PNPT",
+    name: "PNPT",
+    tier: 3,
+    brief:
+      "TCM Security's practical pentesting certification — a full engagement against a domain, plus a professional report and a debrief. Considerably cheaper than the OSCP and it includes the reporting.",
+    detail: {
+      overview: [
+        "A five-day practical exam against an Active Directory environment, ending in a report and a live debrief. The debrief is the unusual part and the valuable one: you explain your findings to someone who asks questions, which is the thing interviews actually test.",
+        "It sits between the eJPT and the OSCP in difficulty and well below the OSCP in price, which makes it a sensible target for a student who wants a serious practical credential without spending four figures.",
+        "It assumes Active Directory, so the Windows domain lab target pairs with it directly.",
+      ],
+      examples: [
+        "Build a small AD lab and practise the attack paths before booking.",
+        "Practise writing the report and delivering the debrief out loud.",
+        "Do the eJPT first if practical exams are new to you.",
+      ],
+    },
+    gatekeeper:
+      "A five-day practical exam, a report, and a live debrief you can fail",
+    consumes_artifacts: ["ART-WRITEUP"],
+    window: {
+      type: "rolling",
+      note: "Book whenever. Voucher validity is time-boxed once purchased.",
+    },
+    lead_time: "3–6 months of preparation",
+    lead_time_months: 4,
+    cost: "Low four figures or less, usually bundled with the courses",
+    links: [
+      {
+        title: "TCM Security — PNPT",
+        url: "https://certifications.tcm-sec.com/pnpt/",
+        last_verified: V_2026_09,
+      },
+    ],
+    first_move:
+      "Stand up a small Active Directory lab and get comfortable in it before you buy anything.",
+    failure_mode:
+      "Neglecting the report and the debrief. Both are scored, and both are where people are surprised.",
   },
   {
     id: "PRV-OSCP",
@@ -920,6 +1321,40 @@ const proveTiles: ProveTile[] = [
       "Find a workshop or student track with a deadline four or more months out and write the abstract this week.",
     failure_mode:
       "Aiming at a top-tier conference for a first paper. Workshops and student tracks exist for exactly this and review just as genuinely.",
+  },
+  {
+    id: "PRV-GRADSCHOOL",
+    phrase: "a place on a graduate programme",
+    name: "Accepted to a graduate programme",
+    tier: 3,
+    brief:
+      "A department admitted you to a master's or doctoral programme. A committee read your application against everyone else's and chose you.",
+    detail: {
+      overview: [
+        "A genuine selection, and the right one to have on your bench if research is the direction you want. Security research is one of the few areas where a graduate degree changes what work is available to you rather than just how you're paid.",
+        "Research experience is what moves these applications — far more than grades alone. A research assistant position, a submitted paper, or a substantial public project all do more work in an application than another A.",
+        "Deadlines cluster in autumn for the following year, which means the preparation happens a full year before you'd start.",
+      ],
+      examples: [
+        "Email a professor whose work interests you and ask one specific question about a recent paper.",
+        "Get research experience first — it matters more than anything else in the application.",
+        "Write the deadlines down a year ahead.",
+      ],
+    },
+    gatekeeper:
+      "An admissions committee choosing a cohort from far more applicants than places",
+    consumes_artifacts: ["ART-WRITEUP", "ART-REPO", "ART-DATASET"],
+    window: {
+      type: "annual",
+      note: "Deadlines cluster in autumn for the following academic year, and they do not move.",
+    },
+    lead_time: "6–12 months from deciding to applying",
+    lead_time_months: 9,
+    cost: "Application fees, often waivable",
+    first_move:
+      "Read one recent paper from a group you'd want to join and email the author a specific question about it.",
+    failure_mode:
+      "Applying with grades and no research. The committee is choosing people to do research with.",
   },
   {
     id: "PRV-GCIH",
