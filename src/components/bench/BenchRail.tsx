@@ -1,14 +1,7 @@
 import { useState } from "react";
-import { Check, Copy, Lock, Pencil, Printer } from "lucide-react";
-import {
-  getArtifact,
-  getPattern,
-  getProve,
-  getSkill,
-  getTarget,
-  presets,
-} from "@/bench";
-import { BenchState, Preset, rungLabels } from "@/bench/types";
+import { Check, Copy, Lightbulb, Lock, Pencil, Printer } from "lucide-react";
+import { getArtifact, getPattern, getProve, getSkill, getTarget } from "@/bench";
+import { BenchState, rungLabels } from "@/bench/types";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -18,7 +11,8 @@ interface BenchRailProps {
   state: BenchState;
   step: Step;
   onStep: (step: Step) => void;
-  onLoadPreset: (bench: Preset["bench"]) => void;
+  /** Opens the example picker. */
+  onShowExamples: () => void;
   /** All three fields resolved. */
   complete: boolean;
   blocked: boolean;
@@ -37,7 +31,7 @@ const BenchRail = ({
   state,
   step,
   onStep,
-  onLoadPreset,
+  onShowExamples,
   complete,
   blocked,
 }: BenchRailProps) => {
@@ -122,33 +116,19 @@ const BenchRail = ({
         </span>
       </button>
 
-      <div className="mt-1">
-        <h2 className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-          Or start from an example
-        </h2>
-        <p className="mt-1 text-xs leading-snug text-muted-foreground">
-          Loads all three, then change whatever doesn't suit you.
-        </p>
-
-        <div className="mt-2 flex flex-col gap-1.5">
-          {presets.map((preset) => (
-            <button
-              key={preset.slug}
-              type="button"
-              onClick={() => onLoadPreset(preset.bench)}
-              title={preset.who}
-              className="rounded-md border border-border bg-secondary/30 px-3 py-2 text-left text-xs transition-colors hover:border-primary/60 hover:bg-secondary/50"
-            >
-              <span className="block font-medium text-foreground">
-                {preset.title}
-              </span>
-              <span className="mt-0.5 block leading-snug text-muted-foreground">
-                {preset.who}
-              </span>
-            </button>
-          ))}
-        </div>
-      </div>
+      <button
+        type="button"
+        onClick={onShowExamples}
+        className="flex items-center gap-2 rounded-lg border border-border bg-secondary/30 px-3 py-2.5 text-left text-sm text-foreground transition-colors hover:border-primary/60 hover:bg-secondary/50"
+      >
+        <Lightbulb className="h-4 w-4 shrink-0 text-muted-foreground" />
+        <span>
+          <span className="block font-medium">Start from an example</span>
+          <span className="block text-xs text-muted-foreground">
+            Six worked benches to take apart
+          </span>
+        </span>
+      </button>
 
       <div className="my-2 border-t border-border" />
 

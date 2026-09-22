@@ -6,6 +6,7 @@ import { applyPreset, benchComplete, reconcile } from "@/bench/compose";
 import { BenchState } from "@/bench/types";
 import { decodeBench, emptyBench, encodeBench } from "@/bench/url";
 import BenchRail, { Step } from "@/components/bench/BenchRail";
+import PresetPicker from "@/components/bench/PresetPicker";
 import PrintSheet from "@/components/bench/PrintSheet";
 import ProjectPane from "@/components/bench/ProjectPane";
 import ProvePane from "@/components/bench/ProvePane";
@@ -43,6 +44,7 @@ const CareerBench = () => {
   );
   /** Which tile's full-screen view is open. */
   const [open, setOpen] = useState<string | null>(null);
+  const [showExamples, setShowExamples] = useState(false);
 
   useEffect(() => {
     setState(decodeBench(location.search));
@@ -75,6 +77,16 @@ const CareerBench = () => {
     <>
       {/* Paper gets its own layout rather than a stripped-down copy of the app. */}
       <PrintSheet state={state} />
+
+      {showExamples && (
+        <PresetPicker
+          onLoad={(bench) => {
+            setState((previous) => applyPreset(previous, bench));
+            goTo("review");
+          }}
+          onClose={() => setShowExamples(false)}
+        />
+      )}
 
       <main className="flex flex-col bg-background lg:h-screen lg:overflow-hidden print:hidden">
         <header className="shrink-0 border-b border-border">
@@ -118,10 +130,7 @@ const CareerBench = () => {
               state={state}
               step={step}
               onStep={goTo}
-              onLoadPreset={(bench) => {
-                setState((previous) => applyPreset(previous, bench));
-                goTo("review");
-              }}
+              onShowExamples={() => setShowExamples(true)}
               complete={complete}
               blocked={blocked}
             />
