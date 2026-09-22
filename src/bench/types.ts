@@ -149,7 +149,9 @@ export type TargetId =
   | "TGT-CIPIPELINE"
   | "TGT-MEMIMAGE"
   | "TGT-LOGSET"
-  | "TGT-MALSAMPLE";
+  | "TGT-MALSAMPLE"
+  | "TGT-LLMAPP"
+  | "TGT-RCDEVICE";
 
 export type ArtifactId =
   | "ART-REPO"
@@ -168,7 +170,8 @@ export type KitId =
   | "KIT-FLASHDUMP"
   | "KIT-SDR"
   | "KIT-CLOUDACCT"
-  | "KIT-MALVM";
+  | "KIT-MALVM"
+  | "KIT-SITE";
 
 export type DomainId =
   | "DOM-RE"
@@ -178,7 +181,9 @@ export type DomainId =
   | "DOM-CLOUD"
   | "DOM-LINUX"
   | "DOM-NETWORK"
-  | "DOM-APPSEC";
+  | "DOM-APPSEC"
+  | "DOM-AI"
+  | "DOM-GRC";
 
 export type SkillId =
   // DOM-RE
@@ -217,7 +222,17 @@ export type SkillId =
   // DOM-APPSEC
   | "SKL-APPSEC-THREATMODEL"
   | "SKL-APPSEC-CODEREVIEW"
-  | "SKL-APPSEC-FUZZ";
+  | "SKL-APPSEC-FUZZ"
+  // DOM-AI
+  | "SKL-AI-PROMPT"
+  | "SKL-AI-REDTEAM"
+  | "SKL-AI-PIPELINE"
+  | "SKL-AI-DEFEND"
+  // DOM-GRC
+  | "SKL-GRC-FRAMEWORK"
+  | "SKL-GRC-RISK"
+  | "SKL-GRC-POLICY"
+  | "SKL-GRC-EVIDENCE";
 
 export type ProveId =
   // Tier 1
@@ -258,7 +273,15 @@ export type ProveId =
   | "PRV-CYSA"
   | "PRV-BLUETEAM"
   | "PRV-PNPT"
-  | "PRV-GRADSCHOOL";
+  | "PRV-GRADSCHOOL"
+  | "PRV-SFS"
+  | "PRV-VICEROY"
+  | "PRV-SMART"
+  | "PRV-GOOGLECYBER"
+  | "PRV-PENTESTPLUS"
+  | "PRV-NETPLUS"
+  | "PRV-CCNA"
+  | "PRV-AWSCLF";
 
 /* ------------------------------------------------------------------ *
  * The base every tile shares
