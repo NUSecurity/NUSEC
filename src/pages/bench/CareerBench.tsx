@@ -6,8 +6,6 @@ import { applyPreset, benchComplete, reconcile } from "@/bench/compose";
 import { BenchState } from "@/bench/types";
 import { decodeBench, emptyBench, encodeBench } from "@/bench/url";
 import BenchRail, { Step } from "@/components/bench/BenchRail";
-import Panel from "@/components/bench/Panel";
-import PresetCards from "@/components/bench/PresetCards";
 import PrintSheet from "@/components/bench/PrintSheet";
 import ProjectPane from "@/components/bench/ProjectPane";
 import ProvePane from "@/components/bench/ProvePane";
@@ -40,8 +38,8 @@ const CareerBench = () => {
     decodeBench(location.search),
   );
   const [step, setStep] = useState<Step>(() =>
-    // A shared link lands on the finished bench; a cold visit starts at examples.
-    benchComplete(decodeBench(location.search)) ? "review" : "examples",
+    // A shared link lands on the finished bench; everyone else starts building.
+    benchComplete(decodeBench(location.search)) ? "review" : "project",
   );
   /** Which tile's full-screen view is open. */
   const [open, setOpen] = useState<string | null>(null);
@@ -105,7 +103,7 @@ const CareerBench = () => {
               variant="ghost"
               onClick={() => {
                 setState(emptyBench);
-                goTo("examples");
+                goTo("project");
               }}
             >
               <RotateCcw />
@@ -120,31 +118,16 @@ const CareerBench = () => {
               state={state}
               step={step}
               onStep={goTo}
+              onLoadPreset={(bench) => {
+                setState((previous) => applyPreset(previous, bench));
+                goTo("review");
+              }}
               complete={complete}
               blocked={blocked}
             />
           </div>
 
           <div className="flex min-h-0 min-w-0 flex-col">
-            {step === "examples" && (
-              <Panel
-                title="Start from an example"
-                intro="Six benches other people could plausibly build. Load one to see how the three pieces fit together, then change whatever doesn't suit you — they're meant to be taken apart, not copied. Or skip straight to building your own."
-                next={{
-                  label: "Build my own instead",
-                  onClick: () => goTo("project"),
-                  ready: true,
-                }}
-              >
-                <PresetCards
-                  onLoad={(bench) => {
-                    setState((previous) => applyPreset(previous, bench));
-                    goTo("review");
-                  }}
-                />
-              </Panel>
-            )}
-
             {step === "project" && (
               <ProjectPane {...paneProps} onNext={() => goTo("skill")} />
             )}

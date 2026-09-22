@@ -1,29 +1,46 @@
 import { useState } from "react";
-import { Check, Copy, Lightbulb, Lock, Printer } from "lucide-react";
-import { getArtifact, getPattern, getProve, getSkill, getTarget } from "@/bench";
-import { BenchState, rungLabels } from "@/bench/types";
+import { Check, Copy, Lock, Pencil, Printer } from "lucide-react";
+import {
+  getArtifact,
+  getPattern,
+  getProve,
+  getSkill,
+  getTarget,
+  presets,
+} from "@/bench";
+import { BenchState, Preset, rungLabels } from "@/bench/types";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-export type Step = "examples" | "project" | "skill" | "prove" | "review";
+export type Step = "project" | "skill" | "prove" | "review";
 
 interface BenchRailProps {
   state: BenchState;
   step: Step;
   onStep: (step: Step) => void;
-  /** All three fields resolved and no hard block outstanding. */
+  onLoadPreset: (bench: Preset["bench"]) => void;
+  /** All three fields resolved. */
   complete: boolean;
   blocked: boolean;
 }
 
 /**
- * The left rail: where you are, what you've picked, and how to get it out.
+ * The left rail: how to start, where you are, what you've picked, and how to
+ * get it out.
  *
- * Three fields on one screen was too much at once, especially for someone who
- * has never seen the vocabulary. One field at a time, with the rail showing
- * what's already decided, turns it from a wall into three small questions.
+ * Building your own is the default and sits at the top, because that's what
+ * the tool is for. The examples underneath are a way in for anyone who'd
+ * rather see a finished one first — loading one fills all three fields, and
+ * the student can then change whichever bits don't suit them.
  */
-const BenchRail = ({ state, step, onStep, complete, blocked }: BenchRailProps) => {
+const BenchRail = ({
+  state,
+  step,
+  onStep,
+  onLoadPreset,
+  complete,
+  blocked,
+}: BenchRailProps) => {
   const [copied, setCopied] = useState(false);
 
   const projectValue =
@@ -88,24 +105,52 @@ const BenchRail = ({ state, step, onStep, complete, blocked }: BenchRailProps) =
     <nav className="flex flex-col gap-2">
       <button
         type="button"
-        onClick={() => onStep("examples")}
+        onClick={() => onStep("project")}
         className={cn(
           "flex items-center gap-2 rounded-lg border px-3 py-2.5 text-left text-sm transition-colors",
-          step === "examples"
-            ? "border-primary bg-primary/10 text-primary"
-            : "border-border bg-secondary/30 text-muted-foreground hover:border-primary/60 hover:text-foreground",
+          step !== "review"
+            ? "border-primary bg-primary/20 text-foreground"
+            : "border-border bg-secondary/30 text-foreground hover:border-primary/60",
         )}
       >
-        <Lightbulb className="h-4 w-4 shrink-0" />
+        <Pencil className="h-4 w-4 shrink-0 text-primary" />
         <span>
-          <span className="block font-medium">Examples</span>
-          <span className="block text-xs opacity-80">
-            New here? Start from one of these
+          <span className="block font-medium">Build my own</span>
+          <span className="block text-xs text-muted-foreground">
+            Start from step one
           </span>
         </span>
       </button>
 
-      <div className="my-1 border-t border-border" />
+      <div className="mt-1">
+        <h2 className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+          Or start from an example
+        </h2>
+        <p className="mt-1 text-xs leading-snug text-muted-foreground">
+          Loads all three, then change whatever doesn't suit you.
+        </p>
+
+        <div className="mt-2 flex flex-col gap-1.5">
+          {presets.map((preset) => (
+            <button
+              key={preset.slug}
+              type="button"
+              onClick={() => onLoadPreset(preset.bench)}
+              title={preset.who}
+              className="rounded-md border border-border bg-secondary/30 px-3 py-2 text-left text-xs transition-colors hover:border-primary/60 hover:bg-secondary/50"
+            >
+              <span className="block font-medium text-foreground">
+                {preset.title}
+              </span>
+              <span className="mt-0.5 block leading-snug text-muted-foreground">
+                {preset.who}
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="my-2 border-t border-border" />
 
       {steps.map(({ id, n, label, hint, value }) => {
         const active = step === id;
@@ -119,7 +164,7 @@ const BenchRail = ({ state, step, onStep, complete, blocked }: BenchRailProps) =
             className={cn(
               "flex items-start gap-2.5 rounded-lg border px-3 py-2.5 text-left transition-colors",
               active
-                ? "border-primary bg-primary/10"
+                ? "border-primary bg-primary/20"
                 : "border-border bg-secondary/30 hover:border-primary/60",
             )}
           >
@@ -165,20 +210,20 @@ const BenchRail = ({ state, step, onStep, complete, blocked }: BenchRailProps) =
         className={cn(
           "flex items-center gap-2 rounded-lg border px-3 py-2.5 text-left text-sm transition-colors",
           step === "review"
-            ? "border-primary bg-primary/10 text-primary"
+            ? "border-primary bg-primary/20 text-foreground"
             : complete
               ? "border-border bg-secondary/30 text-foreground hover:border-primary/60"
               : "cursor-not-allowed border-border/50 bg-secondary/20 text-muted-foreground/60",
         )}
       >
         {complete ? (
-          <Check className="h-4 w-4 shrink-0" />
+          <Check className="h-4 w-4 shrink-0 text-primary" />
         ) : (
           <Lock className="h-4 w-4 shrink-0" />
         )}
         <span>
           <span className="block font-medium">Your bench</span>
-          <span className="block text-xs opacity-80">
+          <span className="block text-xs text-muted-foreground">
             {complete ? "All three together" : "Unlocks when all three are set"}
           </span>
         </span>
