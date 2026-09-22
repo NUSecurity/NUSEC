@@ -1,5 +1,6 @@
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import nusecEmblem from "@/assets/nusec-emblem.png";
 import GlitchText from "@/components/animations/GlitchText";
 import { scrollToSection } from "@/lib/scroll";
@@ -10,6 +11,9 @@ const sections = [
   { id: "about", label: "About" },
   { id: "contact", label: "Join" },
 ];
+
+/** Pages that are not part of the landing page, shown after the sections. */
+const pages = [{ to: "/bench", label: "Career Bench" }];
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -51,6 +55,11 @@ const Header: React.FC = () => {
                 {label}
               </button>
             ))}
+            {pages.map(({ to, label }) => (
+              <Link key={to} to={to} className={linkStyles}>
+                {label}
+              </Link>
+            ))}
           </nav>
 
           {/* Mobile Menu Button */}
@@ -76,6 +85,16 @@ const Header: React.FC = () => {
                 >
                   {label}
                 </button>
+              ))}
+              {pages.map(({ to, label }) => (
+                <Link
+                  key={to}
+                  to={to}
+                  onClick={() => setIsMenuOpen(false)}
+                  className={`text-left ${linkStyles}`}
+                >
+                  {label}
+                </Link>
               ))}
             </div>
           </nav>

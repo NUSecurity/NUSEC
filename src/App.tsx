@@ -1,3 +1,4 @@
+import { Suspense, lazy } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -7,6 +8,10 @@ import MeetingPage from "./pages/ctf/MeetingPage";
 import ChallengePage from "./pages/ctf/ChallengePage";
 import PcapAnalyzer from "./pages/tools/PcapAnalyzer";
 import CipherBench from "./pages/tools/CipherBench";
+
+/* The bench carries every tile and resource, which is most of the bundle and
+   nothing the landing page needs. Split so it loads only when asked for. */
+const CareerBench = lazy(() => import("./pages/bench/CareerBench"));
 
 const queryClient = new QueryClient();
 
@@ -28,6 +33,26 @@ const App = () => (
           <Route
             path="/challenges/:meetingSlug/:challengeSlug"
             element={<ChallengePage />}
+          />
+
+          {/*
+            The Career Bench is public and linked from the nav, unlike
+            everything below it — a bench is meant to be pasted into Slack and
+            into co-op applications, which only works if the page is real.
+          */}
+          <Route
+            path="/bench"
+            element={
+              <Suspense
+                fallback={
+                  <div className="flex min-h-screen items-center justify-center bg-background text-sm text-muted-foreground">
+                    Loading the bench…
+                  </div>
+                }
+              >
+                <CareerBench />
+              </Suspense>
+            }
           />
 
           {/*
