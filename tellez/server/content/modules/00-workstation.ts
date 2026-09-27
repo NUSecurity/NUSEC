@@ -129,12 +129,12 @@ export const workstation: ContentModule = {
     { label: "notes", icon: "Folder", target: `${HOME}/Desktop/notes` },
     { label: "readme-club-laptop.txt", icon: "FileText", target: `${HOME}/Desktop/readme-club-laptop.txt` },
     { label: "Recycle Bin", icon: "Trash2", target: "app:recycle-bin" },
-    { label: "Nettle", icon: "Globe", target: "app:browser" },
+    { label: "Web Browser", icon: "Globe", target: "app:browser" },
   ],
 
   startMenuItems: [
     { label: "File Explorer", icon: "FolderOpen", appId: "explorer" },
-    { label: "Nettle Browser", icon: "Globe", appId: "browser" },
+    { label: "Web Browser", icon: "Globe", appId: "browser" },
     { label: "Notepad", icon: "FileText", appId: "notepad" },
     { label: "Recycle Bin", icon: "Trash2", appId: "recycle-bin" },
   ],

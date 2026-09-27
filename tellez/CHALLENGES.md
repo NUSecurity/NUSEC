@@ -231,12 +231,12 @@ That count is the single best signal of who is stuck versus who is working.
 Where the money went. This is the payoff for everything above.
 
 **Where it is**
-`ledger.brightlinepay.test`, opened in **Nettle**, the browser on the desktop.
+`ledger.brightlinepay.test`, opened in the **Web Browser** on the desktop.
 There is no search engine on this machine — the address has to come from the
 recycle-bin note.
 
 **The process**
-Type the address into Nettle. The site's front page is a login wall. The
+Type the address into the browser. The site's front page is a login wall. The
 protected routes are never serialised to a session that has not passed it, so
 reading the page source shows a login page and nothing else.
 

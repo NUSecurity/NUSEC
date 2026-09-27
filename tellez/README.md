@@ -49,7 +49,7 @@ Two things worth knowing while you work:
 3. Open the **Recycle Bin**, read `notes-to-self.txt`.
 4. Decode `YXRlbGxlei5hZG1pbg==` → `atellez.admin`.
 5. Open the **notes** folder on the desktop, read `tuning-notes.txt` → `dadgad-capo2`.
-6. Open **Nettle**, go to `ledger.brightlinepay.test`, sign in, read **Payouts**.
+6. Open the **Web Browser**, go to `ledger.brightlinepay.test`, sign in, read **Payouts**.
 
 ---
 
@@ -97,7 +97,7 @@ Three rules that are not negotiable:
 
 - **No content in the client bundle.** If a player can read it before earning
   it, the challenge is broken.
-- **No third window.** The shell has two slots on purpose.
+- **No third region.** Several apps may be open, but the screen has two regions on purpose.
 - **Fake hostnames use `.test`, `.invalid` or `.example`.** An invented domain
   that turns out to be real points a room full of security students at a
   stranger's website. Preflight enforces this one.

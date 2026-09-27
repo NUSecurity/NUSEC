@@ -37,8 +37,8 @@ where all ~40 people are.
 
 - **Not a VM, container, or emulator.** Nothing executes. It is a data-driven UI
   over a fake tree.
-- **Not a window manager.** At most two windows exist: the File Explorer and one
-  application. See [§6](#6-the-shell-and-the-two-window-rule).
+- **Not a window manager.** Two regions: the File Explorer, and one visible
+  application chosen from the taskbar. See [§6](#6-the-shell-and-the-two-region-rule).
 - **Not a CTF.** No `NUSEC{...}`, no submission box, no participant scoreboard.
 - **Not linear.** There are no acts, chapters or levels. It is one machine with
   things hidden in it, and a dependency graph of what unlocks what.
@@ -382,33 +382,45 @@ scanning only; the engine does not read them.
 
 ---
 
-## 6. The shell and the two-window rule
+## 6. The shell and the two-region rule
 
-There is no window manager and there must never be one.
+There is no window manager and there must never be one. The screen has exactly
+two regions:
 
 ```ts
 class DesktopShell {
-  explorerSlot: WindowState | null;   // always the File Explorer
-  appSlot:      WindowState | null;   // whatever was opened last
-
-  openExplorer(path: string): void;   // fills or refocuses explorerSlot
-  open(node: FileNode): void;         // REPLACES whatever is in appSlot
-  openUrl(url: string): void;         // routes to the Browser in appSlot
-  close(slot: "explorer" | "app"): void;
+  explorerSlot: Slot | null;   // the File Explorer, or the Recycle Bin
+  apps: Slot[];                // several open at once
+  activeApp: string | null;    // exactly one of them on screen
 }
 ```
 
-Opening a second document replaces the first. This removes z-ordering, drag,
-focus management, tiling and minimise-restore choreography — roughly the entire
-cost of a desktop UI — while keeping the feel. Layout is a fixed two-pane
-arrangement, not free-floating geometry.
+**Several applications may be open; exactly one is shown.** The open ones all
+appear in the taskbar, and clicking one brings it forward. There is still no
+z-order, no dragging, no resizing and no free-floating geometry — a taskbar
+button is a radio control, not a window.
+
+**One instance per application id.** Opening a second text file replaces what
+the text viewer is showing rather than stacking a second copy of it. That is
+how a single-document viewer behaves, and it keeps the taskbar honest.
+
+> ### The rule that makes this work
+>
+> **Inactive apps are hidden with CSS, never unmounted.**
+>
+> Unmounting throws away component state, and that state is the entire point:
+> the browser has to remember the page it was on, a viewer has to remember what
+> it was showing. The bug this design exists to fix was reading the portal note,
+> opening the browser to visit the address it gives you, and coming back to find
+> the note — and the base64 username on it — gone.
+>
+> An app that holds internal state gets this for free. If you "optimise" the
+> render to unmount hidden windows you break every app at once, and the symptom
+> looks like content randomly resetting rather than like a rendering change.
 
 > **To contributors and their agents:** you will be tempted to generalise this
-> into a real window manager. Do not. If a challenge seems to need three
-> windows, it needs redesigning. The constraint is the feature, and it is the
-> single biggest reason this is buildable at all.
-
----
+> into a real window manager. Do not. The constraint is the feature, and it is
+> the single biggest reason this was affordable to build.
 
 ## 7. Extension points — how to add anything
 
@@ -585,7 +597,7 @@ mid-meeting**.
 
 - **No content in the client bundle.** If a participant can read it before
   earning it, it is broken.
-- **No third window.** See [§6](#6-the-shell-and-the-two-window-rule).
+- **No third region.** See [§6](#6-the-shell-and-the-two-region-rule).
 - **No `NUSEC{...}` anywhere.** There are no flags.
 - **No progress ever reaches the player.** No toasts, no checklists, no
   objective ids on the wire. Objectives exist for the facilitator board alone,

@@ -3,9 +3,12 @@ import { cn } from "@/lib/cn";
 import { useEffect, useState } from "react";
 
 export interface TaskbarWindow {
-  key: "explorer" | "app";
+  /** "explorer", or the id of an open app. */
+  key: string;
   title: string;
   icon: string;
+  /** Currently on screen. Inactive apps are open but hidden. */
+  active: boolean;
 }
 
 export function Taskbar({
@@ -14,7 +17,7 @@ export function Taskbar({
   windows: TaskbarWindow[];
   startOpen: boolean;
   onStart(): void;
-  onFocus(key: "explorer" | "app"): void;
+  onFocus(key: string): void;
   hostname: string;
 }) {
   const [now, setNow] = useState(() => new Date());
@@ -46,9 +49,20 @@ export function Taskbar({
           <button
             key={window.key}
             onClick={() => onFocus(window.key)}
-            className="flex items-center gap-2 rounded-md border-b-2 border-husky-accent bg-white/10 px-3 py-1.5 text-[12px] transition-colors hover:bg-white/15"
+            title={window.title}
+            aria-pressed={window.active}
+            className={cn(
+              "flex items-center gap-2 rounded-md border-b-2 px-3 py-1.5 text-[12px] transition-colors",
+              window.active
+                ? "border-husky-accent bg-white/15"
+                : "border-transparent bg-white/[0.04] text-husky-dim hover:bg-white/10",
+            )}
           >
-            <Icon name={window.icon} size={14} className="text-husky-accent" />
+            <Icon
+              name={window.icon}
+              size={14}
+              className={window.active ? "text-husky-accent" : "text-husky-faint"}
+            />
             <span className="max-w-[160px] truncate">{window.title}</span>
           </button>
         ))}

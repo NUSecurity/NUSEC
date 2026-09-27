@@ -1,6 +1,7 @@
 import { appById } from "@/apps/registry";
 import type { ShellApi } from "@/apps/types";
 import { api, ApiError } from "@/lib/api";
+import { cn } from "@/lib/cn";
 import { emit } from "@/lib/telemetry";
 import { Desktop } from "@/shell/Desktop";
 import { ErrorBoundary } from "@/shell/ErrorBoundary";
@@ -20,19 +21,41 @@ interface Slot {
   content?: NodeContent;
 }
 
+/** Replaces the entry for an app id in place, or appends it. */
+function upsert(slots: Slot[], slot: Slot): Slot[] {
+  const index = slots.findIndex((existing) => existing.appId === slot.appId);
+  if (index === -1) return [...slots, slot];
+
+  const next = [...slots];
+  next[index] = slot;
+  return next;
+}
+
 /**
  * The desktop.
  *
- * Holds the two window slots and nothing else — see ARCHITECTURE.md §6. There
- * is no z-order, no dragging and no third window, and that constraint is the
- * single biggest reason this was affordable to build.
+ * Two regions, not a window manager: the File Explorer on the left, and one
+ * visible application on the right. See ARCHITECTURE.md §6.
+ *
+ * Several applications may be *open* at once even though only one is *shown* —
+ * they appear in the taskbar and clicking one brings it forward. Crucially the
+ * inactive ones stay mounted and are hidden with CSS rather than unmounted,
+ * because that is the only thing that preserves their internal state: the
+ * browser remembers the page it was on, and a note remembers the file it was
+ * showing. Unmounting them would throw that away, which is exactly the problem
+ * this solves — reading the portal note, opening the browser, and coming back
+ * to find the note gone.
+ *
+ * One instance per application, so opening a second text file replaces the
+ * contents of the text viewer rather than stacking another copy of it.
  */
 export function Play() {
   const navigate = useNavigate();
   const [desktop, setDesktop] = useState<DesktopPayload | null>(null);
   const [locked, setLocked] = useState<boolean | null>(null);
   const [explorerSlot, setExplorerSlot] = useState<Slot | null>(null);
-  const [appSlot, setAppSlot] = useState<Slot | null>(null);
+  const [apps, setApps] = useState<Slot[]>([]);
+  const [activeApp, setActiveApp] = useState<string | null>(null);
   const [startOpen, setStartOpen] = useState(false);
 
   /* --------------------------------------------------------- bootstrap */
@@ -53,6 +76,11 @@ export function Play() {
 
   /* ------------------------------------------------------------- shell */
 
+  const show = useCallback((slot: Slot) => {
+    setApps((current) => upsert(current, slot));
+    setActiveApp(slot.appId);
+  }, []);
+
   const shell = useMemo<ShellApi>(
     () => ({
       openExplorer(path) {
@@ -62,16 +90,16 @@ export function Play() {
       async openPath(path) {
         try {
           const result = await api.read(path);
-          setAppSlot({ appId: result.opensWith, node: result.summary, content: result.content });
+          show({ appId: result.opensWith, node: result.summary, content: result.content });
         } catch (cause) {
-          // Directories belong in the explorer slot, not the app slot.
+          // Directories belong in the explorer region, not the app region.
           if (cause instanceof ApiError && cause.status === 400) {
             return setExplorerSlot({ appId: "explorer", arg: path });
           }
-          if (cause instanceof ApiError && cause.status === 403) {
-            return setAppSlot({ appId: "denied", arg: path });
-          }
-          setAppSlot({ appId: "missing", arg: path });
+          // Refusals share one id so repeated denials replace each other
+          // instead of collecting taskbar buttons.
+          const kind = cause instanceof ApiError && cause.status === 403 ? "denied" : "missing";
+          show({ appId: "notice", arg: path, content: { kind: "text", body: kind } });
         }
       },
 
@@ -83,21 +111,42 @@ export function Play() {
           return setExplorerSlot({ appId, arg });
         }
 
-        setAppSlot({ appId });
+        // Already open: bring it forward untouched. Re-launching the browser
+        // must not reset the page it was on.
+        setApps((current) =>
+          current.some((slot) => slot.appId === appId) ? current : [...current, { appId }],
+        );
+        setActiveApp(appId);
       },
 
       openUrl(url) {
         emit("app.launch", { app: "browser" });
-        setAppSlot({ appId: "browser", arg: url });
+        show({ appId: "browser", arg: url });
       },
 
       close(slot) {
-        if (slot === "explorer") setExplorerSlot(null);
-        else setAppSlot(null);
+        if (slot === "explorer") return setExplorerSlot(null);
+
+        setApps((current) => {
+          const next = current.filter((open) => open.appId !== activeApp);
+          setActiveApp(next.length > 0 ? next[next.length - 1].appId : null);
+          return next;
+        });
       },
     }),
-    [explorerSlot],
+    [activeApp, explorerSlot, show],
   );
+
+  /** Closes one app by id, from its taskbar button or its own close control. */
+  const closeApp = useCallback((appId: string) => {
+    setApps((current) => {
+      const next = current.filter((slot) => slot.appId !== appId);
+      setActiveApp((active) =>
+        active === appId ? (next.length > 0 ? next[next.length - 1].appId : null) : active,
+      );
+      return next;
+    });
+  }, []);
 
   function openDesktopItem(item: DesktopItem) {
     if (item.target.startsWith("app:")) return shell.openApp(item.target.slice(4));
@@ -114,19 +163,31 @@ export function Play() {
   if (locked) return <LockScreen onUnlocked={() => void loadDesktop()} />;
   if (!desktop) return null;
 
-  const app = appSlot ? appById(appSlot.appId) : undefined;
-  const browser = explorerSlot ? appById(explorerSlot.appId) : undefined;
+  const explorerApp = explorerSlot ? appById(explorerSlot.appId) : undefined;
+  const explorerTitle = explorerApp?.title ?? "Explorer";
 
-  const browserTitle = explorerSlot?.arg
-    ? explorerSlot.arg.split("/").pop() || explorerSlot.arg
-    : browser?.title ?? "Explorer";
+  const titleOf = (slot: Slot) =>
+    slot.node?.name ?? appById(slot.appId)?.title ?? "Notice";
 
   const windows: TaskbarWindow[] = [
-    ...(explorerSlot ? [{ key: "explorer" as const, title: browserTitle, icon: browser?.icon ?? "FolderOpen" }] : []),
-    ...(appSlot ? [{ key: "app" as const, title: appSlot.node?.name ?? app?.title ?? "Window", icon: app?.icon ?? "AppWindow" }] : []),
+    ...(explorerSlot && explorerApp
+      ? [{
+          key: "explorer",
+          title: explorerTitle,
+          icon: explorerApp.icon,
+          active: true,
+        }]
+      : []),
+    ...apps.map((slot) => ({
+      key: slot.appId,
+      title: titleOf(slot),
+      icon: appById(slot.appId)?.icon ?? "TriangleAlert",
+      active: slot.appId === activeApp,
+    })),
   ];
 
-  const both = Boolean(explorerSlot) && Boolean(appSlot);
+  const both = Boolean(explorerSlot) && activeApp !== null;
+  const wide = "mx-auto w-full max-w-3xl";
 
   return (
     <div className="wallpaper flex h-full flex-col">
@@ -134,16 +195,16 @@ export function Play() {
         <Desktop items={desktop.desktopItems} onOpen={openDesktopItem} />
 
         <div className="pointer-events-none absolute inset-0 flex gap-3 p-3">
-          {explorerSlot && browser && (
+          {explorerSlot && explorerApp && (
             <Window
-              title={browser.title}
+              title={explorerApp.title}
               subtitle={explorerSlot.arg}
-              icon={browser.icon}
+              icon={explorerApp.icon}
               onClose={() => shell.close("explorer")}
-              className={both ? "pointer-events-auto w-[44%]" : "pointer-events-auto mx-auto w-full max-w-3xl"}
+              className={cn("pointer-events-auto", both ? "w-[44%]" : wide)}
             >
               <ErrorBoundary label={explorerSlot.appId}>
-                {browser.render({
+                {explorerApp.render({
                   arg: explorerSlot.arg,
                   shell,
                   emit: (action, payload) =>
@@ -153,27 +214,38 @@ export function Play() {
             </Window>
           )}
 
-          {appSlot && (
-            <Window
-              title={appSlot.node?.name ?? app?.title ?? "Window"}
-              subtitle={appSlot.node?.path}
-              icon={app?.icon ?? "AppWindow"}
-              onClose={() => shell.close("app")}
-              className={both ? "pointer-events-auto flex-1" : "pointer-events-auto mx-auto w-full max-w-3xl"}
-            >
-              <ErrorBoundary label={appSlot.appId}>
-                {app
-                  ? app.render({
-                      node: appSlot.node,
-                      content: appSlot.content,
-                      arg: appSlot.arg,
-                      shell,
-                      emit: (action, payload) => emit("app.action", { app: appSlot.appId, action, ...payload }),
-                    })
-                  : <Refusal kind={appSlot.appId} path={appSlot.arg} />}
-              </ErrorBoundary>
-            </Window>
-          )}
+          {apps.map((slot) => {
+            const app = appById(slot.appId);
+            const active = slot.appId === activeApp;
+
+            return (
+              <Window
+                key={slot.appId}
+                title={titleOf(slot)}
+                subtitle={slot.node?.path ?? slot.arg}
+                icon={app?.icon ?? "TriangleAlert"}
+                onClose={() => closeApp(slot.appId)}
+                // Hidden, not unmounted. See the note at the top of this file.
+                className={cn("pointer-events-auto", both ? "flex-1" : wide, !active && "hidden")}
+              >
+                <ErrorBoundary label={slot.appId}>
+                  {app
+                    ? app.render({
+                        node: slot.node,
+                        content: slot.content,
+                        arg: slot.arg,
+                        shell,
+                        emit: (action, payload) =>
+                          emit("app.action", { app: slot.appId, action, ...payload }),
+                      })
+                    : <Refusal
+                        kind={slot.content?.kind === "text" ? slot.content.body : "missing"}
+                        path={slot.arg}
+                      />}
+                </ErrorBoundary>
+              </Window>
+            );
+          })}
         </div>
 
         {startOpen && (
@@ -191,7 +263,10 @@ export function Play() {
         startOpen={startOpen}
         hostname={`${desktop.machine.hostname} · ${desktop.machine.user}`}
         onStart={() => setStartOpen((open) => !open)}
-        onFocus={() => setStartOpen(false)}
+        onFocus={(key) => {
+          setStartOpen(false);
+          if (key !== "explorer") setActiveApp(key);
+        }}
       />
     </div>
   );

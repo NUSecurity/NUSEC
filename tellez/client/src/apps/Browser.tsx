@@ -16,7 +16,7 @@ function split(url: string): { host: string; path: string } {
 }
 
 /**
- * Nettle — the in-world browser.
+ * The in-world web browser.
  *
  * This is the extension point for OSINT trails and further portals: a site is
  * declarative data on the server plus a renderer registered on the client, and
@@ -43,7 +43,7 @@ function BrowserView({ arg }: AppProps) {
       setError(
         cause instanceof ApiError && cause.status === 403
           ? "You need to sign in to view this page."
-          : `Nettle can't reach ${host}. Check the address and try again.`,
+          : `Can't reach ${host}. Check the address and try again.`,
       );
     } finally {
       setBusy(false);
@@ -94,7 +94,7 @@ function BrowserView({ arg }: AppProps) {
         {!error && !page && !busy && (
           <div className="flex h-full flex-col items-center justify-center gap-2 p-8 text-center">
             <Icon name="Globe" size={30} className="text-husky-accent/70" />
-            <p className="text-[13px] text-husky-dim">Nettle</p>
+            <p className="text-[13px] text-husky-dim">Web Browser</p>
             <p className="max-w-xs text-[11.5px] text-husky-faint">
               Type an address above. There is no search engine on this machine.
             </p>
@@ -131,7 +131,7 @@ function BrowserView({ arg }: AppProps) {
 
 export const browser: DesktopApp = {
   id: "browser",
-  title: "Nettle",
+  title: "Web Browser",
   icon: "Globe",
   opens: [],
   render: (props) => <BrowserView {...props} />,

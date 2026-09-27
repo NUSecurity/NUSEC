@@ -5,9 +5,11 @@ import type { ReactNode } from "react";
 /**
  * Window chrome.
  *
- * Fixed in a slot, not free-floating: no dragging, no resizing, no z-order.
- * See ARCHITECTURE.md §6 — the two-window rule is what makes the whole desktop
- * affordable to build, and generalising this into a real window manager is
+ * Fixed in a region, not free-floating: no dragging, no resizing, no z-order.
+ * Several apps may be open at once, but only one is shown and the rest are
+ * hidden rather than unmounted, which is what preserves their state.
+ *
+ * See ARCHITECTURE.md §6. Generalising this into a real window manager is
  * explicitly out of scope.
  */
 export function Window({
