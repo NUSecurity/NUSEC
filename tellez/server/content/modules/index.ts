@@ -7,12 +7,12 @@
  * nothing reads them.
  */
 
-import type { ContentModule } from "../../types.ts";
-import { workstation } from "./00-workstation.ts";
-import { login } from "./10-login.ts";
-import { recycleBin } from "./20-recycle-bin.ts";
-import { desktopNotes } from "./30-desktop-notes.ts";
-import { brightline } from "./40-brightline.ts";
+import type { ContentModule } from "../../types.js";
+import { workstation } from "./00-workstation.js";
+import { login } from "./10-login.js";
+import { recycleBin } from "./20-recycle-bin.js";
+import { desktopNotes } from "./30-desktop-notes.js";
+import { brightline } from "./40-brightline.js";
 
 export const modules: ContentModule[] = [
   workstation,

@@ -6,11 +6,11 @@
  * exactly where the player was.
  */
 
-import type { SessionView } from "../shared/protocol.ts";
-import { store } from "../server/db.ts";
-import { loadCtx, record, world } from "../server/engine.ts";
-import { bodyOf, fail, type ApiRequest, type ApiResponse } from "../server/http.ts";
-import { cookieHeader, newSessionId } from "../server/session.ts";
+import type { SessionView } from "../shared/protocol.js";
+import { store } from "../server/db.js";
+import { loadCtx, record, world } from "../server/engine.js";
+import { bodyOf, fail, type ApiRequest, type ApiResponse } from "../server/http.js";
+import { cookieHeader, newSessionId } from "../server/session.js";
 
 export default async function handler(req: ApiRequest, res: ApiResponse) {
   if ((req.method ?? "GET").toUpperCase() === "GET") return current(req, res);

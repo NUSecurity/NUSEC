@@ -9,7 +9,7 @@
 
 import {
   attrs, binary, dir, mail, sheet, text, ts, type ContentModule,
-} from "../kit.ts";
+} from "../kit.js";
 
 const HOME = "C:/Users/atellez";
 

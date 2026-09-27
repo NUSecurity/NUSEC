@@ -13,11 +13,11 @@
 
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
-import { assetDir } from "./assets.ts";
-import { isKnownApp } from "../shared/apps.ts";
-import { EMPTY_PROGRESS } from "./locks.ts";
-import { Directory, FileNode, ImageFile, pathKey } from "./vfs.ts";
-import type { World } from "./world.ts";
+import { assetDir } from "./assets.js";
+import { isKnownApp } from "../shared/apps.js";
+import { EMPTY_PROGRESS } from "./locks.js";
+import { Directory, FileNode, ImageFile, pathKey } from "./vfs.js";
+import type { World } from "./world.js";
 
 export interface PreflightResult {
   ok: boolean;

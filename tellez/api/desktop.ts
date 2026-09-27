@@ -8,10 +8,10 @@
  * player can read a checklist of what they have not found yet.
  */
 
-import { MACHINE } from "../server/content/machine.ts";
-import { world } from "../server/engine.ts";
-import { requireMachine } from "../server/guard.ts";
-import type { ApiRequest, ApiResponse } from "../server/http.ts";
+import { MACHINE } from "../server/content/machine.js";
+import { world } from "../server/engine.js";
+import { requireMachine } from "../server/guard.js";
+import type { ApiRequest, ApiResponse } from "../server/http.js";
 
 export default async function handler(req: ApiRequest, res: ApiResponse) {
   const ctx = await requireMachine(req, res);

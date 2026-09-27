@@ -5,8 +5,8 @@
  * this request see anything at all" is decided.
  */
 
-import { loadCtx, machineUnlocked, touch, type Ctx } from "./engine.ts";
-import { fail, type ApiRequest, type ApiResponse } from "./http.ts";
+import { loadCtx, machineUnlocked, touch, type Ctx } from "./engine.js";
+import { fail, type ApiRequest, type ApiResponse } from "./http.js";
 
 /** A valid signed cookie backed by a real session row. */
 export async function requireSession(req: ApiRequest, res: ApiResponse): Promise<Ctx | null> {

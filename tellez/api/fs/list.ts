@@ -1,8 +1,8 @@
 /** A directory listing, filtered to what this session has earned. */
 
-import { listDirectory } from "../../server/engine.ts";
-import { requireMachine } from "../../server/guard.ts";
-import { fail, param, type ApiRequest, type ApiResponse } from "../../server/http.ts";
+import { listDirectory } from "../../server/engine.js";
+import { requireMachine } from "../../server/guard.js";
+import { fail, param, type ApiRequest, type ApiResponse } from "../../server/http.js";
 
 export default async function handler(req: ApiRequest, res: ApiResponse) {
   const ctx = await requireMachine(req, res);

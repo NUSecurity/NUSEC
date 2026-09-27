@@ -1,9 +1,9 @@
 /** A login wall on a simulated site. */
 
-import type { AuthRequest, AuthResult, Revealed } from "../../shared/protocol.ts";
-import { authenticate } from "../../server/engine.ts";
-import { requireMachine } from "../../server/guard.ts";
-import { bodyOf, fail, methodIs, type ApiRequest, type ApiResponse } from "../../server/http.ts";
+import type { AuthRequest, AuthResult, Revealed } from "../../shared/protocol.js";
+import { authenticate } from "../../server/engine.js";
+import { requireMachine } from "../../server/guard.js";
+import { bodyOf, fail, methodIs, type ApiRequest, type ApiResponse } from "../../server/http.js";
 
 export default async function handler(req: ApiRequest, res: ApiResponse) {
   if (!methodIs(req, res, "POST")) return;

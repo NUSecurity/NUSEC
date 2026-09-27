@@ -14,7 +14,7 @@
 import { neon } from "@neondatabase/serverless";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
-import type { StoredEvent } from "../shared/protocol.ts";
+import type { StoredEvent } from "../shared/protocol.js";
 
 /** The subset of Neon's tagged-template client this module uses. */
 type Sql = (strings: TemplateStringsArray, ...values: unknown[]) => Promise<Record<string, unknown>[]>;

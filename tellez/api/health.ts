@@ -15,10 +15,10 @@
  * Booleans only. It never reports a configured value.
  */
 
-import { store, storageKind } from "../server/db.ts";
-import { world } from "../server/engine.ts";
-import type { ApiRequest, ApiResponse } from "../server/http.ts";
-import { preflight } from "../server/preflight.ts";
+import { store, storageKind } from "../server/db.js";
+import { world } from "../server/engine.js";
+import type { ApiRequest, ApiResponse } from "../server/http.js";
+import { preflight } from "../server/preflight.js";
 
 const isSet = (name: string) => (process.env[name]?.trim().length ?? 0) > 0;
 

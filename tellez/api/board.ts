@@ -10,12 +10,12 @@
  * count, because that is what tells you the whole room is stuck on one thing.
  */
 
-import type { BoardObjective, BoardSession, BoardView, StoredEvent } from "../shared/protocol.ts";
-import { store, storageKind } from "../server/db.ts";
-import { world } from "../server/engine.ts";
-import { fail, header, param, type ApiRequest, type ApiResponse } from "../server/http.ts";
-import { deriveProgress } from "../server/objectives.ts";
-import { preflight } from "../server/preflight.ts";
+import type { BoardObjective, BoardSession, BoardView, StoredEvent } from "../shared/protocol.js";
+import { store, storageKind } from "../server/db.js";
+import { world } from "../server/engine.js";
+import { fail, header, param, type ApiRequest, type ApiResponse } from "../server/http.js";
+import { deriveProgress } from "../server/objectives.js";
+import { preflight } from "../server/preflight.js";
 
 export default async function handler(req: ApiRequest, res: ApiResponse) {
   const expected = process.env.FACILITATOR_PASSWORD?.trim()

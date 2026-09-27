@@ -6,10 +6,10 @@
  * degrade the experience it is measuring.
  */
 
-import type { ClientEvent } from "../shared/protocol.ts";
-import { appAction, record } from "../server/engine.ts";
-import { requireSession } from "../server/guard.ts";
-import { bodyOf, methodIs, type ApiRequest, type ApiResponse } from "../server/http.ts";
+import type { ClientEvent } from "../shared/protocol.js";
+import { appAction, record } from "../server/engine.js";
+import { requireSession } from "../server/guard.js";
+import { bodyOf, methodIs, type ApiRequest, type ApiResponse } from "../server/http.js";
 
 const ALLOWED: ReadonlySet<string> = new Set([
   "app.launch", "search.query", "app.action",

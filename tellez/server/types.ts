@@ -10,9 +10,9 @@
 
 import type {
   AppId, ModuleId, ObjectiveId, SecretId, SiteHost,
-} from "../shared/protocol.ts";
-import type { LockRule } from "./locks.ts";
-import type { VfsNode } from "./vfs.ts";
+} from "../shared/protocol.js";
+import type { LockRule } from "./locks.js";
+import type { VfsNode } from "./vfs.js";
 
 /* ------------------------------------------------------------ objectives */
 

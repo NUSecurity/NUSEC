@@ -13,7 +13,7 @@
  * security students at a stranger's website.
  */
 
-import { requiresObjective, type ContentModule } from "../kit.ts";
+import { requiresObjective, type ContentModule } from "../kit.js";
 
 const HOST = "ledger.brightlinepay.test";
 

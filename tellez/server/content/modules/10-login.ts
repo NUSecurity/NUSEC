@@ -10,7 +10,7 @@
  * credentials and objectives; the engine does not care.
  */
 
-import { MACHINE, type ContentModule } from "../kit.ts";
+import { MACHINE, type ContentModule } from "../kit.js";
 
 export const login: ContentModule = {
   id: "login",

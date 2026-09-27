@@ -14,8 +14,8 @@
 import type {
   AppId, Cell, ChatMessage, MailMessage, NodeAttribute, NodeContent,
   NodeKind, NodeMeta, NodeSummary, ObjectiveId, SecretId,
-} from "../shared/protocol.ts";
-import { alwaysOpen, type LockRule, type Progress } from "./locks.ts";
+} from "../shared/protocol.js";
+import { alwaysOpen, type LockRule, type Progress } from "./locks.js";
 
 /**
  * `concealed` nodes are omitted from their parent's listing until their lock

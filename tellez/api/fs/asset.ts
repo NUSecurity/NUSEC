@@ -12,11 +12,11 @@
 
 import { existsSync, readFileSync } from "node:fs";
 import { basename, extname, resolve } from "node:path";
-import { assetDir } from "../../server/assets.ts";
-import { world } from "../../server/engine.ts";
-import { requireMachine } from "../../server/guard.ts";
-import { fail, param, type ApiRequest, type ApiResponse } from "../../server/http.ts";
-import { ImageFile } from "../../server/vfs.ts";
+import { assetDir } from "../../server/assets.js";
+import { world } from "../../server/engine.js";
+import { requireMachine } from "../../server/guard.js";
+import { fail, param, type ApiRequest, type ApiResponse } from "../../server/http.js";
+import { ImageFile } from "../../server/vfs.js";
 
 const TYPES: Record<string, string> = {
   ".svg": "image/svg+xml",

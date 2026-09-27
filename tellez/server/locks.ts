@@ -7,7 +7,7 @@
  * standing up a session.
  */
 
-import type { ObjectiveId, SecretId } from "../shared/protocol.ts";
+import type { ObjectiveId, SecretId } from "../shared/protocol.js";
 
 /** Everything a session has earned. Derived from the event log, never stored. */
 export interface Progress {

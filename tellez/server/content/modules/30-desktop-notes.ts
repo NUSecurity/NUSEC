@@ -11,7 +11,7 @@
  * single best signal of who is grinding and who is stuck.
  */
 
-import { dir, text, ts, type ContentModule } from "../kit.ts";
+import { dir, text, ts, type ContentModule } from "../kit.js";
 
 const NOTES = "C:/Users/atellez/Desktop/notes";
 

@@ -8,20 +8,20 @@
 
 import type {
   ClientEvent, DirListing, NodeContent, ObjectiveId, SecretId, SiteHost, StoredEvent,
-} from "../shared/protocol.ts";
+} from "../shared/protocol.js";
 import { randomUUID } from "node:crypto";
-import { MACHINE } from "./content/machine.ts";
-import { modules } from "./content/modules/index.ts";
-import { store, type SessionRow } from "./db.ts";
-import { type Progress } from "./locks.ts";
+import { MACHINE } from "./content/machine.js";
+import { modules } from "./content/modules/index.js";
+import { store, type SessionRow } from "./db.js";
+import { type Progress } from "./locks.js";
 import {
   cascade, deriveProgress, objectivesForAction, objectivesForOpen,
   objectivesForSecret, objectivesForVisit,
-} from "./objectives.ts";
-import { decodeCookie, readCookie } from "./session.ts";
-import type { Secret } from "./types.ts";
-import { Directory, FileNode, type ContentContext } from "./vfs.ts";
-import { World } from "./world.ts";
+} from "./objectives.js";
+import { decodeCookie, readCookie } from "./session.js";
+import type { Secret } from "./types.js";
+import { Directory, FileNode, type ContentContext } from "./vfs.js";
+import { World } from "./world.js";
 
 /* ----------------------------------------------------------------- world */
 

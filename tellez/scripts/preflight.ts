@@ -5,9 +5,9 @@
  * and the deploy rather than surfacing as a dead end during a meeting.
  */
 
-import { modules } from "../server/content/modules/index.ts";
-import { preflight } from "../server/preflight.ts";
-import { World } from "../server/world.ts";
+import { modules } from "../server/content/modules/index.js";
+import { preflight } from "../server/preflight.js";
+import { World } from "../server/world.js";
 
 const world = new World(modules);
 const result = preflight(world);

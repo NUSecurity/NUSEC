@@ -1,9 +1,9 @@
 /** The lock screen. */
 
-import type { LoginRequest, LoginResult, Revealed } from "../shared/protocol.ts";
-import { machineLogin } from "../server/engine.ts";
-import { requireSession } from "../server/guard.ts";
-import { bodyOf, methodIs, type ApiRequest, type ApiResponse } from "../server/http.ts";
+import type { LoginRequest, LoginResult, Revealed } from "../shared/protocol.js";
+import { machineLogin } from "../server/engine.js";
+import { requireSession } from "../server/guard.js";
+import { bodyOf, methodIs, type ApiRequest, type ApiResponse } from "../server/http.js";
 
 export default async function handler(req: ApiRequest, res: ApiResponse) {
   if (!methodIs(req, res, "POST")) return;

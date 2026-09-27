@@ -1,9 +1,9 @@
 /** One page from the simulated internet. */
 
-import { visit } from "../../server/engine.ts";
-import { requireMachine } from "../../server/guard.ts";
-import { fail, param, type ApiRequest, type ApiResponse } from "../../server/http.ts";
-import { world } from "../../server/engine.ts";
+import { visit } from "../../server/engine.js";
+import { requireMachine } from "../../server/guard.js";
+import { fail, param, type ApiRequest, type ApiResponse } from "../../server/http.js";
+import { world } from "../../server/engine.js";
 
 export default async function handler(req: ApiRequest, res: ApiResponse) {
   const ctx = await requireMachine(req, res);

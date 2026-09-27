@@ -13,7 +13,7 @@
 
 import {
   attrs, binary, deletedFrom, dir, image, sheet, text, ts, type ContentModule,
-} from "../kit.ts";
+} from "../kit.js";
 
 const BIN = "C:/$Recycle.Bin";
 const HOME = "C:/Users/atellez";

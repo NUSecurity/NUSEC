@@ -10,10 +10,10 @@
 
 import type {
   DirListing, ModuleId, ObjectiveId, SecretId, SiteHost,
-} from "../shared/protocol.ts";
-import type { Progress } from "./locks.ts";
-import type { ContentModule, Objective, Secret, SimRoute, SimSite } from "./types.ts";
-import { Directory, pathKey, VfsNode } from "./vfs.ts";
+} from "../shared/protocol.js";
+import type { Progress } from "./locks.js";
+import type { ContentModule, Objective, Secret, SimRoute, SimSite } from "./types.js";
+import { Directory, pathKey, VfsNode } from "./vfs.js";
 
 /** A registered item, tagged with the module that contributed it. */
 type Owned<T> = T & { moduleId: ModuleId };

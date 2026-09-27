@@ -9,10 +9,10 @@
  * Pure, like `locks.ts`, and for the same reason.
  */
 
-import type { ObjectiveId, SecretId, SiteHost, StoredEvent } from "../shared/protocol.ts";
-import type { Progress } from "./locks.ts";
-import { pathKey } from "./vfs.ts";
-import type { World } from "./world.ts";
+import type { ObjectiveId, SecretId, SiteHost, StoredEvent } from "../shared/protocol.js";
+import type { Progress } from "./locks.js";
+import { pathKey } from "./vfs.js";
+import type { World } from "./world.js";
 
 /**
  * Objectives fire two ways, and both are supported on purpose:
