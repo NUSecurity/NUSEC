@@ -130,18 +130,34 @@ nusec.club down with it. The isolation comes from one setting: Root Directory.
 
    **Then, in Settings:**
 
-   | Where | Setting | Value |
+   | Setting | Where it lives | Value |
    |---|---|---|
-   | Git | Production Branch | `tellez-incident` |
-   | Build and Deployment | Root Directory | `tellez` |
-   | Build and Deployment | Framework Preset | Vite |
+   | Production branch | **Environments → Production → Branch Tracking** | `tellez-incident` |
+   | Root Directory | **Build and Deployment** | `tellez` |
+   | Framework Preset | **Build and Deployment** | Vite |
 
-   Root Directory is the important one. With it set, this project only ever
+   The production branch is *not* under Settings → Git, despite that being the
+   obvious place and where it used to live. Vercel moved it to the Production
+   environment; searching the dashboard for "branch" finds nothing.
+
+   Root Directory is the load-bearing one. With it set, this project only ever
    sees `tellez/`, and the main site's build is untouched.
 
-   Finally **redeploy** — Deployments → ⋯ → Redeploy — because the first build
-   ran against the old settings. Deployments after this one are automatic on
-   every push to `tellez-incident`.
+   **Changing the branch does not deploy anything.** Vercel applies the setting
+   but leaves the existing deployment alone until the next push. So finish by
+   pushing a commit to `tellez-incident` — an empty one is enough:
+
+   ```bash
+   git commit --allow-empty -m "Trigger first production deploy" && git push
+   ```
+
+   Everything after that is automatic on every push to the branch.
+
+   **Optional, but it keeps the project tidy:** with Root Directory set to
+   `tellez`, any deployment from `main` fails, because that directory does not
+   exist there — so every push to the main site would leave a red build in this
+   project. Settings → Build and Deployment → **Ignored Build Step** → *Only
+   build if there are changes in a folder* → `tellez` cancels those instead.
 
 3. **Add a database.** Project → Storage → Neon (Postgres). Vercel sets
    `DATABASE_URL` for you. The schema is created on first use — there is no
