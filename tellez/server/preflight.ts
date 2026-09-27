@@ -13,6 +13,7 @@
 
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
+import { assetDir } from "./assets.ts";
 import { isKnownApp } from "../shared/apps.ts";
 import { EMPTY_PROGRESS } from "./locks.ts";
 import { Directory, FileNode, ImageFile, pathKey } from "./vfs.ts";
@@ -23,8 +24,12 @@ export interface PreflightResult {
   problems: string[];
 }
 
-const ASSET_DIR = resolve("server/content/assets");
-
+/**
+ * `checkAssets` is on at build time and off at runtime. A missing asset already
+ * failed the build, and re-checking from inside a serverless function only
+ * risks the board reporting a phantom problem because the working directory is
+ * not what the filesystem check assumed.
+ */
 export function preflight(world: World, checkAssets = true): PreflightResult {
   // Collisions found while merging. Everything else is downstream of these, so
   // they are reported first.
@@ -74,7 +79,7 @@ export function preflight(world: World, checkAssets = true): PreflightResult {
     }
 
     if (checkAssets && node instanceof ImageFile) {
-      if (!existsSync(resolve(ASSET_DIR, node.asset))) {
+      if (!existsSync(resolve(assetDir(), node.asset))) {
         problems.push(`${where} needs asset "${node.asset}", which is missing from server/content/assets/`);
       }
     }

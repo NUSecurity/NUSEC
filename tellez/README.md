@@ -24,6 +24,10 @@ Two things worth knowing while you work:
 - **The facilitator board is at `/board`**, password `dev` locally.
 - **`npm run preflight`** validates the content. The build runs it, so a broken
   lock or a missing asset fails the build rather than surfacing mid-meeting.
+- **`npm run check:api`** bundles every handler in `api/` the way Vercel will.
+  Vercel builds functions *after* `npm run build` passes, so a broken server
+  import otherwise gets through both typecheck and build and fails in the
+  cloud. Part of `npm run build`.
 - **`npm run walk`** plays the entire investigation against a running dev
   server and checks every gate and objective along the way. Preflight proves
   the content is *consistent*; this proves it is still *solvable*. Run it after
@@ -97,31 +101,79 @@ Three rules that are not negotiable:
 
 ## Deploying
 
-A second Vercel project against this repo, **Root Directory `tellez/`**, so it
-cannot see or break the main site. Production branch `tellez-incident`, domain
-`tellez.nusec.club`.
+Vercel, same as the main site — but its **own project**, so it cannot take
+nusec.club down with it. The isolation comes from one setting: Root Directory.
 
-Environment variables:
+### One-time setup
 
+1. **Push the branch.**
+
+   ```bash
+   git push -u origin tellez-incident
+   ```
+
+2. **Create a second Vercel project** from `NUSecurity/NUSEC` and set:
+
+   | Setting | Value |
+   |---|---|
+   | Root Directory | `tellez` |
+   | Production Branch | `tellez-incident` |
+   | Framework Preset | Vite |
+
+   Root Directory is the important one. With it set, this project only ever
+   sees `tellez/`, and the main site's build is untouched.
+
+3. **Add a database.** Project → Storage → Neon (Postgres). Vercel sets
+   `DATABASE_URL` for you. The schema is created on first use — there is no
+   migration step.
+
+4. **Add the other two variables** (Settings → Environment Variables):
+
+   ```
+   SESSION_SECRET         openssl rand -base64 32
+   FACILITATOR_PASSWORD   whatever you'll type on the night
+   ```
+
+   Both are required in production. `SESSION_SECRET` unset means nobody can
+   join; `FACILITATOR_PASSWORD` unset means the board stays shut, deliberately.
+
+5. **Add the domain** `tellez.nusec.club` and point a CNAME at Vercel. The apex
+   stays with the existing site.
+
+### Checking a deploy
+
+`GET /api/health` answers the only question that matters:
+
+```bash
+curl -s https://tellez.nusec.club/api/health | python3 -m json.tool
 ```
-DATABASE_URL            Neon Postgres. REQUIRED in production — serverless
-                        instances share no filesystem, so the dev file store
-                        would fragment progress across instances.
-SESSION_SECRET          random 32+ characters; signs the session cookie
-FACILITATOR_PASSWORD    gates /board. Unset in production = board closed.
+
+`"ok": true` means the database is reachable, all three variables are set, and
+the content passes preflight. Anything wrong comes back as **503** with a named
+problem — an unset variable, a database it cannot reach, a broken lock.
+
+You can also play the whole investigation against production:
+
+```bash
+WALK_BASE=https://tellez.nusec.club npm run walk
 ```
 
-### Before the meeting
+That leaves one `walker-####` session on the board. Run it before people arrive
+and ignore the row.
+
+### Run of show
 
 1. **Confirm Alec's Discord messages are findable.** The first challenge depends
    entirely on this and it is the one piece the app cannot provide. Decide the
    fallback for anyone not in the Discord — the board can release hints.
-2. `npm run preflight` against the production content.
-3. Check `/board` opens, and that its storage badge says **postgres**, not file.
-4. **Hit `/api/health`** to wake Neon. Its free tier suspends after a few
-   minutes idle, and you do not want participant number one paying that cold
-   start.
-5. Walk the whole thing cold on a laptop.
+2. `curl .../api/health` → `"ok": true`.
+3. Open `/board` and check the storage badge says **postgres**, not file. Amber
+   means `DATABASE_URL` did not take, and progress will fragment across
+   serverless instances.
+4. Hit `/api/health` once more a few minutes before the room fills. Neon's free
+   tier suspends when idle, and you do not want participant number one paying
+   that cold start.
+5. Walk it cold on a laptop.
 
 Progress lives in Postgres, so unlike the escape room a mid-meeting redeploy
 does not wipe anyone's session. Still, don't ship during a meeting.

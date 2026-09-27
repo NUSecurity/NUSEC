@@ -12,12 +12,11 @@
 
 import { existsSync, readFileSync } from "node:fs";
 import { basename, extname, resolve } from "node:path";
+import { assetDir } from "../../server/assets.ts";
 import { world } from "../../server/engine.ts";
 import { requireMachine } from "../../server/guard.ts";
 import { fail, param, type ApiRequest, type ApiResponse } from "../../server/http.ts";
 import { ImageFile } from "../../server/vfs.ts";
-
-const ASSET_DIR = resolve("server/content/assets");
 
 const TYPES: Record<string, string> = {
   ".svg": "image/svg+xml",
@@ -48,8 +47,9 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
 
   // basename() so a crafted `name` cannot climb out of the assets directory,
   // belt-and-braces on top of the node-references-asset check above.
-  const file = resolve(ASSET_DIR, basename(name));
-  if (!file.startsWith(ASSET_DIR) || !existsSync(file)) return fail(res, 404, "not_found");
+  const dir = assetDir();
+  const file = resolve(dir, basename(name));
+  if (!file.startsWith(dir) || !existsSync(file)) return fail(res, 404, "not_found");
 
   res.setHeader("Content-Type", TYPES[extname(file).toLowerCase()] ?? "application/octet-stream");
   res.setHeader("Cache-Control", "private, max-age=3600");

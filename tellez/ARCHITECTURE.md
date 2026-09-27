@@ -715,9 +715,15 @@ SESSION_SECRET          random 32+ bytes; signs the session cookie
 FACILITATOR_PASSWORD    gates /board. UNSET IN PRODUCTION = BOARD CLOSED.
 ```
 
-Failing closed when `FACILITATOR_PASSWORD` is unset is deliberate, carried over
-from the escape room. Challenge secrets live in module files
-([§5.2](#52-locks-objectives-secrets)), not here.
+All three are **required in production and all three have working fallbacks in
+development**, which is why `npm run dev` needs no setup at all. Failing closed
+on `FACILITATOR_PASSWORD` is deliberate, carried over from the escape room.
+Challenge secrets live in module files ([§5.2](#52-locks-objectives-secrets)),
+not here.
+
+`GET /api/health` reports all three as booleans and answers **503** with a named
+problem if any is missing in production. That endpoint is the pre-meeting check;
+see [README.md](README.md) for the run of show.
 
 ### 9.3 The four Vercel limits that will bite you
 
@@ -728,9 +734,13 @@ from the escape room. Challenge secrets live in module files
    under a random 32-char filename) and gate the *URL* rather than the bytes.
    Do not let this exception spread to anything that fits under 4.5 MB.
 3. **`includeFiles` is required.** Serverless bundles exclude files not
-   statically imported. `vercel.json` must declare
+   statically imported. `vercel.json` declares
    `functions: { "api/fs/asset.ts": { includeFiles: "server/content/assets/**" } }`
-   or assets 404 in production while working perfectly in dev.
+   or assets 404 in production while working perfectly in dev. Relatedly,
+   `server/assets.ts` locates that directory by trying candidates rather than
+   trusting `process.cwd()`, and runtime preflight does not check the
+   filesystem at all — a missing asset already failed the build, and re-checking
+   from inside a function only risks the board reporting a phantom problem.
 4. **Neon free tier auto-suspends after ~5 minutes idle.** First query after a
    quiet spell pays ~500 ms. **Hit `/api/health` before the room starts** so
    participant number one is not the one who wakes the database.

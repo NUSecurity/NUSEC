@@ -74,7 +74,7 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
     sessions: sessions.sort((a, b) => b.objectives.length - a.objectives.length),
     objectives,
     recent: events.slice(-80).reverse(),
-    preflight: preflight(world()),
+    preflight: preflight(world(), false),
   } satisfies BoardView & { storage: string });
 }
 
