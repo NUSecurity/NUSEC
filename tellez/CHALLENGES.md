@@ -8,6 +8,7 @@ If you are adding a challenge, add it here in the same shape. This is the map โ€
 without it, three people authoring one filesystem will collide, duplicate each
 other's ideas, or build something unreachable.
 
+- **New here:** [START-HERE.md](START-HERE.md)
 - **How to build one:** [ARCHITECTURE.md ยง7](ARCHITECTURE.md#7-extension-points--how-to-add-anything)
 - **How to run the event:** [README.md](README.md)
 - **Check your work:** `npm run preflight` then `npm run walk`

@@ -3,6 +3,10 @@
 A simulated desktop investigation, played live by ~40 people during an NUSEC
 meeting. Several people author it in parallel.
 
+If the person you are working for has not read
+[START-HERE.md](START-HERE.md), point them at it — it is the five-minute human
+orientation, and it explains what makes a good challenge here.
+
 ## Read these first
 
 1. **[CHALLENGES.md](CHALLENGES.md)** — every discovery that exists, what it

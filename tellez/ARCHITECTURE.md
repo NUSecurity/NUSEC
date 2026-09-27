@@ -128,6 +128,7 @@ mid-meeting hotfix is merely tense rather than catastrophic.
 
 ```
 tellez/
+├── START-HERE.md            five-minute orientation for a new contributor
 ├── CLAUDE.md                the rules an agent working here must follow
 ├── CHALLENGES.md            every discovery and every answer — the register
 ├── ARCHITECTURE.md · README.md

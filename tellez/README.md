@@ -4,8 +4,12 @@ A simulated desktop investigation, played live in a browser during an NUSEC
 meeting. Participants get past a lock screen, dig through a fake computer that
 belonged to a former club president, and work out where the money went.
 
+**New here? Read [START-HERE.md](START-HERE.md).** Five minutes, written for
+humans, and it covers how to brief your agent so you get something good rather
+than something plausible.
+
 - **[CHALLENGES.md](CHALLENGES.md)** — every discovery, what it asks of a
-  player, and every answer. Read this first to see what already exists.
+  player, and every answer. Read this before designing anything.
 - **[ARCHITECTURE.md](ARCHITECTURE.md)** — how it is built and how to extend it.
   §7 is the authoring contract.
 
