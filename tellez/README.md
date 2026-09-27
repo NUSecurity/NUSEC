@@ -112,16 +112,36 @@ nusec.club down with it. The isolation comes from one setting: Root Directory.
    git push -u origin tellez-incident
    ```
 
-2. **Create a second Vercel project** from `NUSecurity/NUSEC` and set:
+2. **Create a second Vercel project** from `NUSecurity/NUSEC`.
 
-   | Setting | Value |
-   |---|---|
-   | Root Directory | `tellez` |
-   | Production Branch | `tellez-incident` |
-   | Framework Preset | Vite |
+   Vercel's import screen gives you no branch picker — the branch chip next to
+   the repo name is a *link to GitHub*, not a dropdown — and it always imports
+   the repository's default branch, `main`. You also cannot set Root Directory
+   to `tellez` during import, because `tellez/` does not exist on `main` and the
+   build fails with "Root Directory does not exist".
+
+   So both settings have to be changed *after* the project exists:
+
+   **During import** — change only the project name (to `tellez-incident`,
+   say), leave Root Directory as `./`, and **do not import the detected
+   environment variables**. Those eleven are the main site's CTF flags, picked
+   up from the root `.env.example`; they have nothing to do with this app.
+   Click Deploy. It builds a throwaway copy of the main site, which is fine.
+
+   **Then, in Settings:**
+
+   | Where | Setting | Value |
+   |---|---|---|
+   | Git | Production Branch | `tellez-incident` |
+   | Build and Deployment | Root Directory | `tellez` |
+   | Build and Deployment | Framework Preset | Vite |
 
    Root Directory is the important one. With it set, this project only ever
    sees `tellez/`, and the main site's build is untouched.
+
+   Finally **redeploy** — Deployments → ⋯ → Redeploy — because the first build
+   ran against the old settings. Deployments after this one are automatic on
+   every push to `tellez-incident`.
 
 3. **Add a database.** Project → Storage → Neon (Postgres). Vercel sets
    `DATABASE_URL` for you. The schema is created on first use — there is no
