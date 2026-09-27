@@ -18,6 +18,7 @@ other's ideas, or build something unreachable.
 
 | # | Challenge | Module | Needs | Board markers |
 |---|---|---|---|---|
+| 0 | [The Workstation](#0--the-workstation-not-a-challenge) | `00-workstation.ts` | — | *(none — furniture)* |
 | 1 | [Getting In](#1--getting-in) | `10-login.ts` | — | `desktop-unlocked` |
 | 2 | [What He Threw Away](#2--what-he-threw-away) | `20-recycle-bin.ts` | 1 | `recycle-bin-opened` · `portal-link-found` · `decoy-opened` |
 | 3 | [The Encoded Username](#3--the-encoded-username) | `20-recycle-bin.ts` | 2 | *(none — see below)* |
@@ -37,6 +38,29 @@ bytes at all.
                             │                          ├──> 5 Vendor console
                             └──> 4 Notes folder ───────┘
 ```
+
+---
+
+## 0 · The Workstation *(not a challenge)*
+
+**Module:** `server/content/modules/00-workstation.ts` · **Status:** live
+
+Not a puzzle. This module owns the directory skeleton — `C:`, `C:/Users`,
+`C:/Users/atellez` and its Desktop, Documents, Downloads and Pictures — plus the
+desktop icons, the Start menu, and the ordinary clutter a real user leaves
+behind: a club laptop readme, a transition checklist, a signed-off budget, a
+treasurer email thread, a `Thumbs.db` marked hidden.
+
+**Read this before adding files.** Those folders already exist, and a second
+module declaring `C:/Users/atellez/Documents` is a build failure, not a merge.
+Declare only the folders *you* introduce, and hang them off the tree that is
+already here.
+
+The clutter is doing a job. A filesystem containing only evidence tells you
+exactly where the evidence is, so some of what is here exists purely to be
+unremarkable. Some of it is *nearly* remarkable — the budget reconciles to the
+cent, and the treasurer asks twice about vendor invoices and is fobbed off —
+which rewards a player who reads everything without requiring it of them.
 
 ---
 

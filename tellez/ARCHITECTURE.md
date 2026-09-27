@@ -128,6 +128,8 @@ mid-meeting hotfix is merely tense rather than catastrophic.
 
 ```
 tellez/
+├── CLAUDE.md                the rules an agent working here must follow
+├── CHALLENGES.md            every discovery and every answer — the register
 ├── ARCHITECTURE.md · README.md
 ├── vercel.json              Root Directory tellez/, includeFiles for assets
 │
@@ -169,11 +171,16 @@ tellez/
 │   │   ├── LockScreen.tsx · Toasts.tsx
 │   │   └── ErrorBoundary.tsx    one broken viewer must not white-screen the room
 │   ├── apps/                one file per viewer, all listed in registry.ts
+│   │   └── CipherBench.tsx  the in-world CyberChef
 │   ├── sites/               the simulated internet's renderers
 │   ├── lib/                 api · telemetry · icon
 │   └── pages/               Join · Play · Board
 │
-└── scripts/preflight.ts
+└── scripts/
+    ├── preflight.ts         content validation — run by the build
+    ├── check-api.mjs        every handler bundles, every import ends in .js
+    ├── check-docs.ts        CHALLENGES.md still describes the code
+    └── walk.ts              plays the whole investigation end to end
 ```
 
 **The one rule that keeps the gate honest:** nothing in `client/` may import from

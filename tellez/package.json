@@ -8,13 +8,14 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "npm run preflight && npm run check:api && vite build",
+    "build": "npm run preflight && npm run check:api && npm run check:docs && vite build",
     "preview": "vite preview",
     "typecheck": "tsc -p tsconfig.app.json --noEmit && tsc -p tsconfig.node.json --noEmit",
     "preflight": "tsx scripts/preflight.ts",
     "lint": "eslint .",
     "walk": "tsx scripts/walk.ts",
-    "check:api": "node scripts/check-api.mjs"
+    "check:api": "node scripts/check-api.mjs",
+    "check:docs": "tsx scripts/check-docs.ts"
   },
   "dependencies": {
     "@neondatabase/serverless": "^0.10.4",
