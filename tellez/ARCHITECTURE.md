@@ -1,0 +1,781 @@
+# The Tellez Incident — Architecture
+
+A simulated desktop investigation, played live in a browser during an NUSEC
+meeting. Participants click around a fake computer belonging to a former club
+president and work out where the money went.
+
+**This document is the contract.** Mahir is building the foundation; other club
+members extend it. If you are one of them — or an agent working for one — read
+[§7 Extension points](#7-extension-points--how-to-add-anything) first. It is
+written so you can add directories, files, apps, whole websites, and new portals
+**without editing the engine**.
+
+**Status:** architecture approved · engine not yet built
+**Branch:** `tellez-incident` · **App root:** `tellez/` · **Never merges to `main`.**
+**Event:** Tuesday 2026-09-29.
+
+---
+
+## 1. What this is
+
+A locked Windows-shaped desktop loads in the browser. Participants find the
+credentials, get in, and explore a fake filesystem — documents, a recycle bin,
+a working web browser with its own fake internet — assembling the story of how
+Alec Tellez moved club funds.
+
+**There are no flags and nothing to submit.** Progress is recorded implicitly:
+opening the right file *is* the achievement. The only things a participant ever
+types are in-world credentials. A facilitator board on the projector shows, live,
+where all ~40 people are.
+
+### What it is not
+
+- **Not a VM, container, or emulator.** Nothing executes. It is a data-driven UI
+  over a fake tree.
+- **Not a window manager.** At most two windows exist: the File Explorer and one
+  application. See [§6](#6-the-shell-and-the-two-window-rule).
+- **Not a CTF.** No `NUSEC{...}`, no submission box, no participant scoreboard.
+- **Not linear.** There are no acts, chapters or levels. It is one machine with
+  things hidden in it, and a dependency graph of what unlocks what.
+
+---
+
+## 2. Decisions already made
+
+Settled 2026-09-26. Reopen deliberately, not by accident.
+
+| Question | Decision |
+|---|---|
+| Host | **Vercel**, second project, Root Directory `tellez/` |
+| Live state | **Neon Postgres** via Vercel Marketplace, HTTP serverless driver |
+| Realtime | **Polling** — facilitator board every 2s. No WebSockets. |
+| Code location | Branch `tellez-incident` on `NUSecurity/NUSEC`, app under `tellez/` |
+| Identity | Display name → signed **httpOnly cookie**. No password, no email. |
+| Content gate | **Server-side.** A locked path returns `403`. |
+| Repo visibility | Public, and **that is accepted** — participants are trusted to act in good faith. No private submodule. |
+| Look | Fictional OS ("HuskyOS"), Windows-shaped, original icons only |
+| Suspect | **Alec Tellez**, former NUSEC president — real person, participating, fiction built around the name |
+| Structure | **Non-linear.** Content modules, not acts. |
+| Scale | ~40 concurrent |
+
+### 2.1 Why Vercel works here when it didn't for the escape room
+
+The escape room (`~/School/Clubs/NUSEC/escape-room`) is an Express + `ws`
+container on Render, because its gate requires the **server to push to players**:
+your door opens the moment enough teammates finish, with no reload. A serverless
+function cannot hold a socket, so Vercel was out.
+
+This app has no player-to-player synchronisation. Live data flows one direction —
+participant clicks a file, server records it, facilitator board reads it. That is
+ordinary request/response plus one polling dashboard.
+
+**Capacity:** 40 people × ~300 interactions ≈ 12,000 invocations against a
+1,000,000/month Hobby allowance. Capacity is a non-issue; the limits that
+actually bite are in [§9.3](#93-the-four-vercel-limits-that-will-bite-you).
+
+### 2.2 Why content is still server-side on a public repo
+
+Good faith is assumed, so we are not hiding the repo. Server-gating is kept
+anyway, for a reason that has nothing to do with cheating:
+
+**The shape of the filesystem is the puzzle.** If the tree ships in the bundle,
+the File Explorer can render every folder instantly — including the ones nobody
+has earned — and the discovery is gone for everyone, not just the curious. The
+gate exists so that "there is a folder here you have not found yet" stays true.
+
+It is also what makes credentials work at all. `hellohackers` is checked on the
+server; the browser never holds anything to compare against.
+
+---
+
+## 3. Stack
+
+```
+Client   React 18 + TypeScript + Vite + Tailwind      (matches the main site)
+Server   Vercel serverless functions, Node 20, TypeScript, under tellez/api/
+Data     Neon Postgres, @neondatabase/serverless (HTTP — no pooling needed)
+Auth     Signed httpOnly cookie, HMAC-SHA256
+Deploy   Vercel project #2, Root Directory tellez/, domain tellez.nusec.club
+```
+
+### 3.1 Why a cookie and not a bearer token
+
+Gated *binary* assets — an image, a PDF, Alec's video — are fetched by the
+browser following a plain `<a href>` or `<img src>`. Those requests cannot carry
+an `Authorization` header. A cookie rides along automatically. Same reasoning as
+the escape room, same conclusion.
+
+Cookie is `HttpOnly`, `Secure`, `SameSite=Lax`, holding `sessionId.hmac` signed
+with `SESSION_SECRET`.
+
+### 3.2 Why Postgres, not Redis or in-memory
+
+The event log **is the deliverable** — knowing where everyone is, live and
+afterwards. Postgres makes that queryable for free.
+
+It also fixes the escape room's documented weakness: in-memory state is lost on
+redeploy, so you must not ship during a meeting. Postgres survives deploys, so a
+mid-meeting hotfix is merely tense rather than catastrophic.
+
+---
+
+## 4. Directory layout
+
+```
+tellez/
+├── ARCHITECTURE.md          this file
+├── README.md                how to run it, how to run an event
+├── package.json
+├── vercel.json              rewrites, function config, includeFiles
+├── .env.example
+│
+├── api/                     serverless functions — thin HTTP wrappers only
+│   ├── session.ts           POST  create or resume a session
+│   ├── login.ts             POST  desktop lock screen attempt
+│   ├── fs/list.ts           GET   gated directory listing
+│   ├── fs/read.ts           GET   gated file contents
+│   ├── fs/asset.ts          GET   gated binary passthrough
+│   ├── web/fetch.ts         GET   a page from the simulated internet
+│   ├── web/auth.ts          POST  credential check for any gated site
+│   ├── event.ts             POST  batched telemetry
+│   ├── board.ts             GET   facilitator view (password-gated)
+│   └── health.ts            GET   liveness + DB warm-up
+│
+├── server/                  server-only. NEVER imported by client code.
+│   ├── content/
+│   │   ├── modules/         ← EVERYTHING AUTHORS WRITE LIVES HERE
+│   │   │   ├── 00-workstation.ts    the machine itself: users, base tree
+│   │   │   ├── 10-login.ts          Discovery 1
+│   │   │   ├── 20-recycle-bin.ts    Discovery 2 + 3
+│   │   │   ├── 30-desktop-notes.ts  Discovery 4
+│   │   │   ├── 40-brightline.ts     Discovery 5 — the portal
+│   │   │   └── index.ts             the module registry
+│   │   └── assets/          binary files under ~4 MB
+│   ├── world.ts             merges all modules into one world; collision checks
+│   ├── vfs.ts               path resolution over the merged tree
+│   ├── web.ts               the simulated internet: host/route resolution
+│   ├── locks.ts             LockRule evaluation — PURE, no I/O
+│   ├── objectives.ts        trigger matching — PURE, no I/O
+│   ├── session.ts           cookie issue + verify
+│   ├── events.ts            append-only writes, derived progress views
+│   ├── db.ts                Neon client, schema, migrations
+│   └── preflight.ts         content validation
+│
+├── shared/
+│   └── protocol.ts          the client/server contract. Types only, never data.
+│
+├── client/src/
+│   ├── shell/
+│   │   ├── Desktop.tsx      wallpaper, icons, enforces the two-window rule
+│   │   ├── Taskbar.tsx · StartMenu.tsx · Window.tsx · LockScreen.tsx
+│   ├── apps/
+│   │   ├── registry.ts      ← register new apps here
+│   │   ├── FileExplorer.tsx · Notepad.tsx · PhotoViewer.tsx
+│   │   ├── MediaPlayer.tsx · RecycleBin.tsx
+│   │   └── Browser.tsx      the simulated web browser
+│   ├── sites/
+│   │   ├── registry.ts      ← register new websites here
+│   │   └── brightlinepay/   one folder per site
+│   ├── lib/
+│   │   ├── vfsClient.ts · webClient.ts · telemetry.ts · session.ts
+│   └── pages/
+│       ├── Join.tsx · Play.tsx · Board.tsx
+│
+└── scripts/preflight.mjs
+```
+
+**The one rule that keeps the gate honest:** nothing in `client/` may import from
+`server/`. Only `shared/protocol.ts` crosses the line, and it holds types, never
+data. A build-time check enforces this.
+
+---
+
+## 5. The object model
+
+Designed so that adding content means **adding data, not editing the engine**.
+
+### 5.1 The virtual filesystem
+
+```ts
+abstract class VfsNode {
+  path: string;            // canonical, "C:/Users/atellez/Documents"
+  name: string;            // derived
+  meta: NodeMeta;
+  lock: LockRule;          // AlwaysOpen unless stated
+  reveals: ObjectiveId[];  // objectives satisfied by opening this
+  abstract kind: NodeKind;
+}
+
+class Directory extends VfsNode { kind = "dir" }
+
+abstract class FileNode extends VfsNode { abstract opensWith: AppId }
+
+class TextFile      extends FileNode { body: string }
+class SheetFile     extends FileNode { columns: string[]; rows: Cell[][] }
+class MailArchive   extends FileNode { messages: MailMessage[] }
+class ChatLog       extends FileNode { messages: ChatMessage[] }
+class ImageFile     extends FileNode { asset: AssetRef; exif?: ExifBlock }
+class VideoFile     extends FileNode { asset: AssetRef; poster?: AssetRef }
+class ArchiveFile   extends FileNode { entries: VfsNode[]; passphrase?: SecretId }
+class EncryptedFile extends FileNode { cipher: string; passphrase: SecretId }
+class ShortcutFile  extends FileNode { target: string }   // to a path OR a URL
+class BinaryFile    extends FileNode { hexPreview: string }
+```
+
+`NodeMeta` is **puzzle material, not decoration**:
+
+```ts
+interface NodeMeta {
+  createdAt: number; modifiedAt: number; accessedAt: number;
+  sizeBytes: number;
+  attributes: ("hidden" | "system" | "readonly" | "encrypted")[];
+  deleted?: { at: number; originalPath: string };   // recycle bin semantics
+  owner?: string;
+}
+```
+
+Two details authors should exploit:
+
+- **`attributes: ["hidden"]`** hides a node until the session toggles *Show
+  hidden items* in the File Explorer. That toggle is itself an objective — it is
+  a real investigative habit worth teaching.
+- **`deleted.originalPath`** is how a recycle bin item tells you about a folder
+  you have not found. Deleted ≠ gone, and the deletion record is evidence.
+
+### 5.2 Locks, objectives, secrets
+
+Three small systems, all evaluated **server-side only**.
+
+```ts
+abstract class LockRule { abstract isOpen(p: Progress): boolean }
+
+class AlwaysOpen        extends LockRule {}
+class RequiresObjective extends LockRule { id: ObjectiveId }
+class RequiresSecret    extends LockRule { id: SecretId }
+class AllOf             extends LockRule { rules: LockRule[] }
+class AnyOf             extends LockRule { rules: LockRule[] }
+```
+
+```ts
+interface Objective {
+  id: ObjectiveId;
+  moduleId: ModuleId;
+  title: string;          // shown on the facilitator board
+  note?: string;          // what it means when it lights up — WRITE THIS
+  hidden?: boolean;       // participants never learn it exists
+  trigger:
+    | { on: "open";      path: string }
+    | { on: "secret";    id: SecretId }
+    | { on: "appAction"; app: AppId; action: string }
+    | { on: "visit";     host: string; path?: string }
+    | { on: "all";       objectives: ObjectiveId[] };
+}
+```
+
+```ts
+interface Secret {
+  id: SecretId;
+  value: string;               // the accepted answer
+  env?: string;                // optional override, e.g. "SECRET_PORTAL_PW"
+  normalise?: ("trim" | "lower" | "alnum")[];   // default: ["trim"]
+  hints?: string[];            // facilitator can release these from /board
+}
+```
+
+Secret values live in the module file. Since the repo is public and good faith is
+assumed, env-var indirection buys nothing and costs every author a Vercel
+round-trip — so `env` exists as an escape hatch and is not the default. `value`
+is still never sent to the client; comparison happens in the function.
+
+**This is what "no flags" means in practice.** `{ on: "open" }` triggers fire
+implicitly from reading a file. The only typed input in the whole game is
+something a person on that machine would actually have typed.
+
+### 5.3 The simulated internet
+
+The Browser app is a first-class extension surface, because it is how OSINT
+challenges, second portals, and fake corporate sites get built.
+
+```ts
+interface SimSite {
+  host: string;                 // "ledger.brightlinepay.test"
+  title: string;
+  favicon?: IconName;
+  discoverable?: boolean;       // true = appears in the sim search engine
+  routes: SimRoute[];
+  auth?: SiteAuth;              // present = the site has a login wall
+}
+
+interface SimRoute {
+  path: string;                 // "/" · "/invoices" · "/invoices/:id"
+  lock?: LockRule;              // optional, per-route
+  reveals?: ObjectiveId[];
+  render(ctx: SiteContext): JSX.Element;
+}
+
+interface SiteAuth {
+  usernameSecret: SecretId;
+  passwordSecret: SecretId;
+  reveals: ObjectiveId[];       // fired on successful login
+  protects: string[];           // route paths behind the wall
+}
+```
+
+> **Fake hostnames must use a reserved TLD — `.test`, `.invalid` or
+> `.example`.** This is not a style preference. If you invent
+> `tellezholdings.com` and that turns out to be a real company, you have pointed
+> forty people with a security mindset at a stranger's website. Reserved TLDs
+> cannot resolve, so this cannot happen.
+
+A site's *data* lives in a content module; its *renderer* lives in
+`client/src/sites/`. Route rendering is client-side, but **gated routes and all
+auth checks go through the server** (`/api/web/fetch`, `/api/web/auth`), exactly
+like the filesystem.
+
+### 5.4 Sessions and telemetry
+
+```ts
+interface Session { id: string; displayName: string; startedAt: number; lastSeenAt: number }
+
+interface Event {
+  id: string; sessionId: string; at: number;
+  type: "session.start" | "login.attempt" | "node.open"  | "node.denied"
+      | "app.launch"    | "secret.submit" | "web.visit"  | "web.auth"
+      | "objective.reached" | "app.action" | "search.query";
+  payload: Record<string, unknown>;
+}
+```
+
+The event table is **append-only** — on theme, and also the correct shape for an
+audit log. Progress is *derived* from events rather than stored beside them, so
+there is one source of truth and replaying the log reproduces the same state.
+
+Client batches events, flushing every 2s or at 10 queued, using
+`fetch(..., { keepalive: true })` so a closing tab still reports. Failed flushes
+are dropped, never retried into an unbounded queue — telemetry must never be
+able to degrade the experience.
+
+### 5.5 Content modules — the authoring unit
+
+```ts
+interface ContentModule {
+  id: ModuleId;
+  title: string;
+  summary: string;              // facilitator-facing: what players do here
+  nodes?: VfsNode[];
+  objectives?: Objective[];
+  secrets?: Secret[];
+  sites?: SimSite[];
+  desktopItems?: DesktopItem[];  // icons on the desktop
+  startMenuItems?: StartMenuItem[];
+  requiresApps?: AppId[];        // fails preflight if the app isn't registered
+}
+```
+
+**The world is the merge of every module.** Modules are additive overlays onto
+one shared machine, which is what lets several people build in parallel without
+touching each other's files. Two modules declaring the same path or host is a
+**build failure**, not silent last-writer-wins.
+
+There is no ordering between modules. Numeric filename prefixes are for human
+scanning only; the engine does not read them.
+
+---
+
+## 6. The shell and the two-window rule
+
+There is no window manager and there must never be one.
+
+```ts
+class DesktopShell {
+  explorerSlot: WindowState | null;   // always the File Explorer
+  appSlot:      WindowState | null;   // whatever was opened last
+
+  openExplorer(path: string): void;   // fills or refocuses explorerSlot
+  open(node: FileNode): void;         // REPLACES whatever is in appSlot
+  openUrl(url: string): void;         // routes to the Browser in appSlot
+  close(slot: "explorer" | "app"): void;
+}
+```
+
+Opening a second document replaces the first. This removes z-ordering, drag,
+focus management, tiling and minimise-restore choreography — roughly the entire
+cost of a desktop UI — while keeping the feel. Layout is a fixed two-pane
+arrangement, not free-floating geometry.
+
+> **To contributors and their agents:** you will be tempted to generalise this
+> into a real window manager. Do not. If a challenge seems to need three
+> windows, it needs redesigning. The constraint is the feature, and it is the
+> single biggest reason this is buildable at all.
+
+---
+
+## 7. Extension points — how to add anything
+
+This is the section to read if you are adding to the investigation. Every recipe
+below is **new files plus one registry line**. None of them require touching the
+engine. If you find yourself editing `server/world.ts` or `client/src/shell/`,
+stop — you have probably found a missing extension point, and adding one
+properly is better than working around it.
+
+After any change, run:
+
+```bash
+npm run preflight
+```
+
+### 7.1 Add files and folders
+
+Create `server/content/modules/NN-your-thing.ts`:
+
+```ts
+export const yourThing: ContentModule = {
+  id: "your-thing",
+  title: "The Thing",
+  summary: "Players find X by doing Y.",   // the facilitator reads this live
+  nodes: [
+    dir("C:/Users/atellez/Documents/Vendors"),
+    text("C:/Users/atellez/Documents/Vendors/invoice-0042.txt", {
+      body: "...",
+      meta: { modifiedAt: ts("2025-11-03T02:14:00") },
+      reveals: ["vendor-invoice-seen"],
+    }),
+  ],
+  objectives: [
+    { id: "vendor-invoice-seen", moduleId: "your-thing",
+      title: "Opened the fake vendor invoice",
+      note: "They're on the payment trail.",
+      trigger: { on: "open", path: "C:/Users/atellez/Documents/Vendors/invoice-0042.txt" } },
+  ],
+};
+```
+
+Register it in `server/content/modules/index.ts`. Done.
+
+### 7.2 Add a desktop icon or Start menu entry
+
+```ts
+desktopItems:   [{ label: "Budget 2025", icon: "FileSpreadsheet",
+                   target: "C:/Users/atellez/Desktop/budget-2025.xlsx" }],
+startMenuItems: [{ label: "Calculator", appId: "calculator" }],
+```
+
+### 7.3 Add a new application
+
+Two files. The app:
+
+```ts
+// client/src/apps/HexEditor.tsx
+export const hexEditor: DesktopApp = {
+  id: "hex-editor",
+  title: "Hex Editor",
+  icon: "Binary",                  // Lucide name — no Microsoft assets, ever
+  showInStartMenu: true,
+  opens: ["binary"],               // which NodeKinds it claims
+  render({ node, vfs, emit, close }) { /* ... */ },
+};
+```
+
+And one line in `client/src/apps/registry.ts`. An app is a **viewer**: it renders
+what the server sent and emits events. It never decides whether something is
+unlocked — that answer only ever arrives as content or as a `403`.
+
+### 7.4 Add a new file type
+
+1. Add the class to `server/vfs.ts` extending `FileNode` with `opensWith`.
+2. Add the kind to the `NodeKind` union in `shared/protocol.ts`.
+3. Build the viewer app ([§7.3](#73-add-a-new-application)) declaring it in `opens`.
+
+Preflight fails if a node's kind has no registered viewer.
+
+### 7.5 Add a website to the simulated internet
+
+Data in your content module:
+
+```ts
+sites: [{
+  host: "nushacks-alumni.test",
+  title: "NU Hacks — Alumni Directory",
+  discoverable: true,                     // findable via the sim search engine
+  routes: [
+    { path: "/",             render: AlumniIndex },
+    { path: "/member/:slug", render: AlumniProfile,
+      reveals: ["alumni-profile-viewed"] },
+  ],
+}],
+```
+
+Renderers in `client/src/sites/nushacks-alumni/`, registered in
+`client/src/sites/registry.ts`.
+
+**This is the OSINT extension point.** A fake search engine, social profiles,
+a company "about us", a pastebin clone, a leaked-credential dump — all of it is
+just sites with `discoverable: true` and no lock. Server-gating still applies to
+any route with a `lock`, so an OSINT trail and a locked portal can coexist on
+the same fake internet.
+
+### 7.6 Add a portal (a site with a login wall)
+
+A portal is a site with `auth`. Nothing else is special about it.
+
+```ts
+secrets: [
+  { id: "vendor-portal-user", value: "billing.ops" },
+  { id: "vendor-portal-pw",   value: "..." },
+],
+sites: [{
+  host: "vendors.brightlinepay.test",
+  title: "BrightLine Vendor Portal",
+  auth: {
+    usernameSecret: "vendor-portal-user",
+    passwordSecret: "vendor-portal-pw",
+    reveals: ["vendor-portal-breached"],
+    protects: ["/dashboard", "/payouts"],
+  },
+  routes: [
+    { path: "/",         render: VendorLogin },
+    { path: "/dashboard",render: VendorDashboard },
+    { path: "/payouts",  render: VendorPayouts, reveals: ["payouts-seen"] },
+  ],
+}],
+```
+
+Credentials are checked at `/api/web/auth` and the protected routes are never
+sent to an unauthenticated session. **Build as many portals as you like** — the
+engine has no notion of "the" portal.
+
+### 7.7 What preflight checks
+
+`npm run preflight` fails the build on:
+
+- two modules declaring the same path, host, objective id, or secret id
+- a `LockRule` referencing an objective or secret that does not exist
+- an objective whose trigger path/host does not exist
+- a node whose `kind` has no registered viewer app
+- a `requiresApps` entry that is not registered
+- a declared asset missing from the build
+- a node unreachable from any directory — an orphan nobody can ever find
+- a site route with a `lock` but no reachable way to satisfy it
+
+This is lifted from the escape room's preflight, which exists because every one
+of these failures is otherwise **completely silent until somebody hits it
+mid-meeting**.
+
+### 7.8 Rules that are not negotiable
+
+- **No content in the client bundle.** If a participant can read it before
+  earning it, it is broken.
+- **No third window.** See [§6](#6-the-shell-and-the-two-window-rule).
+- **No `NUSEC{...}` anywhere.** There are no flags.
+- **Fake hostnames use reserved TLDs.** See [§5.3](#53-the-simulated-internet).
+- **Original icons only** (Lucide or CSS-drawn). No Microsoft assets.
+- **Every lock must have a discoverable path to opening it, inside the game.**
+  Preflight cannot check this. Walk your own content cold and prove it.
+- **Write the `note` on every objective.** Somebody is reading the board live
+  and needs to know what it means when your objective lights up.
+
+### 7.9 Design guidance
+
+Make the evidence do the teaching. A timestamp that contradicts a story, a
+`deleted.originalPath` pointing at a folder nobody found, a passphrase sitting
+in a chat log three folders away — these teach real investigative habits. A
+password taped under a keyboard teaches nothing.
+
+Assume every participant is technical. They will try `..` in paths, read the
+network tab, and guess hostnames. The server is the only thing between them and
+the ending; rely on nothing else.
+
+---
+
+## 8. The content that ships in the foundation
+
+Five discoveries, non-linear except where noted. Everything except the desktop
+credentials is a **proposal — change the values freely.**
+
+### Discovery 1 — Getting in
+
+The lock screen shows user `atellez` on HuskyOS. The credentials are:
+
+```
+username   ultimateguitar
+password   hellohackers
+```
+
+**The clue lives outside the app, in the real NUSEC Discord.** Alec's old
+messages there are the source; players search their own club history to find how
+he signed off and what he called himself. This is genuine OSINT and it costs
+nothing to build.
+
+*Ops requirement:* those messages must actually be findable before Tuesday, and
+anyone not in the Discord needs a way in. See [§11](#11-run-of-show).
+
+Objectives: `login-attempted` (hidden — shows who is trying vs. stuck) ·
+`desktop-unlocked`.
+
+Everything else is behind `RequiresObjective("desktop-unlocked")`.
+
+### Discovery 2 — The recycle bin
+
+The Recycle Bin holds roughly fifteen deleted items: old drafts, a meeting
+agenda, some photos, a half-finished budget. Most are noise, several are
+mild red herrings, and each carries a real `deleted.originalPath` so the bin
+doubles as a map of folders that no longer appear in the tree.
+
+One item — a `ShortcutFile` or a text note — contains the **portal URL**:
+
+```
+ledger.brightlinepay.test
+```
+
+Objectives: `recycle-bin-opened` · `decoy-opened` (hidden — shows who is
+thorough) · `portal-link-found`.
+
+### Discovery 3 — The portal username
+
+Alongside the portal link is a base64 string. Players decode it externally
+(CyberChef, base64decode.org — the point is that they reach for a real tool):
+
+```
+YXRlbGxlei5hZG1pbg==   →   atellez.admin
+```
+
+Objective: `portal-username-decoded`, fired on the successful portal login
+rather than on the decode, since we cannot see a decode that happens off-site.
+
+### Discovery 4 — The portal password
+
+A folder on Alec's desktop — proposed `C:/Users/atellez/Desktop/notes/` —
+holds a dozen-plus scrappy `.txt` files: grocery lists, setlists, half-written
+emails, meeting notes. Players preview them one by one in Notepad. One contains
+the portal password.
+
+This rewards thoroughness rather than cleverness, which is a deliberate change
+of pace between two inference puzzles.
+
+Objectives: `notes-folder-opened` · `password-note-opened` · a per-file count so
+the board can show **how many notes each person has read** — the single best
+signal of who is stuck versus who is grinding.
+
+### Discovery 5 — The portal
+
+`ledger.brightlinepay.test`, opened in the Browser app inside the desktop, with
+a login wall taking `atellez.admin` and the password from Discovery 4. Behind
+it: the payment trail. This is where the other builders pick up.
+
+Objective: `portal-breached`.
+
+### What is deliberately left open
+
+The story past the portal is unwritten, and so is everything on the fake
+internet beyond this one host. **Alec's video, if he records one, belongs
+late** — it is the strongest single asset available and should pay off the
+investigation rather than open it.
+
+---
+
+## 9. Deployment
+
+### 9.1 Vercel setup
+
+| Setting | Value |
+|---|---|
+| Root Directory | `tellez/` |
+| Production Branch | `tellez-incident` |
+| Framework Preset | Vite |
+| Domain | `tellez.nusec.club` (CNAME → Vercel) |
+
+The apex `nusec.club` keeps serving the existing site from project #1. Root
+Directory means this project cannot see or break the main site.
+
+### 9.2 Environment variables
+
+```
+DATABASE_URL            Neon connection string (Vercel Marketplace sets this)
+SESSION_SECRET          random 32+ bytes; signs the session cookie
+FACILITATOR_PASSWORD    gates /board. UNSET IN PRODUCTION = BOARD CLOSED.
+```
+
+Failing closed when `FACILITATOR_PASSWORD` is unset is deliberate, carried over
+from the escape room. Challenge secrets live in module files
+([§5.2](#52-locks-objectives-secrets)), not here.
+
+### 9.3 The four Vercel limits that will bite you
+
+1. **4.5 MB function response limit.** Gated binaries stream through
+   `api/fs/asset.ts`, so nothing larger can pass the gate.
+2. **Large media — Alec's video — needs different handling.** It will exceed
+   both that and the 50 MB bundle limit. Put it in Vercel Blob (or `public/`
+   under a random 32-char filename) and gate the *URL* rather than the bytes.
+   Do not let this exception spread to anything that fits under 4.5 MB.
+3. **`includeFiles` is required.** Serverless bundles exclude files not
+   statically imported. `vercel.json` must declare
+   `functions: { "api/fs/asset.ts": { includeFiles: "server/content/assets/**" } }`
+   or assets 404 in production while working perfectly in dev.
+4. **Neon free tier auto-suspends after ~5 minutes idle.** First query after a
+   quiet spell pays ~500 ms. **Hit `/api/health` before the room starts** so
+   participant number one is not the one who wakes the database.
+
+### 9.4 What survives what
+
+| Event | Outcome |
+|---|---|
+| Function cold start | Fine. Everything is in Postgres. |
+| Redeploy mid-meeting | **Sessions and progress survive.** Unlike the escape room. |
+| Participant closes tab | Cookie persists; reopening resumes the same session. |
+| Participant clears cookies | New session, progress orphaned. Board can re-link by name. |
+
+---
+
+## 10. The facilitator board
+
+`/board`, password-gated, unlisted, **never linked from the participant UI**.
+Polls `GET /api/board` every 2s and shows:
+
+- every session, display name, objectives reached, last-seen
+- **a per-objective completion count** — this is how you spot a stuck room
+- notes-read count per person (see [Discovery 4](#discovery-4--the-portal-password))
+- a live event ticker
+- the preflight result
+- hint release: push a `Secret.hints` entry to everyone
+
+Polling, not push. One dashboard, one endpoint, every 2s for ninety minutes is
+~2,700 requests. Supabase Realtime or SSE would buy nothing.
+
+---
+
+## 11. Run of show
+
+Before Tuesday 2026-09-29:
+
+1. **Confirm Alec's Discord messages are findable.** Discovery 1 is entirely
+   dependent on this and it is the one piece the app cannot provide. If the
+   messages do not exist, Alec posts them beforehand.
+2. **Decide the fallback for anyone not in the Discord** — a projected
+   screenshot, or a facilitator hint released from `/board`.
+3. Set env vars in Vercel; confirm `/board` opens.
+4. `npm run preflight` against production content.
+5. **Hit `/api/health`** to wake Neon.
+6. Walk the whole thing cold on a phone and on a laptop.
+
+---
+
+## 12. Open questions
+
+1. **Discord dependency.** Items 1 and 2 above — the only hard external
+   dependency in the build.
+2. **Portal password value.** Discovery 4 needs a chosen string. Something
+   guitar-adjacent ties it to `ultimateguitar` without being guessable.
+3. **OS name.** Placeholder **HuskyOS**. One constant.
+4. **Post-event.** Leave it up as a recruiting demo, or take it down? Affects
+   whether the board and event log stay reachable.
+
+---
+
+## 13. Related work in this org
+
+- **`~/School/Clubs/NUSEC/escape-room`** — the team-versus-team escape room.
+  Different problem (needs real push, hence Render), but the patterns for
+  server-gated content, the facilitator console and content preflight came from
+  there. Read its README.
+- **`NUSecurity/NUSEC` `main`** — the club site. Static Vite SPA plus stateless
+  functions. Shares the visual stack and nothing else.
