@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html, body, #root { height: 100%; }
+
+  body {
+    @apply bg-husky-wall text-husky-ink font-ui antialiased;
+    overflow: hidden;
+    user-select: none;
+  }
+
+  /* Content inside windows is meant to be read and copied — the base64 string
+     in the recycle-bin note is useless if you cannot select it. */
+  .selectable { user-select: text; }
+
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-thumb { @apply bg-husky-edge rounded-full; }
+  ::-webkit-scrollbar-track { background: transparent; }
+}
+
+@layer components {
+  .wallpaper {
+    background:
+      radial-gradient(1200px 700px at 18% 8%, #1b3a63 0%, transparent 58%),
+      radial-gradient(900px 640px at 86% 92%, #2a1a4a 0%, transparent 62%),
+      linear-gradient(160deg, #0b1220 0%, #0a0f1b 60%, #070b14 100%);
+  }
+
+  .pane {
+    @apply bg-husky-glass border border-husky-edge rounded-lg shadow-win backdrop-blur-xl;
+  }
+
+  .btn {
+    @apply px-3 py-1.5 rounded-md border border-husky-edge bg-white/5 text-sm
+           hover:bg-white/10 active:bg-white/[0.14] transition-colors
+           disabled:opacity-40 disabled:pointer-events-none;
+  }
+
+  .btn-primary {
+    @apply bg-husky-accent/90 border-husky-accent text-[#04131f] font-medium hover:bg-husky-accent;
+  }
+
+  .field {
+    @apply w-full px-3 py-2 rounded-md bg-black/30 border border-husky-edge
+           text-husky-ink placeholder:text-husky-faint outline-none
+           focus:border-husky-accent/70 focus:ring-2 focus:ring-husky-accent/20;
+  }
+}

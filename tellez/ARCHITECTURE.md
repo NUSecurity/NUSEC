@@ -10,9 +10,9 @@ members extend it. If you are one of them — or an agent working for one — re
 written so you can add directories, files, apps, whole websites, and new portals
 **without editing the engine**.
 
-**Status:** architecture approved · engine not yet built
+**Status:** engine built and walked end to end · content: the five discoveries below
 **Branch:** `tellez-incident` · **App root:** `tellez/` · **Never merges to `main`.**
-**Event:** Tuesday 2026-09-29.
+**Event:** Tuesday 2026-09-29. · **Running it:** [README.md](README.md)
 
 ---
 
@@ -123,65 +123,52 @@ mid-meeting hotfix is merely tense rather than catastrophic.
 
 ```
 tellez/
-├── ARCHITECTURE.md          this file
-├── README.md                how to run it, how to run an event
-├── package.json
-├── vercel.json              rewrites, function config, includeFiles
-├── .env.example
+├── ARCHITECTURE.md · README.md
+├── vercel.json              Root Directory tellez/, includeFiles for assets
 │
-├── api/                     serverless functions — thin HTTP wrappers only
-│   ├── session.ts           POST  create or resume a session
-│   ├── login.ts             POST  desktop lock screen attempt
-│   ├── fs/list.ts           GET   gated directory listing
-│   ├── fs/read.ts           GET   gated file contents
-│   ├── fs/asset.ts          GET   gated binary passthrough
-│   ├── web/fetch.ts         GET   a page from the simulated internet
-│   ├── web/auth.ts          POST  credential check for any gated site
-│   ├── event.ts             POST  batched telemetry
-│   ├── board.ts             GET   facilitator view (password-gated)
-│   └── health.ts            GET   liveness + DB warm-up
+├── shared/                  the contract. Types and ids, NEVER data.
+│   ├── protocol.ts
+│   └── apps.ts              the app id list both sides validate against
+│
+├── api/                     thin serverless wrappers over server/engine.ts
+│   ├── session.ts · login.ts · desktop.ts · event.ts · board.ts · health.ts
+│   ├── fs/list.ts · fs/read.ts · fs/asset.ts
+│   └── web/fetch.ts · web/auth.ts
 │
 ├── server/                  server-only. NEVER imported by client code.
 │   ├── content/
 │   │   ├── modules/         ← EVERYTHING AUTHORS WRITE LIVES HERE
-│   │   │   ├── 00-workstation.ts    the machine itself: users, base tree
-│   │   │   ├── 10-login.ts          Discovery 1
-│   │   │   ├── 20-recycle-bin.ts    Discovery 2 + 3
-│   │   │   ├── 30-desktop-notes.ts  Discovery 4
-│   │   │   ├── 40-brightline.ts     Discovery 5 — the portal
-│   │   │   └── index.ts             the module registry
-│   │   └── assets/          binary files under ~4 MB
-│   ├── world.ts             merges all modules into one world; collision checks
-│   ├── vfs.ts               path resolution over the merged tree
-│   ├── web.ts               the simulated internet: host/route resolution
-│   ├── locks.ts             LockRule evaluation — PURE, no I/O
-│   ├── objectives.ts        trigger matching — PURE, no I/O
-│   ├── session.ts           cookie issue + verify
-│   ├── events.ts            append-only writes, derived progress views
-│   ├── db.ts                Neon client, schema, migrations
+│   │   │   ├── 00-workstation.ts     the machine: tree, desktop, clutter
+│   │   │   ├── 10-login.ts           the lock screen credentials
+│   │   │   ├── 20-recycle-bin.ts     fifteen deleted files
+│   │   │   ├── 30-desktop-notes.ts   fourteen personal notes
+│   │   │   ├── 40-brightline.ts      the vendor portal
+│   │   │   └── index.ts              the module registry
+│   │   ├── assets/          binary/SVG assets under ~4 MB
+│   │   ├── kit.ts           the single import for authoring
+│   │   └── machine.ts       facts the engine and content both need
+│   ├── types.ts             ContentModule, Objective, Secret, SimSite
+│   ├── vfs.ts               the node class hierarchy and its builders
+│   ├── locks.ts             lock rules — PURE, no I/O
+│   ├── objectives.ts        triggers and progress derivation — PURE
+│   ├── world.ts             merges modules; refuses collisions
+│   ├── engine.ts            the service layer; every gate decision lives here
+│   ├── guard.ts             requireSession / requireMachine
+│   ├── session.ts           cookie signing
+│   ├── db.ts                Neon in production, JSON file in development
+│   ├── http.ts              the req/res shape shared by Vercel and the dev shim
 │   └── preflight.ts         content validation
 │
-├── shared/
-│   └── protocol.ts          the client/server contract. Types only, never data.
-│
 ├── client/src/
-│   ├── shell/
-│   │   ├── Desktop.tsx      wallpaper, icons, enforces the two-window rule
-│   │   ├── Taskbar.tsx · StartMenu.tsx · Window.tsx · LockScreen.tsx
-│   ├── apps/
-│   │   ├── registry.ts      ← register new apps here
-│   │   ├── FileExplorer.tsx · Notepad.tsx · PhotoViewer.tsx
-│   │   ├── MediaPlayer.tsx · RecycleBin.tsx
-│   │   └── Browser.tsx      the simulated web browser
-│   ├── sites/
-│   │   ├── registry.ts      ← register new websites here
-│   │   └── brightlinepay/   one folder per site
-│   ├── lib/
-│   │   ├── vfsClient.ts · webClient.ts · telemetry.ts · session.ts
-│   └── pages/
-│       ├── Join.tsx · Play.tsx · Board.tsx
+│   ├── shell/               Desktop · Taskbar · StartMenu · Window
+│   │   ├── LockScreen.tsx · Toasts.tsx
+│   │   └── ErrorBoundary.tsx    one broken viewer must not white-screen the room
+│   ├── apps/                one file per viewer, all listed in registry.ts
+│   ├── sites/               the simulated internet's renderers
+│   ├── lib/                 api · telemetry · icon
+│   └── pages/               Join · Play · Board
 │
-└── scripts/preflight.mjs
+└── scripts/preflight.ts
 ```
 
 **The one rule that keeps the gate honest:** nothing in `client/` may import from
@@ -202,6 +189,7 @@ abstract class VfsNode {
   name: string;            // derived
   meta: NodeMeta;
   lock: LockRule;          // AlwaysOpen unless stated
+  visibility: Visibility;  // "listed" (default) | "concealed"
   reveals: ObjectiveId[];  // objectives satisfied by opening this
   abstract kind: NodeKind;
 }
@@ -221,6 +209,13 @@ class EncryptedFile extends FileNode { cipher: string; passphrase: SecretId }
 class ShortcutFile  extends FileNode { target: string }   // to a path OR a URL
 class BinaryFile    extends FileNode { hexPreview: string }
 ```
+
+**`visibility` is the field that makes a discovery a discovery.** A `concealed`
+node is omitted from its parent's listing until its lock opens, and a request
+for it answers **404, not 403** — answering "forbidden" would confirm the path
+exists, turning path-guessing into a reliable way to map every secret in the
+game without finding any of them. A `listed` node is always visible and refuses
+on open; use it sparingly, because a padlock in a file listing is a treasure map.
 
 `NodeMeta` is **puzzle material, not decoration**:
 
@@ -462,7 +457,8 @@ startMenuItems: [{ label: "Calculator", appId: "calculator" }],
 
 ### 7.3 Add a new application
 
-Two files. The app:
+Three steps: the file, its id in `shared/apps.ts`, and a line in
+`client/src/apps/registry.ts`.
 
 ```ts
 // client/src/apps/HexEditor.tsx
@@ -470,15 +466,25 @@ export const hexEditor: DesktopApp = {
   id: "hex-editor",
   title: "Hex Editor",
   icon: "Binary",                  // Lucide name — no Microsoft assets, ever
-  showInStartMenu: true,
   opens: ["binary"],               // which NodeKinds it claims
-  render({ node, vfs, emit, close }) { /* ... */ },
+  render({ node, content, shell, emit }) { /* ... */ },
 };
 ```
 
-And one line in `client/src/apps/registry.ts`. An app is a **viewer**: it renders
-what the server sent and emits events. It never decides whether something is
-unlocked — that answer only ever arrives as content or as a `403`.
+The id must be in `shared/apps.ts` first. The registry is typed
+`Record<KnownAppId, DesktopApp>`, so a half-registered app is a **compile
+error** rather than a blank window during a meeting, and preflight refuses any
+node whose `opensWith` is not on that list.
+
+An app is a **viewer**: it renders what the server sent and emits events. It
+never decides whether something is unlocked — that answer only ever arrives as
+content or as a `403`.
+
+**`slot`.** An app defaults to the app slot. Set `slot: "explorer"` if your app
+*browses* the filesystem, so that opening a file from it leaves it on screen
+instead of replacing it — that is why the File Explorer and the Recycle Bin both
+claim the explorer slot. This is not a third window; it is getting the existing
+two right.
 
 ### 7.4 Add a new file type
 
@@ -507,6 +513,15 @@ sites: [{
 
 Renderers in `client/src/sites/nushacks-alumni/`, registered in
 `client/src/sites/registry.ts`.
+
+> **A renderer is a React component, not a function you call.** It receives
+> `SiteContext` as its props and is rendered `<Renderer {...ctx} />`. Use hooks
+> in it freely — but never invoke another renderer by hand as `Other(ctx)`:
+> that attributes its hooks to the browser component, and the first renderer
+> using `useState` takes the whole desktop down with "rendered more hooks than
+> during the previous render". Both window slots sit behind an error boundary
+> so a crash costs one window rather than the meeting, but the boundary is a
+> net, not a licence.
 
 **This is the OSINT extension point.** A fake search engine, social profiles,
 a company "about us", a pastebin clone, a leaked-credential dump — all of it is
@@ -621,11 +636,10 @@ agenda, some photos, a half-finished budget. Most are noise, several are
 mild red herrings, and each carries a real `deleted.originalPath` so the bin
 doubles as a map of folders that no longer appear in the tree.
 
-One item — a `ShortcutFile` or a text note — contains the **portal URL**:
-
-```
-ledger.brightlinepay.test
-```
+`notes-to-self.txt` holds the **portal address and the base64 username**, plus
+the only pointer to Discovery 4 — "pw is in the usual place, with the songs".
+`passwords.txt.bak` is a pure decoy of dead 2019 credentials, and one item is
+hidden, so only players who turn on *Show hidden items* see all fifteen.
 
 Objectives: `recycle-bin-opened` · `decoy-opened` (hidden — shows who is
 thorough) · `portal-link-found`.
@@ -639,15 +653,18 @@ Alongside the portal link is a base64 string. Players decode it externally
 YXRlbGxlei5hZG1pbg==   →   atellez.admin
 ```
 
-Objective: `portal-username-decoded`, fired on the successful portal login
-rather than on the decode, since we cannot see a decode that happens off-site.
+There is no objective for the decode itself — it happens off-site and we cannot
+see it. It shows up on the board as `portal-breached` when the credential is
+used.
 
 ### Discovery 4 — The portal password
 
-A folder on Alec's desktop — proposed `C:/Users/atellez/Desktop/notes/` —
-holds a dozen-plus scrappy `.txt` files: grocery lists, setlists, half-written
-emails, meeting notes. Players preview them one by one in Notepad. One contains
-the portal password.
+`C:/Users/atellez/Desktop/notes/` holds fourteen scrappy `.txt` files: grocery
+lists, setlists, chord sketches, gym splits, things to cancel. Players preview
+them one by one in Notepad. `tuning-notes.txt` ends with the portal password in
+a parenthesis — `dadgad-capo2`, an alternate guitar tuning and how he capos the
+second song, which ties the answer back to `ultimateguitar` without being
+guessable from it.
 
 This rewards thoroughness rather than cleverness, which is a deliberate change
 of pace between two inference puzzles.
@@ -662,7 +679,10 @@ signal of who is stuck versus who is grinding.
 a login wall taking `atellez.admin` and the password from Discovery 4. Behind
 it: the payment trail. This is where the other builders pick up.
 
-Objective: `portal-breached`.
+Objectives: `portal-visited` · `portal-breached` · `payout-ledger-seen` ·
+`case-assembled`, which is a composite: it fires by itself the moment a session
+holds the machine unlock, the note, the password and the ledger. Nothing
+triggers it directly — it is the worked example of the `{ on: "all" }` trigger.
 
 ### What is deliberately left open
 
