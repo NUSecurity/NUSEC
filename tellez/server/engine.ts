@@ -188,37 +188,44 @@ export function machineUnlocked(ctx: Ctx): boolean {
 }
 
 /**
- * The lock screen. Both halves must match before either is credited, so a
- * correct password with the wrong username tells the player nothing.
+ * The lock screen.
  *
- * Failures are recorded as well as successes: the board showing who is trying
+ * A failed attempt hands back the first hint for whichever half is wrong —
+ * the username hint until the username is right, then the password hint. That
+ * deliberately makes this a username oracle, which would be a flaw on a real
+ * login and is the point here: getting in is the opening move, not the
+ * challenge, and a room stuck on the front door learns nothing.
+ *
+ * Failures are recorded as well as successes. The board showing who is trying
  * and failing is how you tell a stuck room from an idle one.
  */
 export async function machineLogin(
   ctx: Ctx,
   username: string,
   password: string,
-): Promise<{ ok: boolean; revealed: ObjectiveId[] }> {
+): Promise<{ ok: boolean; hint?: string }> {
   const userSecret = world().secret("machine-username");
   const passSecret = world().secret("machine-password");
-  if (!userSecret || !passSecret) return { ok: false, revealed: [] };
+  if (!userSecret || !passSecret) return { ok: false };
 
-  const ok = secretMatches(userSecret, username) && secretMatches(passSecret, password);
+  const userOk = secretMatches(userSecret, username);
+  const passOk = secretMatches(passSecret, password);
+  const ok = userOk && passOk;
 
   await record(ctx.session.id, [
-    { type: "login.attempt", at: Date.now(), payload: { username, ok } },
+    { type: "login.attempt", at: Date.now(), payload: { username, ok, userOk } },
   ]);
 
-  if (!ok) return { ok: false, revealed: [] };
+  if (!ok) return { ok: false, hint: (userOk ? passSecret : userSecret).hints?.[0] };
 
   await creditSecrets(ctx, [userSecret.id, passSecret.id]);
 
-  const revealed = await reach(ctx, [
+  await reach(ctx, [
     ...objectivesForSecret(world(), userSecret.id),
     ...objectivesForSecret(world(), passSecret.id),
   ]);
 
-  return { ok: true, revealed };
+  return { ok: true };
 }
 
 /* ------------------------------------------------------------ filesystem */

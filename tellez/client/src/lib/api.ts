@@ -1,6 +1,5 @@
 import type {
-  BoardView, DirListing, LoginResult, NodeContent, NodeSummary,
-  ObjectiveId, SessionView,
+  BoardView, DirListing, LoginResult, NodeContent, NodeSummary, SessionView,
 } from "#shared/protocol";
 
 /**
@@ -38,7 +37,6 @@ export interface ReadResult {
   summary: NodeSummary;
   content: NodeContent;
   opensWith: string;
-  revealed: ObjectiveId[];
 }
 
 export interface PageResult {
@@ -49,7 +47,6 @@ export interface PageResult {
   title: string;
   data: unknown;
   needsAuth: boolean;
-  revealed: ObjectiveId[];
 }
 
 export const api = {
@@ -58,10 +55,10 @@ export const api = {
   me: () => request<SessionView>("/api/session"),
 
   login: (username: string, password: string) =>
-    post<LoginResult & { revealed: ObjectiveId[] }>("/api/login", { username, password }),
+    post<LoginResult>("/api/login", { username, password }),
 
   list: (path: string, showHidden = false) =>
-    request<DirListing & { revealed: ObjectiveId[] }>(
+    request<DirListing>(
       `/api/fs/list?path=${encodeURIComponent(path)}${showHidden ? "&hidden=1" : ""}`,
     ),
 
@@ -73,9 +70,7 @@ export const api = {
     ),
 
   siteAuth: (host: string, username: string, password: string) =>
-    post<{ ok: boolean; message?: string; revealed: ObjectiveId[] }>("/api/web/auth", {
-      host, username, password,
-    }),
+    post<{ ok: boolean; message?: string }>("/api/web/auth", { host, username, password }),
 
   board: (key: string) => request<BoardView & { storage: string }>(`/api/board?key=${encodeURIComponent(key)}`),
 };

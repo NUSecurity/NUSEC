@@ -20,20 +20,22 @@ export const login: ContentModule = {
     "the machine. Nothing else in the investigation opens until this does.",
 
   secrets: [
+    // hints[0] of whichever half failed is shown on the lock screen after a
+    // wrong attempt. The rest are for the facilitator to release by hand.
     {
       id: "machine-username",
       value: "ultimateguitar",
       hints: [
-        "He never used his real name as a handle.",
-        "It is where a guitarist goes for tabs.",
+        "An ultimate instrument?",
+        "He never used his real name as a handle — it is where a guitarist goes for tabs.",
       ],
     },
     {
       id: "machine-password",
       value: "hellohackers",
       hints: [
-        "He opened every single announcement the same way.",
-        "Two words, no spaces, exactly how he greeted the server.",
+        "A legendary greeting.",
+        "He opened every announcement the same way. Two words, no spaces.",
       ],
     },
   ],

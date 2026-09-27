@@ -29,6 +29,5 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
     title: outcome.title,
     data: outcome.data,
     needsAuth: outcome.needsAuth,
-    revealed: outcome.revealed,
   });
 }

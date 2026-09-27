@@ -13,17 +13,21 @@ export function LockScreen({ onUnlocked }: { onUnlocked(): void }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [hint, setHint] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   async function submit(event: FormEvent) {
     event.preventDefault();
     setBusy(true);
     setError(null);
+    setHint(null);
 
     try {
       const result = await api.login(username, password);
-      if (result.ok) onUnlocked();
-      else setError(result.message ?? "The username or password is incorrect.");
+      if (result.ok) return onUnlocked();
+
+      setError(result.message ?? "That did not work.");
+      setHint(result.hint ?? null);
     } catch (cause) {
       setError(cause instanceof ApiError ? cause.message : "Something went wrong.");
     } finally {
@@ -74,6 +78,13 @@ export function LockScreen({ onUnlocked }: { onUnlocked(): void }) {
         {error && (
           <p className="mt-3 text-[12px] text-husky-bad" role="alert">
             {error}
+          </p>
+        )}
+
+        {hint && (
+          <p className="mt-2 flex items-center justify-center gap-1.5 text-[12px] text-husky-warn">
+            <Icon name="Lightbulb" size={13} className="shrink-0" />
+            <span>{hint}</span>
           </p>
         )}
 

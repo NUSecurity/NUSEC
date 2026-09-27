@@ -16,5 +16,5 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
   if (outcome.status === "missing") return fail(res, 404, "not_found");
   if (outcome.status === "denied") return fail(res, 403, "access_denied");
 
-  res.status(200).json({ ...outcome.listing, revealed: outcome.revealed });
+  res.status(200).json(outcome.listing);
 }

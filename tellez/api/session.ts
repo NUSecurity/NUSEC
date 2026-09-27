@@ -8,7 +8,7 @@
 
 import type { SessionView } from "../shared/protocol.js";
 import { store } from "../server/db.js";
-import { loadCtx, record, world } from "../server/engine.js";
+import { loadCtx, record } from "../server/engine.js";
 import { bodyOf, fail, type ApiRequest, type ApiResponse } from "../server/http.js";
 import { cookieHeader, newSessionId } from "../server/session.js";
 
@@ -32,25 +32,18 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
   await record(id, [{ type: "session.start", at: now, payload: { displayName: name } }]);
 
   res.setHeader("Set-Cookie", cookieHeader(id));
-  res.status(201).json({
-    id, displayName: name, startedAt: now, objectives: [],
-  } satisfies SessionView);
+  res.status(201).json({ id, displayName: name, startedAt: now } satisfies SessionView);
 }
 
 async function current(req: ApiRequest, res: ApiResponse) {
   const ctx = await loadCtx(req);
   if (!ctx) return fail(res, 401, "no_session");
 
-  // Hidden objectives are withheld: the player should not learn that
-  // `decoy-opened` exists, let alone that they have it.
-  const visible = [...ctx.progress.objectives].filter(
-    (id) => world().objective(id)?.hidden !== true,
-  );
-
+  // No objective data, for the same reason as /api/desktop: progress is the
+  // facilitator's to see, not the player's.
   res.status(200).json({
     id: ctx.session.id,
     displayName: ctx.session.displayName,
     startedAt: ctx.session.startedAt,
-    objectives: visible,
   } satisfies SessionView);
 }

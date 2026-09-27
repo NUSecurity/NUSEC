@@ -1,6 +1,6 @@
 /** A login wall on a simulated site. */
 
-import type { AuthRequest, AuthResult, Revealed } from "../../shared/protocol.js";
+import type { AuthRequest, AuthResult } from "../../shared/protocol.js";
 import { authenticate } from "../../server/engine.js";
 import { requireMachine } from "../../server/guard.js";
 import { bodyOf, fail, methodIs, type ApiRequest, type ApiResponse } from "../../server/http.js";
@@ -19,6 +19,5 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
   res.status(200).json({
     ok: result.ok,
     message: result.ok ? undefined : "Those credentials were not accepted.",
-    revealed: result.revealed,
-  } satisfies AuthResult & Revealed);
+  } satisfies AuthResult);
 }

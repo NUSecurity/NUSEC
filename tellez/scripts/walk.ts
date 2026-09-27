@@ -12,9 +12,16 @@
  *
  *   npm run dev          # in one terminal
  *   npm run walk         # in another
+ *
+ * Objectives are checked against the facilitator board rather than the
+ * responses, because responses no longer mention them: a participant is never
+ * told what they have found, and that has to hold in the network tab. The
+ * board is the only place progress is visible, so it is the only place worth
+ * asserting on.
  */
 
 const BASE = process.env.WALK_BASE ?? "http://localhost:4311";
+const KEY = process.env.WALK_KEY ?? "dev";
 
 let cookie = "";
 let failures = 0;
@@ -41,9 +48,6 @@ function check(label: string, ok: boolean, detail = "") {
   console.error(`  FAIL  ${label}${detail ? ` — ${detail}` : ""}`);
 }
 
-const revealed = (body: unknown): string[] =>
-  ((body as { revealed?: string[] }).revealed ?? []);
-
 const enc = encodeURIComponent;
 
 async function walk() {
@@ -53,40 +57,48 @@ async function walk() {
   check("health responds", health.status === 200, `got ${health.status}`);
   if (health.status !== 200) return;
 
-  await call("/api/session", {
-    method: "POST",
-    body: JSON.stringify({ displayName: `walker-${Date.now() % 10000}` }),
-  });
+  const name = `walker-${Date.now() % 10000}`;
+  await call("/api/session", { method: "POST", body: JSON.stringify({ displayName: name }) });
   check("joined", cookie.length > 0);
 
   const locked = await call("/api/fs/list?path=C%3A");
   check("filesystem refused before the lock screen", locked.status === 403, `got ${locked.status}`);
 
-  const wrong = await call("/api/login", {
+  const badUser = await call("/api/login", {
+    method: "POST",
+    body: JSON.stringify({ username: "nobody", password: "nope" }),
+  });
+  check("wrong username rejected", badUser.body.ok === false);
+  check("wrong username hints at the username", badUser.body.hint === "An ultimate instrument?",
+    `got "${badUser.body.hint}"`);
+
+  const badPass = await call("/api/login", {
     method: "POST",
     body: JSON.stringify({ username: "ultimateguitar", password: "nope" }),
   });
-  check("wrong password rejected", wrong.body.ok === false);
+  check("wrong password rejected", badPass.body.ok === false);
+  check("right username hints at the password", badPass.body.hint === "A legendary greeting.",
+    `got "${badPass.body.hint}"`);
 
   const login = await call("/api/login", {
     method: "POST",
     body: JSON.stringify({ username: " UltimateGuitar ", password: "HelloHackers" }),
   });
   check("logged in (case and whitespace tolerant)", login.body.ok === true);
-  check("unlock fires desktop-unlocked", revealed(login.body).includes("desktop-unlocked"));
+  check("success leaks no hint", login.body.hint === undefined);
 
   const bin = await call(`/api/fs/list?path=${enc("C:/$Recycle.Bin")}`);
   check("recycle bin lists", bin.status === 200);
   check("recycle bin hides the hidden item", bin.body.entries?.length === 14,
     `${bin.body.entries?.length} entries`);
-  check("entering the bin fires its objective", revealed(bin.body).includes("recycle-bin-opened"));
+  check("listing leaks no progress", bin.body.revealed === undefined);
 
   const withHidden = await call(`/api/fs/list?path=${enc("C:/$Recycle.Bin")}&hidden=1`);
   check("show-hidden reveals the extra item", withHidden.body.entries?.length === 15);
 
   const note = await call(`/api/fs/read?path=${enc("C:/$Recycle.Bin/notes-to-self.txt")}`);
   check("portal note readable", note.status === 200);
-  check("note fires portal-link-found", revealed(note.body).includes("portal-link-found"));
+  check("reading a file leaks no progress", note.body.revealed === undefined);
 
   const body = String(note.body.content?.body ?? "");
   // Anchored to a whole line: an unanchored base64 pattern happily matches a
@@ -103,7 +115,7 @@ async function walk() {
   check("notes folder lists", notes.body.entries?.length === 14, `${notes.body.entries?.length} files`);
 
   const tuning = await call(`/api/fs/read?path=${enc("C:/Users/atellez/Desktop/notes/tuning-notes.txt")}`);
-  check("password note fires its objective", revealed(tuning.body).includes("password-note-opened"));
+  check("password note readable", tuning.status === 200);
 
   const password = String(tuning.body.content?.body ?? "").match(/pw is ([\w-]+)/)?.[1] ?? "";
   check("password note contains the password", password.length > 0, "no password matched");
@@ -119,8 +131,27 @@ async function walk() {
   const payouts = await call("/api/web/fetch?host=ledger.brightlinepay.test&path=/payouts");
   check("payouts open on a LATER request", payouts.status === 200, `got ${payouts.status}`);
   check("ledger totals intact", payouts.body.data?.totals?.in === 8420);
-  check("reading the ledger completes the case",
-    revealed(payouts.body).includes("case-assembled"));
+  check("the page leaks no progress", payouts.body.revealed === undefined);
+
+  // Everything above proved the player's view. The board is where progress is
+  // supposed to be visible, so prove it landed there too.
+  const board = await call(`/api/board?key=${enc(KEY)}`);
+  if (board.status !== 200) {
+    check("board readable", false, `got ${board.status} — set WALK_KEY to FACILITATOR_PASSWORD`);
+  } else {
+    const me = (board.body.sessions ?? []).find(
+      (s: { displayName: string }) => s.displayName === name,
+    );
+    const reached: string[] = me?.objectives ?? [];
+
+    for (const id of [
+      "desktop-unlocked", "recycle-bin-opened", "portal-link-found",
+      "notes-folder-opened", "password-note-opened", "portal-breached",
+      "payout-ledger-seen", "case-assembled",
+    ]) {
+      check(`board recorded ${id}`, reached.includes(id));
+    }
+  }
 
   console.log(`\n${failures === 0 ? "walk: ok" : `walk: ${failures} failure(s)`}`);
   process.exit(failures === 0 ? 0 : 1);

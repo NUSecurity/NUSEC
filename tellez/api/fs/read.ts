@@ -21,6 +21,5 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
     summary: outcome.summary,
     content: outcome.content,
     opensWith: outcome.opensWith,
-    revealed: outcome.revealed,
   });
 }

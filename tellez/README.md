@@ -4,8 +4,13 @@ A simulated desktop investigation, played live in a browser during an NUSEC
 meeting. Participants get past a lock screen, dig through a fake computer that
 belonged to a former club president, and work out where the money went.
 
-**Architecture and the authoring contract: [ARCHITECTURE.md](ARCHITECTURE.md).**
-If you are adding a challenge, read §7 of that file first.
+- **[CHALLENGES.md](CHALLENGES.md)** — every discovery, what it asks of a
+  player, and every answer. Read this first to see what already exists.
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** — how it is built and how to extend it.
+  §7 is the authoring contract.
+
+Adding a challenge? Read the register, then §7, then update the register in the
+same commit.
 
 ---
 

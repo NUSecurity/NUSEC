@@ -1,11 +1,10 @@
 /**
  * Everything the shell needs once the machine is unlocked: the desktop icons,
- * the Start menu, who the machine belongs to, and the catalogue of visible
- * objective titles.
+ * the Start menu, and who the machine belongs to.
  *
- * The catalogue is titles only, and hidden objectives are withheld entirely —
- * it exists so a discovery can be acknowledged by name in a toast, not so a
- * player can read a checklist of what they have not found yet.
+ * Deliberately no objective data. Players are never told what they have found
+ * or what is left — those markers exist for the facilitator board alone — and
+ * that has to hold in the network tab, not just on screen.
  */
 
 import { MACHINE } from "../server/content/machine.js";
@@ -29,9 +28,5 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
     },
     desktopItems: world().desktopItems(),
     startMenuItems: world().startMenuItems(),
-    catalogue: world()
-      .allObjectives()
-      .filter((objective) => !objective.hidden)
-      .map((objective) => ({ id: objective.id, title: objective.title })),
   });
 }

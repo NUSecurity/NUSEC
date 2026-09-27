@@ -27,5 +27,4 @@ export interface DesktopPayload {
   machine: MachineInfo;
   desktopItems: DesktopItem[];
   startMenuItems: StartMenuItem[];
-  catalogue: { id: string; title: string }[];
 }

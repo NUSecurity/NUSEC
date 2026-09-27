@@ -34,12 +34,9 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
 
   await record(ctx.session.id, plain);
 
-  const revealed: string[] = [];
   for (const action of actions) {
-    const app = String(action.payload?.app ?? "");
-    const name = String(action.payload?.action ?? "");
-    revealed.push(...(await appAction(ctx, app, name)));
+    await appAction(ctx, String(action.payload?.app ?? ""), String(action.payload?.action ?? ""));
   }
 
-  res.status(200).json({ accepted: allowed.length, revealed });
+  res.status(200).json({ accepted: allowed.length });
 }

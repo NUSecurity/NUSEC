@@ -10,6 +10,11 @@ members extend it. If you are one of them — or an agent working for one — re
 written so you can add directories, files, apps, whole websites, and new portals
 **without editing the engine**.
 
+**[CHALLENGES.md](CHALLENGES.md) is the companion to this file** and the one to
+read first: it lists every discovery that already exists, what it asks of a
+player, and every answer. This file says how to build; that file says what has
+been built.
+
 **Status:** engine built and walked end to end · content: the five discoveries below
 **Branch:** `tellez-incident` · **App root:** `tellez/` · **Never merges to `main`.**
 **Event:** Tuesday 2026-09-29. · **Running it:** [README.md](README.md)
@@ -582,6 +587,11 @@ mid-meeting**.
   earning it, it is broken.
 - **No third window.** See [§6](#6-the-shell-and-the-two-window-rule).
 - **No `NUSEC{...}` anywhere.** There are no flags.
+- **No progress ever reaches the player.** No toasts, no checklists, no
+  objective ids on the wire. Objectives exist for the facilitator board alone,
+  and that has to hold in the network tab, not just on screen — this audience
+  reads it. API responses deliberately carry no `revealed` field, `/api/desktop`
+  carries no objective catalogue, and `/api/session` carries no progress.
 - **Fake hostnames use reserved TLDs.** See [§5.3](#53-the-simulated-internet).
 - **Original icons only** (Lucide or CSS-drawn). No Microsoft assets.
 - **Every lock must have a discoverable path to opening it, inside the game.**

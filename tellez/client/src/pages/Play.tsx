@@ -7,7 +7,6 @@ import { ErrorBoundary } from "@/shell/ErrorBoundary";
 import { LockScreen } from "@/shell/LockScreen";
 import { StartMenu } from "@/shell/StartMenu";
 import { Taskbar, type TaskbarWindow } from "@/shell/Taskbar";
-import { Toasts } from "@/shell/Toasts";
 import type { DesktopItem, DesktopPayload } from "@/shell/types";
 import { Window } from "@/shell/Window";
 import type { NodeContent, NodeSummary } from "#shared/protocol";
@@ -35,7 +34,6 @@ export function Play() {
   const [explorerSlot, setExplorerSlot] = useState<Slot | null>(null);
   const [appSlot, setAppSlot] = useState<Slot | null>(null);
   const [startOpen, setStartOpen] = useState(false);
-  const [toasts, setToasts] = useState<{ id: string; title: string }[]>([]);
 
   /* --------------------------------------------------------- bootstrap */
 
@@ -53,27 +51,6 @@ export function Play() {
     void loadDesktop();
   }, [loadDesktop]);
 
-  /* ------------------------------------------------------------ toasts */
-
-  const announce = useCallback(
-    (revealed: string[]) => {
-      if (revealed.length === 0 || !desktop) return;
-
-      const fresh = revealed
-        .map((id) => desktop.catalogue.find((entry) => entry.id === id))
-        .filter((entry): entry is { id: string; title: string } => entry !== undefined);
-
-      if (fresh.length === 0) return;
-
-      setToasts((current) => [...current, ...fresh]);
-      setTimeout(
-        () => setToasts((current) => current.filter((toast) => !fresh.some((item) => item.id === toast.id))),
-        4500,
-      );
-    },
-    [desktop],
-  );
-
   /* ------------------------------------------------------------- shell */
 
   const shell = useMemo<ShellApi>(
@@ -86,7 +63,6 @@ export function Play() {
         try {
           const result = await api.read(path);
           setAppSlot({ appId: result.opensWith, node: result.summary, content: result.content });
-          announce(result.revealed);
         } catch (cause) {
           // Directories belong in the explorer slot, not the app slot.
           if (cause instanceof ApiError && cause.status === 400) {
@@ -120,7 +96,7 @@ export function Play() {
         else setAppSlot(null);
       },
     }),
-    [announce, explorerSlot],
+    [explorerSlot],
   );
 
   function openDesktopItem(item: DesktopItem) {
@@ -199,8 +175,6 @@ export function Play() {
             </Window>
           )}
         </div>
-
-        <Toasts messages={toasts} />
 
         {startOpen && (
           <StartMenu

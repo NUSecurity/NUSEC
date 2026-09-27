@@ -105,12 +105,14 @@ export interface SiteSummary {
 
 /* ------------------------------------------------------ session + events */
 
+/**
+ * Note the absence of any progress field. Participants are never told what
+ * they have found; objectives exist for the facilitator board alone.
+ */
 export interface SessionView {
   id: string;
   displayName: string;
   startedAt: number;
-  /** Objectives this session has reached. Drives the client's unlocked state. */
-  objectives: ObjectiveId[];
 }
 
 export type EventType =
@@ -172,13 +174,10 @@ export interface BoardView {
 export interface ApiError { error: string; detail?: string }
 
 export interface LoginRequest { username: string; password: string }
-export interface LoginResult { ok: boolean; message?: string }
+export interface LoginResult { ok: boolean; message?: string; hint?: string }
 
 export interface AuthRequest { host: SiteHost; username: string; password: string }
 export interface AuthResult { ok: boolean; message?: string }
 
 export interface UnlockRequest { path: string; passphrase: string }
 export interface UnlockResult { ok: boolean; message?: string }
-
-/** Objectives reached by the request that just completed, for a live toast. */
-export interface Revealed { revealed: ObjectiveId[] }
