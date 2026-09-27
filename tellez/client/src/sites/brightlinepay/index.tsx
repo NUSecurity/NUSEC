@@ -206,7 +206,7 @@ function TablePage({ ctx, active, heading }: { ctx: SiteContext; active: string;
 }
 
 export const brightlinePay: SiteRenderers = {
-  host: "ledger.brightlinepay.test",
+  host: "ledger.brightlinepay.hack",
   routes: {
     "/": Login,
     "/dashboard": Dashboard,

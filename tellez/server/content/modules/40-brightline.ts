@@ -15,7 +15,7 @@
 
 import { requiresObjective, type ContentModule } from "../kit.js";
 
-const HOST = "ledger.brightlinepay.test";
+const HOST = "ledger.brightlinepay.hack";
 
 export const brightline: ContentModule = {
   id: "brightline",
@@ -73,7 +73,7 @@ export const brightline: ContentModule = {
             settled: 8420,
             pending: 0,
             since: "2024-09-01",
-            contact: "a.tellez@brightlinepay.test",
+            contact: "a.tellez@brightlinepay.hack",
           },
         },
         {

@@ -136,8 +136,9 @@ export const workstation: ContentModule = {
     { label: "File Explorer", icon: "FolderOpen", appId: "explorer" },
     { label: "Web Browser", icon: "Globe", appId: "browser" },
     { label: "Notepad", icon: "FileText", appId: "notepad" },
+    { label: "Cipher Bench", icon: "FlaskConical", appId: "cipher-bench" },
     { label: "Recycle Bin", icon: "Trash2", appId: "recycle-bin" },
   ],
 
-  requiresApps: ["explorer", "notepad", "sheets", "mail", "browser", "recycle-bin", "hex"],
+  requiresApps: ["explorer", "notepad", "sheets", "mail", "browser", "recycle-bin", "hex", "cipher-bench"],
 };

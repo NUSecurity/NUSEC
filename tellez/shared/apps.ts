@@ -21,6 +21,7 @@ export const APP_IDS = [
   "hex",
   "browser",
   "recycle-bin",
+  "cipher-bench",
 ] as const;
 
 export type KnownAppId = (typeof APP_IDS)[number];

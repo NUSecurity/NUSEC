@@ -47,9 +47,10 @@ Two things worth knowing while you work:
 2. Sign in as `ultimateguitar` / `hellohackers`.
    *In the real event this comes from Alec's old posts in the NUSEC Discord.*
 3. Open the **Recycle Bin**, read `notes-to-self.txt`.
-4. Decode `YXRlbGxlei5hZG1pbg==` → `atellez.admin`.
+4. Decode `YXRlbGxlei5hZG1pbg==` → `atellez.admin`, with **Cipher Bench** in the
+   Start menu or any base64 decoder.
 5. Open the **notes** folder on the desktop, read `tuning-notes.txt` → `dadgad-capo2`.
-6. Open the **Web Browser**, go to `ledger.brightlinepay.test`, sign in, read **Payouts**.
+6. Open the **Web Browser**, go to `ledger.brightlinepay.hack`, sign in, read **Payouts**.
 
 ---
 

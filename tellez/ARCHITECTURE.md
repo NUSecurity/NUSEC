@@ -298,7 +298,7 @@ challenges, second portals, and fake corporate sites get built.
 
 ```ts
 interface SimSite {
-  host: string;                 // "ledger.brightlinepay.test"
+  host: string;                 // "ledger.brightlinepay.hack"
   title: string;
   favicon?: IconName;
   discoverable?: boolean;       // true = appears in the sim search engine
@@ -321,11 +321,21 @@ interface SiteAuth {
 }
 ```
 
-> **Fake hostnames must use a reserved TLD — `.test`, `.invalid` or
-> `.example`.** This is not a style preference. If you invent
-> `tellezholdings.com` and that turns out to be a real company, you have pointed
-> forty people with a security mindset at a stranger's website. Reserved TLDs
-> cannot resolve, so this cannot happen.
+> **Fake hostnames must use a TLD that does not exist:** `.hack`, `.corp`,
+> `.internal`, `.local`, `.home`, or the RFC 2606 reservations `.test`,
+> `.invalid`, `.example`. Preflight enforces this.
+>
+> Not a style preference. If you invent `tellezholdings.com` and it turns out to
+> be a real company, you have pointed forty people with a security mindset at a
+> stranger's website. A TLD absent from the root zone cannot resolve for
+> anybody, including a curious player who pastes the address into their own
+> browser.
+>
+> **`.xyz` and `.web` are not safe**, despite looking like obvious inventions.
+> Both are delegated: `.xyz` is one of the most heavily registered new gTLDs,
+> and `.web` was delegated to Verisign — `brightlinepay.web` already answers
+> with ICANN's name-collision address. Run `dig NS <tld>.` before trusting any
+> TLD not on the list above.
 
 A site's *data* lives in a content module; its *renderer* lives in
 `client/src/sites/`. Route rendering is client-side, but **gated routes and all
@@ -556,7 +566,7 @@ secrets: [
   { id: "vendor-portal-pw",   value: "..." },
 ],
 sites: [{
-  host: "vendors.brightlinepay.test",
+  host: "vendors.brightlinepay.hack",
   title: "BrightLine Vendor Portal",
   auth: {
     usernameSecret: "vendor-portal-user",
@@ -604,7 +614,7 @@ mid-meeting**.
   and that has to hold in the network tab, not just on screen — this audience
   reads it. API responses deliberately carry no `revealed` field, `/api/desktop`
   carries no objective catalogue, and `/api/session` carries no progress.
-- **Fake hostnames use reserved TLDs.** See [§5.3](#53-the-simulated-internet).
+- **Fake hostnames use undelegated TLDs.** See [§5.3](#53-the-simulated-internet).
 - **Original icons only** (Lucide or CSS-drawn). No Microsoft assets.
 - **Every lock must have a discoverable path to opening it, inside the game.**
   Preflight cannot check this. Walk your own content cold and prove it.
@@ -697,7 +707,7 @@ signal of who is stuck versus who is grinding.
 
 ### Discovery 5 — The portal
 
-`ledger.brightlinepay.test`, opened in the Browser app inside the desktop, with
+`ledger.brightlinepay.hack`, opened in the Browser app inside the desktop, with
 a login wall taking `atellez.admin` and the password from Discovery 4. Behind
 it: the payment trail. This is where the other builders pick up.
 

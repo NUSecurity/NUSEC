@@ -4,6 +4,7 @@ import type { DesktopApp } from "./types";
 
 import { archive } from "./ArchiveViewer";
 import { browser } from "./Browser";
+import { cipherBench } from "./CipherBench";
 import { explorer } from "./FileExplorer";
 import { hex } from "./HexViewer";
 import { mail } from "./MailClient";
@@ -24,7 +25,9 @@ import { shortcut } from "./ShortcutView";
  */
 const registry: Record<KnownAppId, DesktopApp> = {
   explorer, notepad, sheets, mail, messenger, photos,
-  media, archive, shortcut, hex, browser, "recycle-bin": recycleBin,
+  media, archive, shortcut, hex, browser,
+  "recycle-bin": recycleBin,
+  "cipher-bench": cipherBench,
 };
 
 export const appById = (id: string): DesktopApp | undefined =>

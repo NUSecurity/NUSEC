@@ -102,13 +102,13 @@ async function walk() {
 
   const body = String(note.body.content?.body ?? "");
   // Anchored to a whole line: an unanchored base64 pattern happily matches a
-  // chunk of "ledger.brightlinepay.test" first.
+  // chunk of "ledger.brightlinepay.hack" first.
   const encoded = body.match(/^\s*([A-Za-z0-9+/]{12,}={0,2})\s*$/m)?.[1] ?? "";
   const decoded = Buffer.from(encoded, "base64").toString("utf8");
   check("note carries a decodable username", decoded === "atellez.admin", `decoded "${decoded}"`);
-  check("note points at the portal", body.includes("ledger.brightlinepay.test"));
+  check("note points at the portal", body.includes("ledger.brightlinepay.hack"));
 
-  const sealed = await call("/api/web/fetch?host=ledger.brightlinepay.test&path=/payouts");
+  const sealed = await call("/api/web/fetch?host=ledger.brightlinepay.hack&path=/payouts");
   check("payouts sealed before the credential", sealed.status === 403, `got ${sealed.status}`);
 
   const notes = await call(`/api/fs/list?path=${enc("C:/Users/atellez/Desktop/notes")}`);
@@ -122,13 +122,13 @@ async function walk() {
 
   const auth = await call("/api/web/auth", {
     method: "POST",
-    body: JSON.stringify({ host: "ledger.brightlinepay.test", username: decoded, password }),
+    body: JSON.stringify({ host: "ledger.brightlinepay.hack", username: decoded, password }),
   });
   check("portal accepts the found credentials", auth.body.ok === true);
 
   // The regression that matters most: a credential passed in one request has
   // to survive into the next, because progress is derived from the event log.
-  const payouts = await call("/api/web/fetch?host=ledger.brightlinepay.test&path=/payouts");
+  const payouts = await call("/api/web/fetch?host=ledger.brightlinepay.hack&path=/payouts");
   check("payouts open on a LATER request", payouts.status === 200, `got ${payouts.status}`);
   check("ledger totals intact", payouts.body.data?.totals?.in === 8420);
   check("the page leaks no progress", payouts.body.revealed === undefined);

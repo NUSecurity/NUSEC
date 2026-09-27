@@ -122,7 +122,7 @@ Open files until they hit `notes-to-self.txt`, which reads:
 ```
 don't leave this lying around
 
-ledger.brightlinepay.test   <- vendor console, not the club one
+ledger.brightlinepay.hack   <- vendor console, not the club one
 
 not writing the user out in plaintext, it's:
 
@@ -159,10 +159,14 @@ The portal's username.
 In the same note as the portal address — `YXRlbGxlei5hZG1pbg==`.
 
 **The process**
-Recognise base64 by shape (the `==` padding is the tell) and decode it. There is
-deliberately **no decoder on the desktop**: the intent is that they reach for
-CyberChef, `base64 -d`, or any of the dozen sites that do it. Using a real tool
-is the lesson.
+Recognise base64 by shape — the `==` padding is the tell — and decode it.
+
+**Cipher Bench**, in the Start menu, does this in-world: paste the string, add
+*From Base64*, read the output. It is a CyberChef-shaped recipe tool, so it also
+covers hex, binary, URL encoding, ROT13, Caesar, Atbash, XOR and the SHA family
+for whatever gets built next. Players who would rather reach for CyberChef or
+`base64 -d` still can — recognising *what* the encoding is remains the lesson,
+and that part is unchanged.
 
 **What they have to do**
 Decode it.
@@ -231,7 +235,7 @@ That count is the single best signal of who is stuck versus who is working.
 Where the money went. This is the payoff for everything above.
 
 **Where it is**
-`ledger.brightlinepay.test`, opened in the **Web Browser** on the desktop.
+`ledger.brightlinepay.hack`, opened in the **Web Browser** on the desktop.
 There is no search engine on this machine — the address has to come from the
 recycle-bin note.
 
@@ -333,9 +337,10 @@ The concrete action, and any credential in full.
   to decide whether the room is stuck.
 - **No progress ever reaches the player.** No toasts, no checklists, no
   objective data on the wire. Markers are for the facilitator board alone.
-- **Fake hostnames use `.test`, `.invalid` or `.example`.** Preflight enforces
-  this. An invented domain that turns out to be real points a room full of
-  security students at a stranger's website.
+- **Fake hostnames use a TLD that does not exist** — `.hack`, `.corp`,
+  `.internal`, `.local`, `.home`, `.test`, `.invalid`, `.example`. Preflight
+  enforces this. Note `.xyz` and `.web` are *real*, delegated TLDs despite
+  looking invented, so an address on one can resolve to a stranger's website.
 - **Update this file in the same commit.** A challenge that only exists in code
   is one the next person will accidentally duplicate.
 - **Add checks to `scripts/walk.ts`.** It plays the whole investigation and is

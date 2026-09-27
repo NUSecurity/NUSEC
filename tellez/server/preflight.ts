@@ -19,6 +19,23 @@ import { EMPTY_PROGRESS } from "./locks.js";
 import { Directory, FileNode, ImageFile, pathKey } from "./vfs.js";
 import type { World } from "./world.js";
 
+/**
+ * TLDs absent from the DNS root zone, so a hostname built on one cannot
+ * resolve to anybody — not for us, and not for a player who pastes the address
+ * into their own browser out of curiosity.
+ *
+ * `.hack`, `.corp`, `.internal`, `.local` and `.home` read like a real internet
+ * while staying permanently unresolvable; `.test`, `.invalid` and `.example`
+ * are the RFC 2606 reservations.
+ *
+ * Deliberately excluded: `.xyz` and `.web`. Both look like safe inventions and
+ * both are real, delegated TLDs — `.web` went to Verisign, and
+ * `brightlinepay.web` already answers with ICANN's name-collision address.
+ * Verified with `dig NS <tld>.`; verify again before adding to this list.
+ */
+const UNDELEGATED_LIST = ".hack/.corp/.internal/.local/.home/.test/.invalid/.example";
+const UNDELEGATED_TLDS = /\.(hack|corp|internal|local|home|test|invalid|example)$/i;
+
 export interface PreflightResult {
   ok: boolean;
   problems: string[];
@@ -126,10 +143,10 @@ export function preflight(world: World, checkAssets = true): PreflightResult {
   for (const site of world.allSites()) {
     const where = `${site.moduleId}: site "${site.host}"`;
 
-    if (!/\.(test|invalid|example)$/i.test(site.host)) {
+    if (!UNDELEGATED_TLDS.test(site.host)) {
       problems.push(
-        `${where} does not use a reserved TLD (.test/.invalid/.example) — ` +
-          `an invented domain that turns out to be real points the room at a stranger`,
+        `${where} does not use an undelegated TLD (${UNDELEGATED_LIST}) — ` +
+          `an invented domain on a real TLD can resolve to a stranger's website`,
       );
     }
 

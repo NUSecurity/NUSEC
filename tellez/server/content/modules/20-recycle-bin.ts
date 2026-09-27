@@ -35,7 +35,7 @@ export const recycleBin: ContentModule = {
       [
         "don't leave this lying around",
         "",
-        "ledger.brightlinepay.test   <- vendor console, not the club one",
+        "ledger.brightlinepay.hack   <- vendor console, not the club one",
         "",
         "not writing the user out in plaintext, it's:",
         "",
