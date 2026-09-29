@@ -184,8 +184,7 @@ async function walk() {
   check("page now asks three questions", questions.body.challenge?.questions?.length === 3);
   check("questions step still sends no data", questions.body.data === null);
 
-  // The answers come from the machine, the way a player would get them —
-  // except the treasurer, which is deliberately not written down anywhere on it.
+  // The answers come from the machine, the way a player would get them.
   const gym = await call(`/api/fs/read?path=${enc("C:/Users/atellez/Desktop/notes/gym.txt")}`);
   const legs = String(gym.body.content?.body ?? "").match(/^(\w+)\s+legs$/m)?.[1] ?? "";
   check("gym.txt names the leg day", legs === "thu", `got "${legs}"`);
@@ -194,14 +193,21 @@ async function walk() {
   const book = String(books.body.content?.body ?? "").match(/^- (.+) \(reread, still my favorite\)$/m)?.[1] ?? "";
   check("book-recs.txt names the favorite", book.length > 0, "no favorite marked");
 
-  const thread = await call(`/api/fs/read?path=${enc("C:/Users/atellez/Documents/NUSEC/treasurer-thread.eml")}`);
-  check("treasurer thread gives the surname", JSON.stringify(thread.body.content ?? {}).includes("a.uppal@nusec.club"));
+  // The treasurer's name is split across the thread: first name in Alec's
+  // greeting, surname in the treasurer's own address.
+  const thread = await call(`/api/fs/read?path=${enc("C:/Users/atellez/Documents/money stuff/treasurer-thread.eml")}`);
+  const mails = JSON.stringify(thread.body.content ?? {});
+  const first = mails.match(/Hey (\w+),/)?.[1] ?? "";
+  const sender = String(thread.body.content?.messages?.[0]?.from ?? "");
+  const surname = sender.match(/^\w\.(\w+)@/)?.[1] ?? "";
+  const treasurer = `${first} ${surname}`;
+  check("treasurer thread yields the full name", treasurer.toLowerCase() === "arjun uppal", `got "${treasurer}"`);
 
-  const wrongQs = await answer({ answers: [legs, book, "Arjun"] });
+  const wrongQs = await answer({ answers: [legs, book, first] });
   check("first name alone is not enough", wrongQs.body.ok === false);
   check("a wrong answer does not say which", wrongQs.body.message === "One or more answers were incorrect.");
 
-  const rightQs = await answer({ answers: [` ${legs.toUpperCase()} `, book.toUpperCase(), "arjun uppal"] });
+  const rightQs = await answer({ answers: [` ${legs.toUpperCase()} `, book.toUpperCase(), treasurer.toLowerCase()] });
   check("security questions accepted (case and whitespace tolerant)", rightQs.body.ok === true);
 
   const vault = await call(CLASSIFIED);

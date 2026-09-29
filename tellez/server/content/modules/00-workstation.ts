@@ -38,7 +38,7 @@ export const workstation: ContentModule = {
     dir(`${HOME}/Documents`),
     dir(`${HOME}/Downloads`),
     dir(`${HOME}/Pictures`),
-    dir(`${HOME}/Documents/NUSEC`),
+    dir(`${HOME}/Documents/money stuff`),
 
     // A wink for whoever goes spelunking outside the user folder. There is no
     // registry to find; the file admits it rather than letting someone hunt.
@@ -80,7 +80,7 @@ export const workstation: ContentModule = {
     ),
 
     text(
-      `${HOME}/Documents/NUSEC/transition-checklist.txt`,
+      `${HOME}/Documents/money stuff/transition-checklist.txt`,
       [
         "TRANSITION CHECKLIST",
         "",
@@ -97,7 +97,7 @@ export const workstation: ContentModule = {
     ),
 
     sheet(
-      `${HOME}/Documents/NUSEC/budget-2025-2026.xlsx`,
+      `${HOME}/Documents/money stuff/budget-2025-2026.xlsx`,
       ["Line item", "Budgeted", "Spent", "Notes"],
       [
         ["Room bookings", 0, 0, "covered by SAF"],
@@ -113,7 +113,7 @@ export const workstation: ContentModule = {
       { meta: { modifiedAt: ts("2026-05-19T16:45:00") } },
     ),
 
-    mail(`${HOME}/Documents/NUSEC/treasurer-thread.eml`, [
+    mail(`${HOME}/Documents/money stuff/treasurer-thread.eml`, [
       {
         from: "a.uppal@nusec.club",
         to: ["a.tellez@nusec.club"],
@@ -129,7 +129,7 @@ export const workstation: ContentModule = {
         to: ["a.uppal@nusec.club"],
         subject: "RE: vendor invoices for the equipment line",
         at: ts("2026-04-28T23:51:00"),
-        body: "they're in the portal, i'll pull them this weekend",
+        body: "Hey Arjun, they're in the portal, i'll pull them this weekend",
       },
       {
         from: "a.uppal@nusec.club",

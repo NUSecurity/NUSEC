@@ -132,7 +132,7 @@ export const recycleBin: ContentModule = {
         ["Newbury Networks", "Rack + PDU", 505, "no"],
       ],
       "Three quotes per line, as required. The most expensive one won both times.",
-      { meta: deletedFrom(`${HOME}/Documents/NUSEC/equipment-quotes.xlsx`, ts("2026-05-20T22:10:00")) },
+      { meta: deletedFrom(`${HOME}/Documents/money stuff/equipment-quotes.xlsx`, ts("2026-05-20T22:10:00")) },
     ),
 
     text(
@@ -145,7 +145,7 @@ export const recycleBin: ContentModule = {
         "- treasurer said he'd do it",
         "- quorum is 20, we had 34 last time so should be fine",
       ].join("\n"),
-      { meta: deletedFrom(`${HOME}/Documents/NUSEC/elections-2026-notes.txt`, ts("2026-04-19T13:05:00")) },
+      { meta: deletedFrom(`${HOME}/Documents/money stuff/elections-2026-notes.txt`, ts("2026-04-19T13:05:00")) },
     ),
 
     text(
@@ -161,7 +161,7 @@ export const recycleBin: ContentModule = {
         "",
         "total 60, order is for 60, we're good",
       ].join("\n"),
-      { meta: deletedFrom(`${HOME}/Documents/NUSEC/merch-sizes.txt`, ts("2026-03-02T15:20:00")) },
+      { meta: deletedFrom(`${HOME}/Documents/money stuff/merch-sizes.txt`, ts("2026-03-02T15:20:00")) },
     ),
 
     text(

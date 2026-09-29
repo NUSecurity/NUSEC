@@ -345,18 +345,18 @@ passed.
 |---|---|---|
 | What day do you hit legs? | `thursday` (also `thu`, `thur`, `thurs`) | `notes/gym.txt` — `thu  legs` |
 | What is your favorite book? | `the cuckoo's egg` (also `cuckoo's egg`) | `notes/book-recs.txt` — "(reread, still my favorite)" |
-| Who was the treasurer of NUSEC in 2025? | `Arjun Uppal` — **full name only** | Not written down on the machine |
+| Who was the treasurer of NUSEC in 2025? | `Arjun Uppal` — **full name only** | `Documents/money stuff/treasurer-thread.eml` — "Hey Arjun" + `a.uppal@nusec.club` |
 
 Every answer ignores case and surrounding spaces; the book and the treasurer
 also ignore punctuation and inner spacing, so `Cuckoos Egg` and `arjun uppal`
 both work.
 
-**The treasurer question is deliberate OSINT.** Nothing on the machine names
-him. The treasurer email thread in `Documents/NUSEC/` comes from
-`a.uppal@nusec.club`, which gives an initial and a surname and no more, and
-`elections-2026-notes.txt` in the recycle bin mentions that the treasurer
-volunteered as returning officer. The full name comes from the club's own
-history, the same way the lock-screen password comes from Discord.
+**The treasurer's name has to be assembled.** It is never written out whole.
+In the treasurer email thread in `Documents/money stuff/`, Alec's reply opens
+"Hey Arjun," and the treasurer's messages come from `a.uppal@nusec.club`. First
+name from one, surname from the other. A player who only skims the sender
+address gets "A. Uppal" and is told their answers are wrong, because the full
+name is required.
 
 **It re-locks.** Passing the three factors opens Classified for one visit.
 Moving between its own pages (Transfers, Documents, Messages) keeps it open.
@@ -410,8 +410,8 @@ and a failed question attempt records which answers were wrong — visible in th
 event log, never to the player.
 
 **⚠️ Before the event**
-Decide whether the room can reach the treasurer's name. If not, the
-facilitator can read `hints[1]` of `classified-treasurer` aloud.
+If the room is stuck on the treasurer, the facilitator can read `hints[1]` of
+`classified-treasurer` aloud.
 
 ---
 

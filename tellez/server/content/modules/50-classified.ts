@@ -7,9 +7,9 @@
  *
  * The questions reward having *read* the machine rather than having solved it.
  * Two come straight from the notes folder. The third — the 2025 treasurer's
- * full name — is deliberately not written down anywhere on this machine: the
- * treasurer thread gives a surname-shaped address and nothing else, and the
- * rest is the club's own history, like the Discord handle at the lock screen.
+ * full name — is never written out whole: the treasurer thread has his first
+ * name in Alec's reply and his surname in his own address, and the player has
+ * to put the two together.
  *
  * Behind the gate is where the money actually went: A.T. Consulting LLC — the
  * payout ledger's last hop — forwarded every dollar to Jessica James Okafor.
@@ -184,8 +184,8 @@ export const classified: ContentModule = {
       value: "Arjun Uppal",
       normalise: ["trim", "lower", "alnum"],
       hints: [
-        "The treasurer emailed Alec about invoices. Check the address.",
-        "a.uppal@nusec.club — first name and surname, both needed.",
+        "The treasurer emailed Alec about invoices. Read the whole thread.",
+        "Alec calls him Arjun; his address is a.uppal@nusec.club. Both names are needed.",
       ],
     },
   ],
