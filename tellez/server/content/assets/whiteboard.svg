@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 560" width="800" height="560">
+  <rect width="800" height="560" fill="#2a2d33"/>
+  <rect x="28" y="24" width="744" height="470" rx="6" fill="#f4f4f0" stroke="#9aa0a6" stroke-width="6"/>
+  <rect x="28" y="494" width="744" height="18" rx="4" fill="#7d8286"/>
+  <g font-family="'Comic Sans MS','Bradley Hand',cursive" fill="#1f5fa8">
+    <text x="60" y="80" font-size="30">PLANNING — Oct</text>
+    <text x="62" y="130" font-size="22" fill="#c0392b">1. CTF night — web + forensics</text>
+    <text x="62" y="168" font-size="22" fill="#c0392b">2. CPTC signups close FRI</text>
+    <text x="62" y="206" font-size="22" fill="#c0392b">3. sponsor deck — who owns it?</text>
+    <text x="62" y="266" font-size="22">budget: switch + rack quotes</text>
+    <text x="90" y="300" font-size="20" fill="#2d7a3e">campus IT ... 410 / 520</text>
+    <text x="90" y="332" font-size="20" fill="#2d7a3e">newbury ...... 395 / 505</text>
+    <text x="90" y="364" font-size="20" fill="#c0392b">brightline ... 680 / 940  &lt;-- A says use these</text>
+    <text x="62" y="424" font-size="20" fill="#555">(why?)</text>
+    <text x="520" y="424" font-size="18" fill="#777">— priya</text>
+  </g>
+</svg>
