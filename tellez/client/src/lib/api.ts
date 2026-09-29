@@ -1,5 +1,6 @@
 import type {
-  BoardView, DirListing, LoginResult, NodeContent, NodeSummary, SessionView,
+  ApprovalRequest, BoardView, ChallengeAnswer, ChallengeResult, ChallengeView, DirListing,
+  LoginResult, NodeContent, NodeSummary, SessionView,
 } from "#shared/protocol";
 
 /**
@@ -47,12 +48,16 @@ export interface PageResult {
   title: string;
   data: unknown;
   needsAuth: boolean;
+  /** Present while a challenge stands between the session and this route. */
+  challenge?: ChallengeView;
 }
 
 export const api = {
   join: (displayName: string) => post<SessionView>("/api/session", { displayName }),
 
   me: () => request<SessionView>("/api/session"),
+
+  signOut: () => request<{ ok: boolean }>("/api/session", { method: "DELETE" }),
 
   login: (username: string, password: string) =>
     post<LoginResult>("/api/login", { username, password }),
@@ -71,6 +76,11 @@ export const api = {
 
   siteAuth: (host: string, username: string, password: string) =>
     post<{ ok: boolean; message?: string }>("/api/web/auth", { host, username, password }),
+
+  answerChallenge: (answer: ChallengeAnswer) => post<ChallengeResult>("/api/web/challenge", answer),
+
+  approvals: (app: string) =>
+    request<{ requests: ApprovalRequest[] }>(`/api/web/challenge?app=${encodeURIComponent(app)}`),
 
   board: (key: string) => request<BoardView & { storage: string }>(`/api/board?key=${encodeURIComponent(key)}`),
 };

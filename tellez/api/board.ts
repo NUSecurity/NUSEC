@@ -108,6 +108,10 @@ function countersFor(events: StoredEvent[]): Record<string, number> {
       counters.failedPortalLogins = (counters.failedPortalLogins ?? 0) + 1;
     }
 
+    if (event.type === "challenge.step" && event.payload.ok === false) {
+      counters.failedChallengeSteps = (counters.failedChallengeSteps ?? 0) + 1;
+    }
+
     if (event.type === "node.denied") {
       counters.denied = (counters.denied ?? 0) + 1;
     }

@@ -9,7 +9,7 @@ import { useState, type FormEvent } from "react";
  * are the source. Everything behind this screen is refused by the server until
  * it is passed, so this is a gate and not a curtain.
  */
-export function LockScreen({ onUnlocked }: { onUnlocked(): void }) {
+export function LockScreen({ onUnlocked, onSignOut }: { onUnlocked(): void; onSignOut(): void }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -92,6 +92,14 @@ export function LockScreen({ onUnlocked }: { onUnlocked(): void }) {
           Seized 22 Sep 2026. He was not careful about where he talked about
           himself.
         </p>
+
+        <button
+          type="button"
+          onClick={onSignOut}
+          className="mt-3 text-[11px] text-husky-faint underline-offset-2 hover:text-husky-dim hover:underline"
+        >
+          Not you? Start over
+        </button>
       </form>
     </div>
   );

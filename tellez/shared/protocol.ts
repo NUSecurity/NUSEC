@@ -97,6 +97,44 @@ export interface SitePage {
   needsAuth: boolean;
 }
 
+/**
+ * The step a session is on in a site challenge — a multi-step gate in front of
+ * part of a site. Only the *current* step is ever described: the questions of
+ * step three do not reach the browser while the player is still on step one.
+ */
+export interface ChallengeView {
+  id: string;
+  /** 1-based, for "step 2 of 3" in the page itself. */
+  step: number;
+  of: number;
+  kind: "secret" | "approval" | "questions";
+  prompt: string;
+  /** The field label for a `secret` step. */
+  label?: string;
+  /** One label per answer box, for a `questions` step. */
+  questions?: string[];
+  /** Set when the last approval request was declined and the gate started over. */
+  notice?: "denied";
+}
+
+/** An approval waiting in an in-world app, e.g. a push to the Authenticator. */
+export interface ApprovalRequest {
+  challenge: string;
+  host: SiteHost;
+  site: string;
+  request: string;
+  at: number;
+}
+
+export interface ChallengeAnswer {
+  challenge: string;
+  answer?: string;
+  answers?: string[];
+  decision?: "approve" | "deny";
+}
+
+export interface ChallengeResult { ok: boolean; message?: string }
+
 export interface SiteSummary {
   host: SiteHost;
   title: string;
@@ -124,6 +162,8 @@ export type EventType =
   | "secret.submit"
   | "web.visit"
   | "web.auth"
+  | "challenge.step"
+  | "challenge.reset"
   | "objective.reached"
   | "app.action"
   | "search.query";

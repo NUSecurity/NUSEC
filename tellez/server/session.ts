@@ -70,13 +70,19 @@ export function readCookie(header: string | undefined, name = COOKIE_NAME): stri
 }
 
 export function cookieHeader(id: string): string {
-  const flags = [
-    `${COOKIE_NAME}=${encodeCookie(id)}`,
-    "Path=/",
-    "HttpOnly",
-    "SameSite=Lax",
-    `Max-Age=${60 * 60 * 12}`,
-  ];
+  return cookieWith(`${COOKIE_NAME}=${encodeCookie(id)}`, 60 * 60 * 12);
+}
+
+/**
+ * Expires the session cookie. It is HttpOnly, so the browser cannot drop it by
+ * itself — "start over" has to come through the server.
+ */
+export function clearedCookieHeader(): string {
+  return cookieWith(`${COOKIE_NAME}=`, 0);
+}
+
+function cookieWith(pair: string, maxAge: number): string {
+  const flags = [pair, "Path=/", "HttpOnly", "SameSite=Lax", `Max-Age=${maxAge}`];
 
   // `Secure` would make the cookie unusable over plain http on localhost.
   if (process.env.NODE_ENV === "production") flags.push("Secure");

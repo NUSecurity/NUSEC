@@ -25,6 +25,7 @@ other's ideas, or build something unreachable.
 | 3 | [The Encoded Username](#3--the-encoded-username) | `20-recycle-bin.ts` | 2 | *(none — see below)* |
 | 4 | [With The Songs](#4--with-the-songs) | `30-desktop-notes.ts` | 2 | `notes-folder-opened` · `password-note-opened` |
 | 5 | [The Vendor Console](#5--the-vendor-console) | `40-brightline.ts` | 3 + 4 | `portal-visited` · `portal-breached` · `payout-ledger-seen` · `case-assembled` |
+| 6 | [Classified](#6--classified) | `50-classified.ts` | 5 | `classified-password` · `classified-approved` · `classified-unlocked` · `jessica-transfers-seen` · `scheme-documents-read` · `message-log-read` |
 
 **Everything is behind challenge 1.** Until a session has `desktop-unlocked`,
 the server refuses every filesystem and web request — a locked machine serves no
@@ -36,7 +37,7 @@ bytes at all.
   1 Getting In
        │
        └──> 2 Recycle Bin ──┬──> 3 Encoded username ──┐
-                            │                          ├──> 5 Vendor console
+                            │                          ├──> 5 Vendor console ──> 6 Classified
                             └──> 4 Notes folder ───────┘
 ```
 
@@ -63,6 +64,12 @@ unremarkable. Some of it is *nearly* remarkable — the budget reconciles to the
 cent, and the treasurer asks twice about vendor invoices and is fobbed off —
 which rewards a player who reads everything without requiring it of them.
 
+**Where the money came from.** The club's budget notes an anonymous alumni gift
+of $2.5M, received September 2024. That gift is what Alec stole $2.4M of. The
+number is deliberately absurd for a student club, so nobody in the room mistakes
+the story for NUSEC's real finances. Everything else in the budget (snacks,
+room bookings) stays at real club scale, and the contrast is part of the joke.
+
 ---
 
 ## 1 · Getting In
@@ -73,8 +80,9 @@ which rewards a player who reads everything without requiring it of them.
 The credentials for Alec Tellez's workstation.
 
 **Where it is**
-**Not on the machine.** The answers are in Alec's own posts in the *real* NUSEC
-Discord — how he signed off, and the handle he used. This is the one challenge
+The username is Alec's club account name, `atellez`, in the club's
+first-initial-surname style. The password is **not on the machine** — it is the
+handle Alec used in his own posts in the *real* NUSEC Discord. This is the one challenge
 whose source material lives outside the app.
 
 **The process**
@@ -82,36 +90,36 @@ A player lands on a lock screen with the username field empty and no
 instructions beyond "he was not careful about where he talked about himself".
 The intended move is to go and read the club's own history.
 
-Getting in is the opening move, not the challenge, so the lock screen helps:
-a wrong attempt returns a hint for whichever half is wrong.
+The lock screen gives one hint, and only for the password:
 
-- Username wrong → *"An ultimate instrument?"*
-- Username right, password wrong → *"A legendary greeting."*
+- Username wrong → no hint.
+- Username right, password wrong → *"Discord username"*
 
-This makes the login a deliberate username oracle. On a real login that is a
-flaw; here it is the feature, because a room stuck on the front door learns
-nothing.
+The hint appearing at all confirms the username is right, so this is a
+deliberate username oracle. On a real login that is a flaw; here it is the
+feature, because a room stuck on the front door learns nothing.
 
 **What they have to do**
 Type both into the lock screen.
 
 | | |
 |---|---|
-| Username | `ultimateguitar` |
-| Password | `hellohackers` |
+| Username | `atellez` |
+| Password | `ultimateguitar` |
 
-Both are trimmed and case-insensitive, so ` UltimateGuitar ` works.
+Both are trimmed and case-insensitive, so ` ATellez ` works.
 
 **Board markers**
 - `desktop-unlocked` — they are in.
 
 Failed attempts are recorded too, with `userOk` noting whether the username half
-was right. A person with several failures and `userOk: false` has not found the
-Discord posts at all; `userOk: true` means they are one hint from the desktop.
+was right. A person with several failures and `userOk: false` is stuck on the
+username and is getting no hint; `userOk: true` means they have seen the
+Discord hint and are hunting for his handle.
 
 **⚠️ Before the event**
 Confirm those posts are actually findable, and decide the fallback for anyone
-not in the Discord — the facilitator can read `hints[1]` of either secret aloud.
+not in the Discord — the facilitator can give the password out by hand.
 **This challenge does not work if the Discord history does not cooperate.**
 
 ---
@@ -280,17 +288,17 @@ Then open **Payouts**, which shows four payments from the club arriving and the
 same four amounts leaving the same day:
 
 ```
-2024-11-03   NU Cybersecurity Club    $680   →  A.T. Consulting LLC ••••4471
-2025-02-17   NU Cybersecurity Club    $940   →  A.T. Consulting LLC ••••4471
-2025-09-22   NU Cybersecurity Club  $2,600   →  A.T. Consulting LLC ••••4471
-2026-03-11   NU Cybersecurity Club  $4,200   →  A.T. Consulting LLC ••••4471
+2024-11-03   NU Cybersecurity Club    $180,000   →  A.T. Consulting LLC ••••4471
+2025-02-17   NU Cybersecurity Club    $340,000   →  A.T. Consulting LLC ••••4471
+2025-09-22   NU Cybersecurity Club    $780,000   →  A.T. Consulting LLC ••••4471
+2026-03-11   NU Cybersecurity Club  $1,100,000   →  A.T. Consulting LLC ••••4471
 
-Received $8,420    Disbursed $8,420    Retained $0
+Received $2,400,000    Disbursed $2,400,000    Retained $0
 Beneficial owner of A.T. Consulting LLC: A. TELLEZ.
 ```
 
-The $680 and $940 match `equipment-quotes.xlsx` from the recycle bin exactly, so
-a thorough player recognises them.
+The $180,000 and $340,000 match `equipment-quotes.xlsx` from the recycle bin
+exactly, so a thorough player recognises them.
 
 **Board markers**
 - `portal-visited` — they typed the address. Credentials are the next wall.
@@ -303,17 +311,118 @@ a thorough player recognises them.
 
 ---
 
+## 6 · Classified
+
+**Module:** `server/content/modules/50-classified.ts` · **Status:** live
+
+**What they're trying to find**
+Where the money went after Alec's LLC, and who was in it with him.
+
+**Where it is**
+A **Classified** tab in the vendor console's menu bar, next to Payouts, at
+`ledger.brightlinepay.hack/classified`. The route belongs to this module; it is
+added to the portal as a *site challenge*, so it sits behind the portal login
+as well as its own gate.
+
+**The process**
+Three factors, strictly in order. The page only ever shows the current step,
+and nothing about a later step reaches the browser before the earlier one is
+passed.
+
+1. **The password again.** Same as the portal: `dadgad-capo2`.
+2. **An Authenticator push.** The page says a sign-in request was sent to the
+   Authenticator app and waits. **Authenticator** is on the desktop and in the
+   Start menu from the moment the machine unlocks, showing "No pending
+   requests" until now. The request shows up there with **Approve** and
+   **Deny**. Approve moves the page on by itself. Deny sends the whole gate back
+   to step 1 with a "request was denied" notice.
+3. **Three security questions**, all answered at once. A wrong set says only
+   "One or more answers were incorrect" — never which one.
+
+| Question | Answer | Where it is |
+|---|---|---|
+| What day do you hit legs? | `thursday` (also `thu`, `thur`, `thurs`) | `notes/gym.txt` — `thu  legs` |
+| What is your favorite book? | `the cuckoo's egg` (also `cuckoo's egg`) | `notes/book-recs.txt` — "(reread, still my favorite)" |
+| Who was the treasurer of NUSEC in 2025? | `Arjun Uppal` — **full name only** | Not written down on the machine |
+
+Every answer ignores case and surrounding spaces; the book and the treasurer
+also ignore punctuation and inner spacing, so `Cuckoos Egg` and `arjun uppal`
+both work.
+
+**The treasurer question is deliberate OSINT.** Nothing on the machine names
+him. The treasurer email thread in `Documents/NUSEC/` comes from
+`a.uppal@nusec.club`, which gives an initial and a surname and no more, and
+`elections-2026-notes.txt` in the recycle bin mentions that the treasurer
+volunteered as returning officer. The full name comes from the club's own
+history, the same way the lock-screen password comes from Discord.
+
+**It re-locks.** Passing the three factors opens Classified for one visit.
+Moving between its own pages (Transfers, Documents, Messages) keeps it open.
+Loading any other page, or ten minutes without opening a Classified page,
+locks it again, and the next visit costs all three factors. The board markers
+stay lit; only the player's access resets.
+
+**What's behind the gate**
+Three pages, each its own route, so the board can tell them apart:
+
+- **Transfers** (`/classified`) — the next hop after the payout ledger. Two days
+  after each payout, A.T. Consulting LLC ••••4471 forwarded the same amount to
+  **Jessica James Okafor** ••••9920, all $2.4 million of it, under a standing
+  instruction. References match the invoice numbers.
+- **Documents** (`/classified/documents`) — Alec's own paperwork: the standing
+  instruction naming Jessica as beneficiary, a note on how the three-quotes rule
+  was gamed, what each invoice was really for (nothing was ever bought), and
+  his exit checklist.
+- **Messages** (`/classified/messages`) — an exported chat between Alec and
+  Jessica, his accomplice, from opening the Brightline account in October 2024
+  to her leaving in June 2026. It ends:
+
+  > **Jessica:** I'm done here. I'm going to travel for a while. Somewhere
+  > nobody asks about invoices.
+  > **Alec:** where??
+  > **Jessica:** Not over this. It's on my Instagram.
+
+**The next step leaves the machine.** Jessica is fictional, but her Instagram
+account is real and exists for this exercise. Searching her full name,
+Jessica James Okafor, on Instagram finds it. Nothing in the game builds or
+links to it.
+
+The chat is built to agree with what players have already seen. The payout
+dates, the equipment quotes, the treasurer's 2026-04-28 email, the resignation
+draft ("don't mention the vendor"), `things-to-cancel.txt` ("vendor console —
+NOT this one yet") and the notes deleted on 2026-06-02 all line up with it.
+Jessica's last line, "You first", is why the thread still exists.
+
+**Board markers**
+- `classified-password` — past factor one. Watch for people who never open the
+  Authenticator after this.
+- `classified-approved` — past factor two. Now the questions.
+- `classified-unlocked` — all three factors passed.
+- `jessica-transfers-seen` — they have the last hop: the money went to Jessica.
+- `scheme-documents-read` — optional depth.
+- `message-log-read` — they have the pointer to her Instagram. Anyone past this
+  is working off the machine.
+
+Failed attempts at any step count toward `failedChallengeSteps` on the board,
+and a failed question attempt records which answers were wrong — visible in the
+event log, never to the player.
+
+**⚠️ Before the event**
+Decide whether the room can reach the treasurer's name. If not, the
+facilitator can read `hints[1]` of `classified-treasurer` aloud.
+
+---
+
 ## Not yet built
 
-The investigation currently stops at the ledger. Everything below is open, and
-the engine already supports all of it without engine changes.
+The investigation inside the game ends at the message log, which sends players
+to Jessica's real Instagram. Everything below is open, and the engine already
+supports all of it without engine changes.
 
 - **Alec's video.** If he records one, it belongs **late** — it is the strongest
   single asset available and should pay off the investigation, not open it. Use
   a `VideoFile`; the URL is gated rather than the bytes, because video exceeds
   Vercel's 4.5 MB response cap.
-- **Where the money went next.** The ledger names an LLC and a masked account.
-  That is a thread, not an ending.
 - **OSINT.** The browser takes any number of sites. A fake alumni directory,
   a company registry listing A.T. Consulting, a pastebin clone. Mark them
   `discoverable: true` and they become findable.

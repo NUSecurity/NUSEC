@@ -39,6 +39,8 @@ export type ObjectiveTrigger =
   | { on: "secret"; id: SecretId }
   | { on: "appAction"; app: AppId; action: string }
   | { on: "visit"; host: SiteHost; path?: string }
+  /** Fires once `step` steps are passed. Omit `step` for the whole challenge. */
+  | { on: "challenge"; id: string; step?: number }
   | { on: "all"; objectives: ObjectiveId[] };
 
 /* --------------------------------------------------------------- secrets */
@@ -55,6 +57,12 @@ export type ObjectiveTrigger =
 export interface Secret {
   id: SecretId;
   value: string;
+  /**
+   * Other answers that also count — "thu" for "thursday". Only for free-text
+   * answers where a person could reasonably phrase the same fact two ways; a
+   * password has exactly one spelling.
+   */
+  accepts?: string[];
   env?: string;
   /** Applied to both sides before comparison. Defaults to trim + lowercase. */
   normalise?: ("trim" | "lower" | "alnum")[];
@@ -95,6 +103,42 @@ export interface SimSite {
   routes: SimRoute[];
 }
 
+/**
+ * A multi-step gate in front of part of a site, declared by any module.
+ *
+ * The challenge brings its own routes and the world adds them to `host`, so a
+ * module can put a locked section on somebody else's site without editing
+ * their file. Its routes sit behind that site's login wall too, if it has one.
+ *
+ * Steps are passed strictly in order, and until the last is passed the routes
+ * serve the current step instead of their `data` — which is never serialised
+ * to a session that has not finished.
+ */
+export interface SiteChallenge {
+  id: string;
+  host: SiteHost;
+  /** The first route is the one players land on. */
+  routes: SimRoute[];
+  steps: ChallengeStep[];
+  /**
+   * Open for one visit only. Loading any page outside this challenge's routes,
+   * or ten minutes without loading one of them, closes it again and the next
+   * visit starts from step one. Omit it and a passed challenge stays passed.
+   */
+  relock?: boolean;
+}
+
+export type ChallengeStep =
+  /** Type one credential. */
+  | { kind: "secret"; prompt: string; label: string; secret: SecretId }
+  /**
+   * Approve a push in an in-world app. Declining it sends the whole challenge
+   * back to its first step, the way a denied sign-in makes you start again.
+   */
+  | { kind: "approval"; prompt: string; app: AppId; request: string }
+  /** Answer every question at once. A wrong answer never says which one. */
+  | { kind: "questions"; prompt: string; questions: { label: string; secret: SecretId }[] };
+
 /* ------------------------------------------------------------ desktop UI */
 
 export interface DesktopItem {
@@ -125,6 +169,7 @@ export interface ContentModule {
   objectives?: Objective[];
   secrets?: Secret[];
   sites?: SimSite[];
+  challenges?: SiteChallenge[];
   desktopItems?: DesktopItem[];
   startMenuItems?: StartMenuItem[];
   /** Preflight fails if any of these is not registered on the client. */

@@ -10,7 +10,7 @@
  */
 
 import type { ObjectiveId, SecretId, SiteHost, StoredEvent } from "../shared/protocol.js";
-import type { Progress } from "./locks.js";
+import { NOT_STARTED, type ChallengeState, type Progress } from "./locks.js";
 import { pathKey } from "./vfs.js";
 import type { World } from "./world.js";
 
@@ -74,6 +74,16 @@ export function objectivesForAction(
     .map((o) => o.id);
 }
 
+/** Objectives a challenge fires once `done` of its steps are passed. */
+export function objectivesForChallenge(world: World, id: string, done: number): ObjectiveId[] {
+  const total = world.challenge(id)?.steps.length ?? 0;
+
+  return world
+    .allObjectives()
+    .filter((o) => o.trigger.on === "challenge" && o.trigger.id === id && (o.trigger.step ?? total) <= done)
+    .map((o) => o.id);
+}
+
 /**
  * Adds every composite objective whose dependencies are now satisfied, and
  * keeps going until nothing new appears — a composite may depend on another
@@ -106,8 +116,39 @@ export function cascade(world: World, reached: Set<ObjectiveId>): Set<ObjectiveI
 export function deriveProgress(world: World, events: StoredEvent[]): Progress {
   const objectives = new Set<ObjectiveId>();
   const secrets = new Set<SecretId>();
+  const challenges = new Map<string, ChallengeState>();
 
   for (const event of events) {
+    if (event.type === "challenge.step" || event.type === "challenge.reset" || event.type === "web.visit") {
+      const id = String(event.payload.challenge ?? "");
+      const total = world.challenge(id)?.steps.length;
+      if (total === undefined) continue;
+
+      const state = challenges.get(id) ?? NOT_STARTED;
+
+      // Loading one of an open challenge's pages keeps it open a while longer.
+      if (event.type === "web.visit") {
+        if (state.done >= total) challenges.set(id, { ...state, seen: event.at });
+        continue;
+      }
+
+      // Only the step the session is actually on can be passed. Replaying the
+      // log therefore cannot skip ahead even if an event arrives out of turn.
+      if (
+        event.type === "challenge.step" && event.payload.ok === true &&
+        event.payload.step === state.done && state.done < total
+      ) {
+        challenges.set(id, { done: state.done + 1, denied: false, at: event.at, seen: event.at });
+      }
+
+      // A reset closes the gate whatever state it was in: a denied approval
+      // part-way through, or a relocking challenge the player walked away from.
+      if (event.type === "challenge.reset") {
+        challenges.set(id, { ...NOT_STARTED, denied: event.payload.reason === "denied", at: event.at });
+      }
+      continue;
+    }
+
     if (event.type === "objective.reached") {
       const id = event.payload.id;
       if (typeof id === "string") objectives.add(id);
@@ -120,7 +161,7 @@ export function deriveProgress(world: World, events: StoredEvent[]): Progress {
     }
   }
 
-  return { objectives: cascade(world, objectives), secrets };
+  return { objectives: cascade(world, objectives), secrets, challenges };
 }
 
 function samePath(a: string, b: string): boolean {

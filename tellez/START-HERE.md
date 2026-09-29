@@ -49,7 +49,7 @@ in either order. Yours doesn't have to slot into a line — it has to be
 
 ## What already exists
 
-Five discoveries, described fully in **[CHALLENGES.md](CHALLENGES.md)** with
+Six discoveries, described fully in **[CHALLENGES.md](CHALLENGES.md)** with
 every answer. In one line each:
 
 | # | Challenge | The gist |
@@ -60,9 +60,10 @@ every answer. In one line each:
 | 3 | The Encoded Username | A base64 string in that note |
 | 4 | With The Songs | The password, buried in fourteen personal notes |
 | 5 | The Vendor Console | Log into the portal, read the payout ledger |
+| 6 | Classified | Past a three-factor gate: the money goes to Jessica James Okafor, and her chat with Alec |
 
-The story currently stops at the ledger. It names an LLC and a masked bank
-account, and nobody has followed either.
+The story inside the game ends at that chat, which sends players to Jessica's
+real Instagram account.
 
 ## What you can build
 

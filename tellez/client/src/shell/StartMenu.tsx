@@ -2,12 +2,14 @@ import { Icon } from "@/lib/icon";
 import type { MachineInfo, StartMenuItem } from "./types";
 
 export function StartMenu({
-  items, machine, onLaunch, onClose,
+  items, machine, onLaunch, onClose, onSignOut,
 }: {
   items: StartMenuItem[];
   machine: MachineInfo;
   onLaunch(appId: string): void;
   onClose(): void;
+  /** Drops this player's session and returns them to the join screen. */
+  onSignOut(): void;
 }) {
   return (
     <>
@@ -47,6 +49,14 @@ export function StartMenu({
           <span className="font-mono text-[10px] text-husky-faint">
             {machine.osName} {machine.osVersion}
           </span>
+          <button
+            onClick={onSignOut}
+            title="Sign out and start over"
+            aria-label="Sign out and start over"
+            className="rounded-md p-1.5 text-husky-faint transition-colors hover:bg-white/10 hover:text-husky-ink"
+          >
+            <Icon name="Power" size={15} />
+          </button>
         </div>
       </div>
     </>

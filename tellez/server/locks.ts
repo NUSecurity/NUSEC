@@ -9,16 +9,32 @@
 
 import type { ObjectiveId, SecretId } from "../shared/protocol.js";
 
+/** Where a session is in one site challenge. */
+export interface ChallengeState {
+  /** Steps passed, in order. Equal to the step count once it is open. */
+  done: number;
+  /** The last approval was declined, and nothing has been passed since. */
+  denied: boolean;
+  /** When `done` last changed — the time an approval request was sent. */
+  at: number;
+  /** When one of its pages was last loaded while open. Drives the idle relock. */
+  seen: number;
+}
+
 /** Everything a session has earned. Derived from the event log, never stored. */
 export interface Progress {
   objectives: ReadonlySet<ObjectiveId>;
   secrets: ReadonlySet<SecretId>;
+  challenges: ReadonlyMap<string, ChallengeState>;
 }
 
 export const EMPTY_PROGRESS: Progress = {
   objectives: new Set(),
   secrets: new Set(),
+  challenges: new Map(),
 };
+
+export const NOT_STARTED: ChallengeState = { done: 0, denied: false, at: 0, seen: 0 };
 
 /** What a rule points at, so preflight can prove the target exists. */
 export interface LockRefs {

@@ -1,3 +1,4 @@
+import type { ChallengeAnswer, ChallengeView } from "#shared/protocol";
 import type { ReactNode } from "react";
 
 /** What a site renderer is handed. */
@@ -10,6 +11,15 @@ export interface SiteContext {
   navigate(path: string): void;
   /** Submits the host's auth wall. Checked on the server. */
   signIn(username: string, password: string): Promise<{ ok: boolean; message?: string }>;
+  /**
+   * Set instead of `data` while a challenge guards this route. Render
+   * `<ChallengeGate>` for it; the route's data arrives once every step is passed.
+   */
+  challenge?: ChallengeView;
+  /** Answers the current challenge step, then reloads the page on success. */
+  answerChallenge(answer: Omit<ChallengeAnswer, "challenge">): Promise<{ ok: boolean; message?: string }>;
+  /** Re-fetches this page in place, e.g. while waiting on an approval elsewhere. */
+  refresh(): Promise<void>;
 }
 
 /**

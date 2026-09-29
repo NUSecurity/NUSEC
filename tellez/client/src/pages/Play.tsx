@@ -60,6 +60,14 @@ export function Play() {
 
   /* --------------------------------------------------------- bootstrap */
 
+  // A refresh deliberately keeps progress — a crashed tab mid-meeting must not
+  // cost anyone their place — so starting over is its own action, and it asks.
+  const signOut = useCallback(async () => {
+    if (!window.confirm("Sign out and start over? Everything you have found on this machine will be lost.")) return;
+    await api.signOut().catch(() => undefined);
+    navigate("/join", { replace: true });
+  }, [navigate]);
+
   const loadDesktop = useCallback(async () => {
     try {
       setDesktop(await api.me().then(() => fetchDesktop()));
@@ -160,7 +168,7 @@ export function Play() {
     return <div className="wallpaper flex h-full items-center justify-center text-husky-faint">Loading…</div>;
   }
 
-  if (locked) return <LockScreen onUnlocked={() => void loadDesktop()} />;
+  if (locked) return <LockScreen onUnlocked={() => void loadDesktop()} onSignOut={() => void signOut()} />;
   if (!desktop) return null;
 
   const explorerApp = explorerSlot ? appById(explorerSlot.appId) : undefined;
@@ -254,6 +262,10 @@ export function Play() {
             machine={desktop.machine}
             onLaunch={(appId) => shell.openApp(appId)}
             onClose={() => setStartOpen(false)}
+            onSignOut={() => {
+              setStartOpen(false);
+              void signOut();
+            }}
           />
         )}
       </div>

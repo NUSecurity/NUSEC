@@ -7,19 +7,20 @@
  */
 
 import type {
-  ClientEvent, DirListing, NodeContent, ObjectiveId, SecretId, SiteHost, StoredEvent,
+  ApprovalRequest, ChallengeAnswer, ChallengeView, ClientEvent, DirListing, NodeContent,
+  ObjectiveId, SecretId, SiteHost, StoredEvent,
 } from "../shared/protocol.js";
 import { randomUUID } from "node:crypto";
 import { MACHINE } from "./content/machine.js";
 import { modules } from "./content/modules/index.js";
 import { store, type SessionRow } from "./db.js";
-import { type Progress } from "./locks.js";
+import { NOT_STARTED, type ChallengeState, type Progress } from "./locks.js";
 import {
-  cascade, deriveProgress, objectivesForAction, objectivesForOpen,
+  cascade, deriveProgress, objectivesForAction, objectivesForChallenge, objectivesForOpen,
   objectivesForSecret, objectivesForVisit,
 } from "./objectives.js";
 import { decodeCookie, readCookie } from "./session.js";
-import type { Secret } from "./types.js";
+import type { Secret, SiteChallenge } from "./types.js";
 import { Directory, FileNode, type ContentContext } from "./vfs.js";
 import { World } from "./world.js";
 
@@ -95,7 +96,7 @@ export async function reach(
     })),
   );
 
-  ctx.progress = { objectives: after, secrets: ctx.progress.secrets };
+  ctx.progress = { ...ctx.progress, objectives: after };
   return fresh;
 }
 
@@ -121,7 +122,8 @@ function expected(secret: Secret): string {
 }
 
 export function secretMatches(secret: Secret, input: string): boolean {
-  return normalise(secret, input) === normalise(secret, expected(secret));
+  const given = normalise(secret, input);
+  return [expected(secret), ...(secret.accepts ?? [])].some((answer) => given === normalise(secret, answer));
 }
 
 /**
@@ -143,7 +145,7 @@ async function creditSecrets(ctx: Ctx, ids: SecretId[]): Promise<void> {
   );
 
   ctx.progress = {
-    objectives: ctx.progress.objectives,
+    ...ctx.progress,
     secrets: new Set([...ctx.progress.secrets, ...fresh]),
   };
 }
@@ -321,7 +323,10 @@ function contentContext(ctx: Ctx, nodePath: string): ContentContext {
 /* ------------------------------------------------------- simulated web */
 
 export type VisitOutcome =
-  | { status: "ok"; route: string; title: string; data: unknown; needsAuth: boolean; revealed: ObjectiveId[] }
+  | {
+      status: "ok"; route: string; title: string; data: unknown; needsAuth: boolean;
+      challenge?: ChallengeView; revealed: ObjectiveId[];
+    }
   | { status: "missing" }
   | { status: "denied" };
 
@@ -331,17 +336,55 @@ export async function visit(ctx: Ctx, host: SiteHost, path: string): Promise<Vis
 
   const { site, route } = match;
 
+  await relockChallenges(ctx, { host: site.host, path: route.path });
+
   if (route.lock && !route.lock.isOpen(ctx.progress)) return { status: "denied" };
 
   // The auth wall. Protected routes are never rendered — and more to the point
   // their data is never serialised — until the session has passed the wall.
-  const walled = site.auth?.protects.some((p) => samePath(p, route.path)) ?? false;
+  // A challenge's routes are always behind the wall of the site they sit on.
+  const challenge = world().challengeFor(site.host, route.path);
+  const walled =
+    (site.auth?.protects.some((p) => samePath(p, route.path)) ?? false) ||
+    (challenge !== undefined && site.auth !== undefined);
   if (walled && !hasPassedAuth(ctx, site.auth!.passwordSecret)) {
     return { status: "denied" };
   }
 
+  // An unfinished challenge serves its current step in place of the route. The
+  // route's own objectives do not fire: the player has not seen it yet.
+  if (challenge) {
+    const state = challengeState(ctx, challenge.id);
+
+    if (state.done < challenge.steps.length) {
+      await record(ctx.session.id, [
+        {
+          type: "web.visit",
+          at: Date.now(),
+          payload: { host: site.host, path: route.path, challenge: challenge.id, step: state.done },
+        },
+      ]);
+
+      return {
+        status: "ok",
+        route: route.path,
+        title: route.title ?? site.title,
+        data: null,
+        needsAuth: walled,
+        challenge: challengeView(challenge, state),
+        revealed: [],
+      };
+    }
+  }
+
+  // Tagged with the challenge, if any, because an open relocking challenge
+  // stays open only while its pages keep being loaded.
   await record(ctx.session.id, [
-    { type: "web.visit", at: Date.now(), payload: { host: site.host, path: route.path } },
+    {
+      type: "web.visit",
+      at: Date.now(),
+      payload: { host: site.host, path: route.path, ...(challenge ? { challenge: challenge.id } : {}) },
+    },
   ]);
 
   const revealed = await reach(ctx, objectivesForVisit(world(), site.host, route.path));
@@ -393,6 +436,177 @@ export async function authenticate(
   ]);
 
   return { ok: true, revealed };
+}
+
+/* ------------------------------------------------------ site challenges */
+
+function challengeState(ctx: Ctx, id: string): ChallengeState {
+  return ctx.progress.challenges.get(id) ?? NOT_STARTED;
+}
+
+/** How long an open relocking challenge survives without one of its pages loading. */
+const RELOCK_IDLE_MS = 10 * 60 * 1000;
+
+/**
+ * Closes every `relock` challenge the session has walked away from: any page
+ * outside its routes when `visiting` is given, or too long since it was last
+ * looked at. Recorded as a reset, so the next attempt starts cleanly at step
+ * one both here and when the log is replayed.
+ */
+async function relockChallenges(ctx: Ctx, visiting?: { host: SiteHost; path: string }): Promise<void> {
+  const resets: ClientEvent[] = [];
+  const next = new Map(ctx.progress.challenges);
+
+  for (const challenge of world().allChallenges()) {
+    if (!challenge.relock) continue;
+
+    const state = challengeState(ctx, challenge.id);
+    if (state.done === 0) continue;
+
+    const left = visiting !== undefined &&
+      world().challengeFor(visiting.host, visiting.path)?.id !== challenge.id;
+    const idle = state.done >= challenge.steps.length && Date.now() - state.seen > RELOCK_IDLE_MS;
+    if (!left && !idle) continue;
+
+    resets.push({
+      type: "challenge.reset",
+      at: Date.now(),
+      payload: { challenge: challenge.id, reason: left ? "left" : "idle" },
+    });
+    next.set(challenge.id, NOT_STARTED);
+  }
+
+  if (resets.length === 0) return;
+  await record(ctx.session.id, resets);
+  ctx.progress = { ...ctx.progress, challenges: next };
+}
+
+function challengeView(challenge: SiteChallenge, state: ChallengeState): ChallengeView {
+  const step = challenge.steps[state.done];
+
+  return {
+    id: challenge.id,
+    step: state.done + 1,
+    of: challenge.steps.length,
+    kind: step.kind,
+    prompt: step.prompt,
+    label: step.kind === "secret" ? step.label : undefined,
+    questions: step.kind === "questions" ? step.questions.map((q) => q.label) : undefined,
+    notice: state.denied ? "denied" : undefined,
+  };
+}
+
+/**
+ * Whether the session may work on a challenge at all: the same test as
+ * visiting its first route. Without this, the step endpoint would be a way
+ * round the site's own login wall.
+ */
+function mayAttempt(ctx: Ctx, challenge: SiteChallenge): boolean {
+  const site = world().site(challenge.host);
+  const entry = challenge.routes[0];
+  if (!site || !entry) return false;
+  if (entry.lock && !entry.lock.isOpen(ctx.progress)) return false;
+  return !site.auth || hasPassedAuth(ctx, site.auth.passwordSecret);
+}
+
+export type ChallengeOutcome =
+  | { status: "ok" }
+  | { status: "wrong"; message: string }
+  | { status: "missing" };
+
+/**
+ * One step of a site challenge. Every attempt is recorded, and a failed one
+ * records which answers were wrong — for the board, never for the player.
+ */
+export async function answerChallenge(ctx: Ctx, input: Partial<ChallengeAnswer>): Promise<ChallengeOutcome> {
+  const challenge = world().challenge(String(input.challenge ?? ""));
+  if (!challenge || !mayAttempt(ctx, challenge)) return { status: "missing" };
+
+  await relockChallenges(ctx);
+
+  const state = challengeState(ctx, challenge.id);
+  const step = challenge.steps[state.done];
+  if (!step) return { status: "ok" };
+
+  const fail = async (message: string, payload: Record<string, unknown> = {}) => {
+    await record(ctx.session.id, [
+      {
+        type: "challenge.step",
+        at: Date.now(),
+        payload: { challenge: challenge.id, step: state.done, kind: step.kind, ok: false, ...payload },
+      },
+    ]);
+    return { status: "wrong" as const, message };
+  };
+
+  if (step.kind === "secret") {
+    const secret = world().secret(step.secret);
+    if (typeof input.answer !== "string") return fail("Enter your password to continue.");
+    if (!secret || !secretMatches(secret, input.answer)) return fail("That password was not accepted.");
+  }
+
+  if (step.kind === "questions") {
+    const answers = Array.isArray(input.answers) ? input.answers : [];
+    const wrong = step.questions
+      .map((question, index) => {
+        const secret = world().secret(question.secret);
+        const answer = answers[index];
+        return secret && typeof answer === "string" && secretMatches(secret, answer) ? -1 : index;
+      })
+      .filter((index) => index >= 0);
+
+    if (wrong.length > 0) return fail("One or more answers were incorrect.", { wrong });
+  }
+
+  if (step.kind === "approval") {
+    if (input.decision === "deny") {
+      await record(ctx.session.id, [
+        { type: "challenge.reset", at: Date.now(), payload: { challenge: challenge.id, reason: "denied" } },
+      ]);
+      return { status: "ok" };
+    }
+    // The page asking again is not an approval; only the app can give one.
+    if (input.decision !== "approve") return { status: "wrong", message: "Waiting for approval." };
+  }
+
+  await record(ctx.session.id, [
+    {
+      type: "challenge.step",
+      at: Date.now(),
+      payload: { challenge: challenge.id, step: state.done, kind: step.kind, ok: true },
+    },
+  ]);
+
+  const done = state.done + 1;
+  ctx.progress = {
+    ...ctx.progress,
+    challenges: new Map([
+      ...ctx.progress.challenges,
+      [challenge.id, { done, denied: false, at: Date.now(), seen: Date.now() }],
+    ]),
+  };
+
+  await reach(ctx, objectivesForChallenge(world(), challenge.id, done));
+  return { status: "ok" };
+}
+
+/** Approvals waiting in one app, e.g. the pushes the Authenticator should show. */
+export function pendingApprovals(ctx: Ctx, app: string): ApprovalRequest[] {
+  return world()
+    .allChallenges()
+    .flatMap((challenge) => {
+      const state = challengeState(ctx, challenge.id);
+      const step = challenge.steps[state.done];
+      if (step?.kind !== "approval" || step.app !== app || !mayAttempt(ctx, challenge)) return [];
+
+      return [{
+        challenge: challenge.id,
+        host: challenge.host,
+        site: world().site(challenge.host)?.title ?? challenge.host,
+        request: step.request,
+        at: state.at,
+      }];
+    });
 }
 
 /* ------------------------------------------------------------ app action */

@@ -3,6 +3,7 @@ import type { NodeKind } from "#shared/protocol";
 import type { DesktopApp } from "./types";
 
 import { archive } from "./ArchiveViewer";
+import { authenticator } from "./Authenticator";
 import { browser } from "./Browser";
 import { cipherBench } from "./CipherBench";
 import { explorer } from "./FileExplorer";
@@ -28,6 +29,7 @@ const registry: Record<KnownAppId, DesktopApp> = {
   media, archive, shortcut, hex, browser,
   "recycle-bin": recycleBin,
   "cipher-bench": cipherBench,
+  authenticator,
 };
 
 export const appById = (id: string): DesktopApp | undefined =>

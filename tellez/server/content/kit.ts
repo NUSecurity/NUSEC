@@ -25,7 +25,7 @@ export {
 
 export type {
   ContentModule, DesktopItem, Objective, ObjectiveTrigger, Secret,
-  SimRoute, SimSite, SiteAuth, StartMenuItem,
+  SimRoute, SimSite, SiteAuth, SiteChallenge, ChallengeStep, StartMenuItem,
 } from "../types.js";
 
 export type {

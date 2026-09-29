@@ -32,9 +32,9 @@ export function Join() {
         <h1 className="mt-1 text-[22px] font-semibold tracking-tight">The Tellez Incident</h1>
 
         <p className="mt-4 text-[13px] leading-relaxed text-husky-dim">
-          Eight thousand four hundred and twenty dollars left the club's accounts
-          over two years. This is the laptop of the person who signed every one
-          of those payments off.
+          Two point four million dollars left the club's accounts over two
+          years. This is the laptop of the person who signed every one of those
+          payments off.
         </p>
         <p className="mt-2.5 text-[13px] leading-relaxed text-husky-dim">
           It is locked. Work out how to get in, then find out where the money

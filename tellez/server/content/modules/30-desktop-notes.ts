@@ -112,7 +112,7 @@ export const desktopNotes: ContentModule = {
         "",
         "- the one priya wouldn't stop talking about",
         "- sandworm",
-        "- the cuckoo's egg (reread)",
+        "- the cuckoo's egg (reread, still my favorite)",
         "- something not about computers, please",
       ].join("\n"),
       { meta: { modifiedAt: ts("2026-01-19T22:05:00") } },
@@ -171,15 +171,16 @@ export const desktopNotes: ContentModule = {
     ),
 
     text(
-      `${NOTES}/travel.txt`,
+      `${NOTES}/speaker-event.txt`,
       [
-        "regionals",
+        "speaker event",
         "",
-        "leave 6am friday, four in the car",
-        "hotel is booked under the club card",
+        "room is booked, doors at 6",
+        "pizza for 40, jordan is picking it up",
+        "guest wifi - ask IT the week before",
         "receipts: keep ALL of them this time",
       ].join("\n"),
-      { meta: { modifiedAt: ts("2026-02-06T19:00:00") } },
+      { meta: { modifiedAt: ts("2026-03-28T19:00:00") } },
     ),
 
     text(

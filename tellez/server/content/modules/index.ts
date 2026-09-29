@@ -13,6 +13,7 @@ import { login } from "./10-login.js";
 import { recycleBin } from "./20-recycle-bin.js";
 import { desktopNotes } from "./30-desktop-notes.js";
 import { brightline } from "./40-brightline.js";
+import { classified } from "./50-classified.js";
 
 export const modules: ContentModule[] = [
   workstation,
@@ -20,4 +21,5 @@ export const modules: ContentModule[] = [
   recycleBin,
   desktopNotes,
   brightline,
+  classified,
 ];

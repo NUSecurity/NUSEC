@@ -1,20 +1,31 @@
 /**
  * Join, or resume.
  *
- * POST with a display name to start; GET to read the current session back.
- * Progress rides on the cookie, so closing the tab and reopening it resumes
- * exactly where the player was.
+ * POST with a display name to start; GET to read the current session back;
+ * DELETE to start over. Progress rides on the cookie, so closing the tab and
+ * reopening it resumes exactly where the player was — which is why starting
+ * over has to be a deliberate act rather than a refresh.
+ *
+ * DELETE only forgets the cookie. The old session and its events stay in the
+ * store, so the facilitator board keeps the row of anyone who restarted.
  */
 
 import type { SessionView } from "../shared/protocol.js";
 import { store } from "../server/db.js";
 import { loadCtx, record } from "../server/engine.js";
 import { bodyOf, fail, type ApiRequest, type ApiResponse } from "../server/http.js";
-import { cookieHeader, newSessionId } from "../server/session.js";
+import { clearedCookieHeader, cookieHeader, newSessionId } from "../server/session.js";
 
 export default async function handler(req: ApiRequest, res: ApiResponse) {
-  if ((req.method ?? "GET").toUpperCase() === "GET") return current(req, res);
-  if ((req.method ?? "GET").toUpperCase() !== "POST") {
+  const method = (req.method ?? "GET").toUpperCase();
+  if (method === "GET") return current(req, res);
+
+  if (method === "DELETE") {
+    res.setHeader("Set-Cookie", clearedCookieHeader());
+    return res.status(200).json({ ok: true });
+  }
+
+  if (method !== "POST") {
     return fail(res, 405, "method_not_allowed");
   }
 

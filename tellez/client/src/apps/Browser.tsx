@@ -54,6 +54,16 @@ function BrowserView({ arg }: AppProps) {
     if (arg) void go(arg);
   }, [arg, go]);
 
+  // Quiet: no spinner and no address rewrite, because it runs on a timer while
+  // a page waits on something happening in another app.
+  const refresh = useCallback(async (host: string, path: string) => {
+    try {
+      setPage(await api.page(host, path));
+    } catch {
+      // The next tick will try again; a flicker to an error page helps nobody.
+    }
+  }, []);
+
   function submit(event: FormEvent) {
     event.preventDefault();
     void go(address);
@@ -116,6 +126,14 @@ function BrowserView({ arg }: AppProps) {
                   if (result.ok) await go(page.host + "/dashboard");
                   return result;
                 }}
+                challenge={page.challenge}
+                answerChallenge={async (answer) => {
+                  if (!page.challenge) return { ok: false };
+                  const result = await api.answerChallenge({ ...answer, challenge: page.challenge.id });
+                  if (result.ok) await refresh(page.host, page.path);
+                  return result;
+                }}
+                refresh={() => refresh(page.host, page.path)}
               />
             ) : (
               <pre className="p-4 font-mono text-[11.5px] text-husky-dim">

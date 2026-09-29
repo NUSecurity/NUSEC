@@ -129,6 +129,18 @@ export function preflight(world: World, checkAssets = true): PreflightResult {
       }
     }
 
+    if (trigger.on === "challenge") {
+      const challenge = world.challenge(trigger.id);
+      if (!challenge) {
+        problems.push(`${where} triggers on challenge "${trigger.id}", which no module declares`);
+      } else if (trigger.step !== undefined && (trigger.step < 1 || trigger.step > challenge.steps.length)) {
+        problems.push(
+          `${where} triggers on step ${trigger.step} of challenge "${trigger.id}", ` +
+            `which has ${challenge.steps.length} step(s)`,
+        );
+      }
+    }
+
     if (trigger.on === "all") {
       for (const dep of trigger.objectives) {
         if (!objectiveIds.has(dep)) {
@@ -174,6 +186,31 @@ export function preflight(world: World, checkAssets = true): PreflightResult {
       // A locked route with an unsatisfiable lock is content nobody will see.
       if (route.lock && route.lock.refs().objectives.some((id) => !objectiveIds.has(id))) {
         problems.push(`${where} route "${route.path}" is locked behind an objective no module declares`);
+      }
+    }
+  }
+
+  /* -------------------------------------------------------- challenges */
+
+  for (const challenge of world.allChallenges()) {
+    const where = `${challenge.moduleId}: challenge "${challenge.id}"`;
+
+    if (challenge.routes.length === 0) problems.push(`${where} has no routes — there is nothing to open`);
+    if (challenge.steps.length === 0) problems.push(`${where} has no steps — it guards nothing`);
+
+    for (const step of challenge.steps) {
+      const secrets =
+        step.kind === "secret" ? [step.secret]
+        : step.kind === "questions" ? step.questions.map((q) => q.secret)
+        : [];
+
+      for (const id of secrets) {
+        if (!secretIds.has(id)) problems.push(`${where} asks for secret "${id}", which no module declares`);
+      }
+
+      // An approval nobody can see is a gate nobody can pass.
+      if (step.kind === "approval" && !isKnownApp(step.app)) {
+        problems.push(`${where} sends its approval to "${step.app}", which is not in shared/apps.ts`);
       }
     }
   }
@@ -232,6 +269,7 @@ function reachableObjectives(world: World): Set<string> {
     if (trigger.on === "secret" && world.secret(trigger.id)) reachable.add(objective.id);
     if (trigger.on === "appAction") reachable.add(objective.id);
     if (trigger.on === "visit" && world.site(trigger.host)) reachable.add(objective.id);
+    if (trigger.on === "challenge" && world.challenge(trigger.id)) reachable.add(objective.id);
   }
 
   for (const node of world.allNodes()) {

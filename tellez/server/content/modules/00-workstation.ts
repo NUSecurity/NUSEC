@@ -85,36 +85,36 @@ export const workstation: ContentModule = {
         ["Room bookings", 0, 0, "covered by SAF"],
         ["CTF infrastructure", 1200, 1187.4, "cloud credits"],
         ["Snacks / meetings", 900, 874.12, ""],
-        ["Competition travel", 4200, 4200, "CPTC + regionals"],
-        ["Merch", 1500, 1499.99, "hoodies"],
+        ["Merch", 1100000, 1100000, "hoodies (60)"],
         ["Speaker honoraria", 800, 800, ""],
-        ["Equipment", 2600, 2600, "see vendor invoices"],
+        ["Equipment", 780000, 780000, "see vendor invoices"],
         ["Misc / contingency", 500, 496.3, ""],
       ],
-      "Signed off 2026-05-19. Everything reconciles to the cent, which is itself a little unusual.",
+      "Signed off 2026-05-19. Includes the anonymous alumni gift ($2.5M, received Sept 2024). " +
+        "Everything reconciles to the cent, which is itself a little unusual.",
       { meta: { modifiedAt: ts("2026-05-19T16:45:00") } },
     ),
 
     mail(`${HOME}/Documents/NUSEC/treasurer-thread.eml`, [
       {
-        from: "treasurer@nusec.club",
+        from: "a.uppal@nusec.club",
         to: ["a.tellez@nusec.club"],
         subject: "vendor invoices for the equipment line",
         at: ts("2026-04-28T14:22:00"),
         body:
-          "Hey — for the audit I need the actual invoices behind the $2,600\n" +
+          "Hey — for the audit I need the actual invoices behind the $780,000\n" +
           "equipment line, not just the total. Can you forward whatever the\n" +
           "vendor sent?",
       },
       {
         from: "a.tellez@nusec.club",
-        to: ["treasurer@nusec.club"],
+        to: ["a.uppal@nusec.club"],
         subject: "RE: vendor invoices for the equipment line",
         at: ts("2026-04-28T23:51:00"),
         body: "they're in the portal, i'll pull them this weekend",
       },
       {
-        from: "treasurer@nusec.club",
+        from: "a.uppal@nusec.club",
         to: ["a.tellez@nusec.club"],
         subject: "RE: RE: vendor invoices for the equipment line",
         at: ts("2026-05-12T09:08:00"),

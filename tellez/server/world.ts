@@ -12,7 +12,7 @@ import type {
   DirListing, ModuleId, ObjectiveId, SecretId, SiteHost,
 } from "../shared/protocol.js";
 import type { Progress } from "./locks.js";
-import type { ContentModule, Objective, Secret, SimRoute, SimSite } from "./types.js";
+import type { ContentModule, Objective, Secret, SimRoute, SimSite, SiteChallenge } from "./types.js";
 import { Directory, pathKey, VfsNode } from "./vfs.js";
 
 /** A registered item, tagged with the module that contributed it. */
@@ -33,6 +33,8 @@ export class World {
   private readonly objectivesById = new Map<ObjectiveId, Owned<Objective>>();
   private readonly secretsById = new Map<SecretId, Owned<Secret>>();
   private readonly sitesByHost = new Map<SiteHost, Owned<SimSite>>();
+  private readonly challengesById = new Map<string, Owned<SiteChallenge>>();
+  private readonly challengesByRoute = new Map<string, Owned<SiteChallenge>>();
 
   constructor(modules: ContentModule[]) {
     this.modules = modules;
@@ -42,6 +44,12 @@ export class World {
       for (const objective of module.objectives ?? []) this.addObjective(module, objective);
       for (const secret of module.secrets ?? []) this.addSecret(module, secret);
       for (const site of module.sites ?? []) this.addSite(module, site);
+    }
+
+    // A second pass, because a challenge may sit on a site that a later module
+    // declares. Module order must stay irrelevant.
+    for (const module of modules) {
+      for (const challenge of module.challenges ?? []) this.addChallenge(module, challenge);
     }
 
     this.indexChildren();
@@ -102,6 +110,49 @@ export class World {
     this.sitesByHost.set(host, { ...site, host, moduleId: module.id });
   }
 
+  private addChallenge(module: ContentModule, challenge: SiteChallenge): void {
+    const existing = this.challengesById.get(challenge.id);
+    if (existing) {
+      this.problems.push(
+        `challenge collision: "${challenge.id}" declared by both ` +
+          `"${existing.moduleId}" and "${module.id}"`,
+      );
+      return;
+    }
+
+    const site = this.site(challenge.host);
+    if (!site) {
+      this.problems.push(
+        `${module.id}: challenge "${challenge.id}" is on host "${challenge.host}", which no module declares`,
+      );
+      return;
+    }
+
+    const owned = { ...challenge, host: site.host, moduleId: module.id };
+    const added: SimRoute[] = [];
+
+    for (const route of challenge.routes) {
+      const key = routeKey(site.host, route.path);
+      const taken = site.routes.some((r) => routeKey(site.host, r.path) === key) || this.challengesByRoute.has(key);
+
+      if (taken) {
+        this.problems.push(
+          `route collision: "${site.host}${route.path}" declared by both ` +
+            `"${site.moduleId}" and challenge "${challenge.id}" in "${module.id}"`,
+        );
+        continue;
+      }
+
+      this.challengesByRoute.set(key, owned);
+      added.push(route);
+    }
+
+    this.challengesById.set(challenge.id, owned);
+    // A new array on the world's own copy of the site, so the declaring
+    // module's object is never mutated.
+    site.routes = [...site.routes, ...added];
+  }
+
   private indexChildren(): void {
     for (const node of this.nodesByPath.values()) {
       const parent = node.parentPath;
@@ -156,6 +207,19 @@ export class World {
     return [...this.sitesByHost.values()];
   }
 
+  challenge(id: string): Owned<SiteChallenge> | undefined {
+    return this.challengesById.get(id);
+  }
+
+  allChallenges(): Owned<SiteChallenge>[] {
+    return [...this.challengesById.values()];
+  }
+
+  /** The challenge guarding a route, by its declared pattern. */
+  challengeFor(host: SiteHost, routePath: string): Owned<SiteChallenge> | undefined {
+    return this.challengesByRoute.get(routeKey(host, routePath));
+  }
+
   desktopItems() {
     return this.modules.flatMap((module) => module.desktopItems ?? []);
   }
@@ -200,6 +264,10 @@ export class World {
 }
 
 /* ------------------------------------------------------------ route match */
+
+function routeKey(host: SiteHost, path: string): string {
+  return `${host.toLowerCase()} ${normaliseRoutePath(path).toLowerCase()}`;
+}
 
 function normaliseRoutePath(raw: string): string {
   const trimmed = raw.split("?")[0].replace(/\/+$/, "");

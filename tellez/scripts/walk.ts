@@ -69,20 +69,20 @@ async function walk() {
     body: JSON.stringify({ username: "nobody", password: "nope" }),
   });
   check("wrong username rejected", badUser.body.ok === false);
-  check("wrong username hints at the username", badUser.body.hint === "An ultimate instrument?",
+  check("wrong username gets no hint", badUser.body.hint === undefined,
     `got "${badUser.body.hint}"`);
 
   const badPass = await call("/api/login", {
     method: "POST",
-    body: JSON.stringify({ username: "ultimateguitar", password: "nope" }),
+    body: JSON.stringify({ username: "atellez", password: "nope" }),
   });
   check("wrong password rejected", badPass.body.ok === false);
-  check("right username hints at the password", badPass.body.hint === "A legendary greeting.",
+  check("right username hints at the password", badPass.body.hint === "Discord username",
     `got "${badPass.body.hint}"`);
 
   const login = await call("/api/login", {
     method: "POST",
-    body: JSON.stringify({ username: " UltimateGuitar ", password: "HelloHackers" }),
+    body: JSON.stringify({ username: " ATellez ", password: "UltimateGuitar" }),
   });
   check("logged in (case and whitespace tolerant)", login.body.ok === true);
   check("success leaks no hint", login.body.hint === undefined);
@@ -111,6 +111,15 @@ async function walk() {
   const sealed = await call("/api/web/fetch?host=ledger.brightlinepay.hack&path=/payouts");
   check("payouts sealed before the credential", sealed.status === 403, `got ${sealed.status}`);
 
+  const sealedClassified = await call("/api/web/fetch?host=ledger.brightlinepay.hack&path=/classified");
+  check("classified sealed before the credential", sealedClassified.status === 403, `got ${sealedClassified.status}`);
+
+  const sealedSteps = await call("/api/web/challenge", {
+    method: "POST",
+    body: JSON.stringify({ challenge: "classified", answer: "dadgad-capo2" }),
+  });
+  check("classified steps refused before the portal login", sealedSteps.status === 404, `got ${sealedSteps.status}`);
+
   const notes = await call(`/api/fs/list?path=${enc("C:/Users/atellez/Desktop/notes")}`);
   check("notes folder lists", notes.body.entries?.length === 14, `${notes.body.entries?.length} files`);
 
@@ -130,8 +139,96 @@ async function walk() {
   // to survive into the next, because progress is derived from the event log.
   const payouts = await call("/api/web/fetch?host=ledger.brightlinepay.hack&path=/payouts");
   check("payouts open on a LATER request", payouts.status === 200, `got ${payouts.status}`);
-  check("ledger totals intact", payouts.body.data?.totals?.in === 8420);
+  check("ledger totals intact", payouts.body.data?.totals?.in === 2400000);
   check("the page leaks no progress", payouts.body.revealed === undefined);
+
+  // Classified: three factors, in order, behind the portal login.
+  const CLASSIFIED = "/api/web/fetch?host=ledger.brightlinepay.hack&path=/classified";
+  const answer = (body: Record<string, unknown>) =>
+    call("/api/web/challenge", { method: "POST", body: JSON.stringify({ challenge: "classified", ...body }) });
+  const pushes = async () =>
+    (await call("/api/web/challenge?app=authenticator")).body.requests ?? [];
+
+  const gate = await call(CLASSIFIED);
+  check("classified serves step one", gate.body.challenge?.kind === "secret", JSON.stringify(gate.body.challenge));
+  check("classified sends no data while gated", gate.body.data === null);
+  check("step one does not leak the questions", gate.body.challenge?.questions === undefined);
+
+  const gatedLog = await call(`${CLASSIFIED}/messages`);
+  check("message log is behind the same gate", gatedLog.body.challenge?.kind === "secret" && gatedLog.body.data === null);
+  check("authenticator is empty before the password", (await pushes()).length === 0);
+
+  const early = await answer({ decision: "approve" });
+  check("approving before the password does nothing", early.body.ok === false);
+
+  const wrongPw = await answer({ answer: "hellohackers" });
+  check("wrong classified password rejected", wrongPw.body.ok === false);
+
+  check("right classified password accepted", (await answer({ answer: password })).body.ok === true);
+  check("page now waits on the authenticator", (await call(CLASSIFIED)).body.challenge?.kind === "approval");
+  check("authenticator received the push", (await pushes()).length === 1);
+
+  check("page cannot approve itself", (await answer({})).body.ok === false);
+
+  await answer({ decision: "deny" });
+  const denied = await call(CLASSIFIED);
+  check("deny sends the gate back to the password", denied.body.challenge?.step === 1);
+  check("deny is explained on the page", denied.body.challenge?.notice === "denied");
+  check("deny clears the push", (await pushes()).length === 0);
+
+  await answer({ answer: password });
+  check("approve accepted", (await answer({ decision: "approve" })).body.ok === true);
+
+  const questions = await call(CLASSIFIED);
+  check("page now asks three questions", questions.body.challenge?.questions?.length === 3);
+  check("questions step still sends no data", questions.body.data === null);
+
+  // The answers come from the machine, the way a player would get them —
+  // except the treasurer, which is deliberately not written down anywhere on it.
+  const gym = await call(`/api/fs/read?path=${enc("C:/Users/atellez/Desktop/notes/gym.txt")}`);
+  const legs = String(gym.body.content?.body ?? "").match(/^(\w+)\s+legs$/m)?.[1] ?? "";
+  check("gym.txt names the leg day", legs === "thu", `got "${legs}"`);
+
+  const books = await call(`/api/fs/read?path=${enc("C:/Users/atellez/Desktop/notes/book-recs.txt")}`);
+  const book = String(books.body.content?.body ?? "").match(/^- (.+) \(reread, still my favorite\)$/m)?.[1] ?? "";
+  check("book-recs.txt names the favorite", book.length > 0, "no favorite marked");
+
+  const thread = await call(`/api/fs/read?path=${enc("C:/Users/atellez/Documents/NUSEC/treasurer-thread.eml")}`);
+  check("treasurer thread gives the surname", JSON.stringify(thread.body.content ?? {}).includes("a.uppal@nusec.club"));
+
+  const wrongQs = await answer({ answers: [legs, book, "Arjun"] });
+  check("first name alone is not enough", wrongQs.body.ok === false);
+  check("a wrong answer does not say which", wrongQs.body.message === "One or more answers were incorrect.");
+
+  const rightQs = await answer({ answers: [` ${legs.toUpperCase()} `, book.toUpperCase(), "arjun uppal"] });
+  check("security questions accepted (case and whitespace tolerant)", rightQs.body.ok === true);
+
+  const vault = await call(CLASSIFIED);
+  check("classified opens on a LATER request", vault.body.challenge === undefined && Array.isArray(vault.body.data?.rows));
+  check("transfers follow the money to Jessica",
+    vault.body.data?.total === 2400000 && JSON.stringify(vault.body.data).includes("Jessica James Okafor"));
+
+  const docs = await call(`${CLASSIFIED}/documents`);
+  check("scheme documents open", (docs.body.data?.documents?.length ?? 0) > 0);
+
+  const log = await call(`${CLASSIFIED}/messages`);
+  const lines: { from: string; body: string }[] = log.body.data?.messages ?? [];
+  check("message log opens", lines.length > 0);
+  check("message log points at her Instagram",
+    lines.some((line) => line.from === "Jessica" && /instagram/i.test(line.body)));
+
+  // Classified relocks: moving between its own pages keeps it open, but
+  // loading anything else closes it, and coming back costs all three factors.
+  check("its own pages keep it open", (await call(CLASSIFIED)).body.challenge === undefined);
+  await call("/api/web/fetch?host=ledger.brightlinepay.hack&path=/payouts");
+  const relocked = await call(`${CLASSIFIED}/messages`);
+  check("leaving classified locks it again", relocked.body.challenge?.step === 1 && relocked.body.data === null);
+  check("a relock is not reported as a denial", relocked.body.challenge?.notice === undefined);
+
+  await answer({ answer: password });
+  await answer({ decision: "approve" });
+  await answer({ answers: [legs, book, "Arjun Uppal"] });
+  check("the three factors open it again", (await call(CLASSIFIED)).body.challenge === undefined);
 
   // Everything above proved the player's view. The board is where progress is
   // supposed to be visible, so prove it landed there too.
@@ -148,10 +245,18 @@ async function walk() {
       "desktop-unlocked", "recycle-bin-opened", "portal-link-found",
       "notes-folder-opened", "password-note-opened", "portal-breached",
       "payout-ledger-seen", "case-assembled",
+      "classified-password", "classified-approved", "classified-unlocked",
+      "jessica-transfers-seen", "scheme-documents-read", "message-log-read",
     ]) {
       check(`board recorded ${id}`, reached.includes(id));
     }
   }
+
+  // Start over: a refresh keeps the session, so signing out has to really end it.
+  const signOut = await call("/api/session", { method: "DELETE" });
+  check("sign out succeeds", signOut.status === 200, `got ${signOut.status}`);
+  check("signed out means no session", (await call("/api/session")).status === 401);
+  check("signed out sees no files", (await call(`/api/fs/list?path=${enc("C:")}`)).status === 401);
 
   console.log(`\n${failures === 0 ? "walk: ok" : `walk: ${failures} failure(s)`}`);
   process.exit(failures === 0 ? 0 : 1);

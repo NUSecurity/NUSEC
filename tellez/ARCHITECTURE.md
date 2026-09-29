@@ -88,7 +88,7 @@ the File Explorer can render every folder instantly — including the ones nobod
 has earned — and the discovery is gone for everyone, not just the curious. The
 gate exists so that "there is a folder here you have not found yet" stays true.
 
-It is also what makes credentials work at all. `hellohackers` is checked on the
+It is also what makes credentials work at all. `ultimateguitar` is checked on the
 server; the browser never holds anything to compare against.
 
 ---
@@ -141,7 +141,7 @@ tellez/
 ├── api/                     thin serverless wrappers over server/engine.ts
 │   ├── session.ts · login.ts · desktop.ts · event.ts · board.ts · health.ts
 │   ├── fs/list.ts · fs/read.ts · fs/asset.ts
-│   └── web/fetch.ts · web/auth.ts
+│   └── web/fetch.ts · web/auth.ts · web/challenge.ts
 │
 ├── server/                  server-only. NEVER imported by client code.
 │   ├── content/
@@ -276,6 +276,7 @@ interface Objective {
     | { on: "secret";    id: SecretId }
     | { on: "appAction"; app: AppId; action: string }
     | { on: "visit";     host: string; path?: string }
+    | { on: "challenge"; id: string; step?: number }   // see §7.7
     | { on: "all";       objectives: ObjectiveId[] };
 }
 ```
@@ -284,6 +285,7 @@ interface Objective {
 interface Secret {
   id: SecretId;
   value: string;               // the accepted answer
+  accepts?: string[];          // other phrasings that also count: "thu" for "thursday"
   env?: string;                // optional override, e.g. "SECRET_PORTAL_PW"
   normalise?: ("trim" | "lower" | "alnum")[];   // default: ["trim"]
   hints?: string[];            // facilitator can release these from /board
@@ -594,7 +596,59 @@ Credentials are checked at `/api/web/auth` and the protected routes are never
 sent to an unauthenticated session. **Build as many portals as you like** — the
 engine has no notion of "the" portal.
 
-### 7.7 What preflight checks
+### 7.7 Add a gated section to a site (a site challenge)
+
+A challenge is a multi-step gate in front of some routes — password again, a
+push to an app, security questions. It lives in **your** module and names the
+host it sits on, so you can put a locked section on somebody else's site
+without editing their file. The world adds its routes to that site; a route
+that collides is a build error.
+
+```ts
+challenges: [{
+  id: "classified",
+  host: "ledger.brightlinepay.hack",
+  routes: [{ path: "/classified", data: { /* sent only once every step is passed */ } }],
+  steps: [
+    { kind: "secret",    prompt: "Re-enter your password.", label: "Password", secret: "brightline-pw" },
+    { kind: "approval",  prompt: "Approve the request in Authenticator.", app: "authenticator",
+                         request: "Sign in to Classified" },
+    { kind: "questions", prompt: "Answer your security questions.",
+                         questions: [{ label: "What day do you hit legs?", secret: "classified-legs" }] },
+  ],
+}],
+objectives: [
+  { id: "classified-password", trigger: { on: "challenge", id: "classified", step: 1 }, /* … */ },
+  { id: "classified-unlocked", trigger: { on: "challenge", id: "classified" },          /* … */ },
+],
+```
+
+How it behaves:
+
+- A challenge's routes are behind the host's own login wall, if it has one.
+- Until every step is passed, visiting a route returns `challenge` — the
+  **current** step only — and `data: null`. Later steps' questions never reach
+  the browser early. The renderer shows `<ChallengeGate>` from
+  `client/src/sites/ChallengeGate.tsx` when `ctx.challenge` is set.
+- Steps are passed strictly in order, and progress is derived from
+  `challenge.step` events like everything else.
+- An **approval** step appears in the named app, which reads it from
+  `GET /api/web/challenge?app=<id>` and answers with `{ decision }`. The page
+  polls until it moves on. **Deny sends the challenge back to step 1.**
+- A wrong **questions** attempt never says which answer was wrong; the event
+  records it for the board.
+- `{ on: "challenge", id, step: n }` fires once `n` steps are passed; omit
+  `step` for the whole challenge.
+- `relock: true` opens it for one visit. Loading any page outside its routes,
+  or ten minutes without loading one of them, closes it again. Objectives it
+  fired stay reached. Without `relock`, a passed challenge stays passed, like a
+  site login.
+
+`api/web/challenge.ts` serves both GET and POST because every file in `api/`
+is a Vercel function and the Hobby plan allows twelve. **There are twelve
+now** — a new endpoint should join an existing file, not add one.
+
+### 7.8 What preflight checks
 
 `npm run preflight` fails the build on:
 
@@ -606,12 +660,15 @@ engine has no notion of "the" portal.
 - a declared asset missing from the build
 - a node unreachable from any directory — an orphan nobody can ever find
 - a site route with a `lock` but no reachable way to satisfy it
+- a challenge on a host no module declares, a route it adds that already
+  exists, a step naming an unknown secret or app, or a `challenge` trigger
+  pointing at a step it does not have
 
 This is lifted from the escape room's preflight, which exists because every one
 of these failures is otherwise **completely silent until somebody hits it
 mid-meeting**.
 
-### 7.8 Rules that are not negotiable
+### 7.9 Rules that are not negotiable
 
 - **No content in the client bundle.** If a participant can read it before
   earning it, it is broken.
@@ -629,7 +686,7 @@ mid-meeting**.
 - **Write the `note` on every objective.** Somebody is reading the board live
   and needs to know what it means when your objective lights up.
 
-### 7.9 Design guidance
+### 7.10 Design guidance
 
 Make the evidence do the teaching. A timestamp that contradicts a story, a
 `deleted.originalPath` pointing at a folder nobody found, a passphrase sitting
@@ -652,13 +709,13 @@ credentials is a **proposal — change the values freely.**
 The lock screen shows user `atellez` on HuskyOS. The credentials are:
 
 ```
-username   ultimateguitar
-password   hellohackers
+username   atellez
+password   ultimateguitar
 ```
 
 **The clue lives outside the app, in the real NUSEC Discord.** Alec's old
-messages there are the source; players search their own club history to find how
-he signed off and what he called himself. This is genuine OSINT and it costs
+messages there are the source; players search their own club history to find the
+handle he used, which is the password. This is genuine OSINT and it costs
 nothing to build.
 
 *Ops requirement:* those messages must actually be findable before Tuesday, and

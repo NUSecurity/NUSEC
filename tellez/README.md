@@ -31,6 +31,9 @@ API handlers are mounted straight onto the Vite dev server.
 Two things worth knowing while you work:
 
 - **The facilitator board is at `/board`**, password `dev` locally.
+- **Refreshing keeps your progress**, on purpose. To start over as a new
+  player, use the power button in the Start menu, or "Not you? Start over" on
+  the lock screen.
 - **`npm run preflight`** validates the content. The build runs it, so a broken
   lock or a missing asset fails the build rather than surfacing mid-meeting.
 - **`npm run check:api`** bundles every handler in `api/` the way Vercel will.
@@ -48,13 +51,17 @@ Two things worth knowing while you work:
 `npm run walk` does this automatically; here it is for a human:
 
 1. Join with any name.
-2. Sign in as `ultimateguitar` / `hellohackers`.
+2. Sign in as `atellez` / `ultimateguitar`.
    *In the real event this comes from Alec's old posts in the NUSEC Discord.*
 3. Open the **Recycle Bin**, read `notes-to-self.txt`.
 4. Decode `YXRlbGxlei5hZG1pbg==` → `atellez.admin`, with **Cipher Bench** in the
    Start menu or any base64 decoder.
 5. Open the **notes** folder on the desktop, read `tuning-notes.txt` → `dadgad-capo2`.
 6. Open the **Web Browser**, go to `ledger.brightlinepay.hack`, sign in, read **Payouts**.
+7. Open the **Classified** tab. Enter `dadgad-capo2` again, open **Authenticator**
+   on the desktop and approve the request, then answer `thursday`,
+   `the cuckoo's egg` and `Arjun Uppal`. Read **Transfers**, **Documents** and
+   **Messages**; the chat ends pointing at Jessica James Okafor's Instagram.
 
 ---
 
