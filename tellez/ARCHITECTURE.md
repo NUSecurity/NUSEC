@@ -148,7 +148,7 @@ tellez/
 │   │   ├── modules/         ← EVERYTHING AUTHORS WRITE LIVES HERE
 │   │   │   ├── 00-workstation.ts     the machine: tree, desktop, clutter
 │   │   │   ├── 10-login.ts           the lock screen credentials
-│   │   │   ├── 20-recycle-bin.ts     eleven deleted files
+│   │   │   ├── 20-recycle-bin.ts     fifteen deleted files
 │   │   │   ├── 30-desktop-notes.ts   fourteen personal notes
 │   │   │   ├── 40-brightline.ts      the vendor portal
 │   │   │   └── index.ts              the module registry
@@ -728,15 +728,15 @@ Everything else is behind `RequiresObjective("desktop-unlocked")`.
 
 ### Discovery 2 — The recycle bin
 
-The Recycle Bin holds roughly a dozen deleted items: old drafts, a
-whiteboard photo, a half-finished budget. Most are noise, several are
+The Recycle Bin holds roughly fifteen deleted items: old drafts, a meeting
+agenda, some photos, a half-finished budget. Most are noise, several are
 mild red herrings, and each carries a real `deleted.originalPath` so the bin
 doubles as a map of folders that no longer appear in the tree.
 
 `notes-to-self.txt` holds the **portal address and the base64 username**, plus
 the only pointer to Discovery 4 — "pw is in the usual place, with the songs".
 `passwords.txt.bak` is a pure decoy of dead 2019 credentials, and one item is
-hidden, so only players who turn on *Show hidden items* see all eleven.
+hidden, so only players who turn on *Show hidden items* see all fifteen.
 
 Objectives: `recycle-bin-opened` · `decoy-opened` (hidden — shows who is
 thorough) · `portal-link-found`.

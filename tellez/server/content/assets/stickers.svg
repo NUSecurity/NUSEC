@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 440" width="720" height="440">
+  <rect width="720" height="440" fill="#111318"/>
+  <text x="36" y="46" font-family="ui-sans-serif,system-ui" font-size="20" fill="#8b93a1">sticker concepts v3 — all rejected</text>
+  <g>
+    <circle cx="150" cy="190" r="86" fill="#0f2b1e" stroke="#33d17a" stroke-width="3"/>
+    <text x="150" y="182" text-anchor="middle" font-family="ui-monospace,monospace" font-size="26" fill="#33d17a">NUSEC</text>
+    <text x="150" y="212" text-anchor="middle" font-family="ui-monospace,monospace" font-size="13" fill="#2aa35f">stay curious</text>
+  </g>
+  <g>
+    <rect x="290" y="112" width="156" height="156" rx="18" fill="#2a1430" stroke="#c77dff" stroke-width="3"/>
+    <text x="368" y="178" text-anchor="middle" font-family="ui-monospace,monospace" font-size="38" fill="#c77dff">&gt;_</text>
+    <text x="368" y="216" text-anchor="middle" font-family="ui-monospace,monospace" font-size="13" fill="#9b5de5">northeastern</text>
+  </g>
+  <g>
+    <polygon points="572,108 656,160 656,248 572,300 488,248 488,160" fill="#101f33" stroke="#4cc9f0" stroke-width="3"/>
+    <text x="572" y="200" text-anchor="middle" font-family="ui-monospace,monospace" font-size="20" fill="#4cc9f0">HUSKY</text>
+    <text x="572" y="226" text-anchor="middle" font-family="ui-monospace,monospace" font-size="20" fill="#4cc9f0">SEC</text>
+  </g>
+  <text x="36" y="404" font-family="ui-sans-serif,system-ui" font-size="15" fill="#5b6472">"the hexagon one looks like every other security club" — jordan</text>
+</svg>

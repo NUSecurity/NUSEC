@@ -22,11 +22,10 @@
 
 @layer components {
   .wallpaper {
-    /* One faint glow, not a light show — the desktop sits behind everything
-       and should never compete with a window for attention. */
     background:
-      radial-gradient(900px 480px at 50% -10%, rgba(153, 56, 250, 0.045) 0%, transparent 65%),
-      #0a0a0a;
+      radial-gradient(1200px 700px at 18% 8%, #1b3a63 0%, transparent 58%),
+      radial-gradient(900px 640px at 86% 92%, #2a1a4a 0%, transparent 62%),
+      linear-gradient(160deg, #0b1220 0%, #0a0f1b 60%, #070b14 100%);
   }
 
   .pane {
@@ -40,7 +39,7 @@
   }
 
   .btn-primary {
-    @apply bg-husky-accent/90 border-husky-accent text-white font-medium hover:bg-husky-accent;
+    @apply bg-husky-accent/90 border-husky-accent text-[#04131f] font-medium hover:bg-husky-accent;
   }
 
   .field {

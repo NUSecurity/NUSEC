@@ -1,13 +1,13 @@
 /**
  * The recycle bin.
  *
- * Eleven deleted items, of which one matters. Every one carries a real
+ * Fifteen deleted items, of which one matters. Every one carries a real
  * `deletedFrom(...)` original path, so the bin doubles as a map of folders that
  * no longer exist in the tree — deleted is not gone, and the deletion record is
  * itself evidence.
  *
  * The noise is not filler. A bin containing one interesting file and nothing
- * else teaches nobody anything; the skill being practised is reading eleven
+ * else teaches nobody anything; the skill being practised is reading fifteen
  * boring things carefully.
  */
 
@@ -22,7 +22,7 @@ export const recycleBin: ContentModule = {
   id: "recycle-bin",
   title: "The recycle bin",
   summary:
-    "Dig through eleven deleted files. One of them is a note to self holding " +
+    "Dig through fifteen deleted files. One of them is a note to self holding " +
     "the vendor portal's address and its username, base64-encoded.",
 
   nodes: [
@@ -78,6 +78,21 @@ export const recycleBin: ContentModule = {
     ),
 
     /* -------------------------------------------------------------------- the noise */
+
+    text(
+      `${BIN}/agenda-2025-10-14.txt`,
+      [
+        "MEETING AGENDA - Oct 14",
+        "",
+        "1. intro / who we are (5 min)",
+        "2. CTF walkthrough - last week's web challenge",
+        "3. speaker event - need a room and a headcount",
+        "4. snacks",
+        "",
+        "someone bring the HDMI adapter this time",
+      ].join("\n"),
+      { meta: deletedFrom(`${HOME}/Documents/NUSEC/agenda-2025-10-14.txt`, ts("2025-12-01T09:14:00")) },
+    ),
 
     text(
       `${BIN}/sponsor-email-draft.txt`,
@@ -181,6 +196,21 @@ export const recycleBin: ContentModule = {
     ),
 
     text(
+      `${BIN}/ctf-ideas.txt`,
+      [
+        "challenge ideas for the spring meeting",
+        "",
+        "- a fake SSO portal with a logic flaw",
+        "- pcap with creds in cleartext (too easy?)",
+        "- something with a virtual desktop? seized laptop, they dig around",
+        "- steganography, but people always hate steganography",
+        "",
+        "the laptop one is good. do that one.",
+      ].join("\n"),
+      { meta: deletedFrom(`${HOME}/Documents/NUSEC/ctf-ideas.txt`, ts("2026-01-30T02:55:00")) },
+    ),
+
+    text(
       `${BIN}/venmo-note.txt`,
       [
         "reimbursements owed",
@@ -201,6 +231,13 @@ export const recycleBin: ContentModule = {
       { meta: deletedFrom(`${HOME}/Pictures/IMG_2291.svg`, ts("2026-01-11T16:00:00")) },
     ),
 
+    image(
+      `${BIN}/sticker-concepts.svg`,
+      "stickers.svg",
+      "Sticker concepts, rejected.",
+      { meta: deletedFrom(`${HOME}/Pictures/sticker-concepts.svg`, ts("2025-11-05T11:47:00")) },
+    ),
+
     binary(
       `${BIN}/desktop.ini`,
       [
@@ -217,6 +254,17 @@ export const recycleBin: ContentModule = {
       },
     ),
 
+    text(
+      `${BIN}/wifi-guest-password.txt`,
+      [
+        "guest wifi for the speaker event",
+        "",
+        "  NUSEC-GUEST / welcome2026",
+        "",
+        "expires after the event, IT resets it",
+      ].join("\n"),
+      { meta: deletedFrom(`${HOME}/Documents/wifi-guest-password.txt`, ts("2026-04-02T10:15:00")) },
+    ),
   ],
 
   objectives: [

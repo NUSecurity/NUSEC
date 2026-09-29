@@ -37,8 +37,8 @@ export function Join() {
           payments off.
         </p>
         <p className="mt-2.5 text-[13px] leading-relaxed text-husky-dim">
-          Investigate what is on the device. Follow the money, find out who
-          ended up with it, and work out where they went.
+          It is locked. Work out how to get in, then find out where the money
+          went. There are no flags to submit — just read what is on the machine.
         </p>
 
         <label htmlFor="name" className="mt-6 block text-[11px] font-medium text-husky-dim">
@@ -48,7 +48,7 @@ export function Join() {
           id="name"
           value={name}
           onChange={(event) => setName(event.target.value)}
-          placeholder="Name"
+          placeholder="e.g. Priya"
           autoComplete="off"
           autoFocus
           maxLength={40}
