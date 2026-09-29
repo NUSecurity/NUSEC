@@ -4,6 +4,23 @@
   "outputDirectory": "dist",
   "installCommand": "npm install",
   "devCommand": "npm run dev",
+  "redirects": [
+    {
+      "source": "/tellez",
+      "destination": "https://tellez.nusec.club",
+      "permanent": false
+    },
+    {
+      "source": "/tellez/:path*",
+      "destination": "https://tellez.nusec.club/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/tellez-incident",
+      "destination": "https://tellez.nusec.club",
+      "permanent": false
+    }
+  ],
   "rewrites": [
     {
       "source": "/ctf/hands-on-practice/admin",
