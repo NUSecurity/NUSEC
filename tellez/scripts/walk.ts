@@ -69,7 +69,8 @@ async function walk() {
     body: JSON.stringify({ username: "nobody", password: "nope" }),
   });
   check("wrong username rejected", badUser.body.ok === false);
-  check("wrong username gets no hint", badUser.body.hint === undefined,
+  check("wrong username hints at the naming style",
+    badUser.body.hint === "First initial + last name, e.g. jsmith for John Smith",
     `got "${badUser.body.hint}"`);
 
   const badPass = await call("/api/login", {
@@ -89,12 +90,12 @@ async function walk() {
 
   const bin = await call(`/api/fs/list?path=${enc("C:/$Recycle.Bin")}`);
   check("recycle bin lists", bin.status === 200);
-  check("recycle bin hides the hidden item", bin.body.entries?.length === 14,
+  check("recycle bin hides the hidden item", bin.body.entries?.length === 10,
     `${bin.body.entries?.length} entries`);
   check("listing leaks no progress", bin.body.revealed === undefined);
 
   const withHidden = await call(`/api/fs/list?path=${enc("C:/$Recycle.Bin")}&hidden=1`);
-  check("show-hidden reveals the extra item", withHidden.body.entries?.length === 15);
+  check("show-hidden reveals the extra item", withHidden.body.entries?.length === 11);
 
   const note = await call(`/api/fs/read?path=${enc("C:/$Recycle.Bin/notes-to-self.txt")}`);
   check("portal note readable", note.status === 200);

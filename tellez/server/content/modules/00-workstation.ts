@@ -40,6 +40,24 @@ export const workstation: ContentModule = {
     dir(`${HOME}/Pictures`),
     dir(`${HOME}/Documents/NUSEC`),
 
+    // A wink for whoever goes spelunking outside the user folder. There is no
+    // registry to find; the file admits it rather than letting someone hunt.
+    text(
+      "C:/Windows/System32/registry-hives.txt",
+      [
+        "REGISTRY HIVES",
+        "",
+        "Please imagine the following files are here:",
+        "",
+        "  config/SAM          every local password hash, very scary",
+        "  config/SECURITY     even scarier",
+        "  config/SYSTEM       the boot key, services, USB history",
+        "  config/SOFTWARE     every program he ever installed",
+        "  NTUSER.DAT          his recent files, typed paths, UserAssist",
+      ].join("\n"),
+      { meta: { ...attrs("readonly"), modifiedAt: ts("2024-08-19T03:02:00") } },
+    ),
+
     binary(`${HOME}/Pictures/Thumbs.db`, THUMBS_HEX, {
       meta: { ...attrs("hidden", "system"), modifiedAt: ts("2026-02-11T19:40:00") },
     }),
