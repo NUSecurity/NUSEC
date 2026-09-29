@@ -90,12 +90,12 @@ async function walk() {
 
   const bin = await call(`/api/fs/list?path=${enc("C:/$Recycle.Bin")}`);
   check("recycle bin lists", bin.status === 200);
-  check("recycle bin hides the hidden item", bin.body.entries?.length === 10,
+  check("recycle bin hides the hidden item", bin.body.entries?.length === 9,
     `${bin.body.entries?.length} entries`);
   check("listing leaks no progress", bin.body.revealed === undefined);
 
   const withHidden = await call(`/api/fs/list?path=${enc("C:/$Recycle.Bin")}&hidden=1`);
-  check("show-hidden reveals the extra item", withHidden.body.entries?.length === 11);
+  check("show-hidden reveals the extra item", withHidden.body.entries?.length === 10);
 
   const note = await call(`/api/fs/read?path=${enc("C:/$Recycle.Bin/notes-to-self.txt")}`);
   check("portal note readable", note.status === 200);

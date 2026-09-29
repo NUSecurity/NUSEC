@@ -1,13 +1,13 @@
 /**
  * The recycle bin.
  *
- * Eleven deleted items, of which one matters. Every one carries a real
+ * Ten deleted items, of which one matters. Every one carries a real
  * `deletedFrom(...)` original path, so the bin doubles as a map of folders that
  * no longer exist in the tree — deleted is not gone, and the deletion record is
  * itself evidence.
  *
  * The noise is not filler. A bin containing one interesting file and nothing
- * else teaches nobody anything; the skill being practised is reading eleven
+ * else teaches nobody anything; the skill being practised is reading ten
  * boring things carefully.
  */
 
@@ -22,7 +22,7 @@ export const recycleBin: ContentModule = {
   id: "recycle-bin",
   title: "The recycle bin",
   summary:
-    "Dig through eleven deleted files. One of them is a note to self holding " +
+    "Dig through ten deleted files. One of them is a note to self holding " +
     "the vendor portal's address and its username, base64-encoded.",
 
   nodes: [
@@ -146,22 +146,6 @@ export const recycleBin: ContentModule = {
         "- quorum is 20, we had 34 last time so should be fine",
       ].join("\n"),
       { meta: deletedFrom(`${HOME}/Documents/NUSEC/elections-2026-notes.txt`, ts("2026-04-19T13:05:00")) },
-    ),
-
-    text(
-      `${BIN}/old-resume.txt`,
-      [
-        "ALEC TELLEZ",
-        "",
-        "EXPERIENCE",
-        "  President, Northeastern Cybersecurity Club      2023 - 2026",
-        "  IT Help Desk, Snell Library                     2022 - 2023",
-        "",
-        "SKILLS",
-        "  Python, Bash, Burp, Wireshark, Ghidra",
-        "  Guitar (not relevant, leaving it in anyway)",
-      ].join("\n"),
-      { meta: deletedFrom(`${HOME}/Documents/old-resume.txt`, ts("2026-02-27T17:44:00")) },
     ),
 
     text(

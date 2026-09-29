@@ -56,7 +56,7 @@ every answer. In one line each:
 |---|---|---|
 | 0 | The Workstation | Not a puzzle — the base folders and everyday clutter |
 | 1 | Getting In | Credentials found in Alec's old Discord posts |
-| 2 | What He Threw Away | Eleven deleted files; one holds a portal address |
+| 2 | What He Threw Away | Ten deleted files; one holds a portal address |
 | 3 | The Encoded Username | A base64 string in that note |
 | 4 | With The Songs | The password, buried in fourteen personal notes |
 | 5 | The Vendor Console | Log into the portal, read the payout ledger |

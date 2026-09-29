@@ -135,7 +135,7 @@ A note to self holding the address of a vendor portal, and the pointer to its
 password.
 
 **Where it is**
-`C:/$Recycle.Bin/notes-to-self.txt`, one of eleven deleted files.
+`C:/$Recycle.Bin/notes-to-self.txt`, one of ten deleted files.
 
 **The process**
 The Recycle Bin is a desktop icon and a Start menu entry, so finding it is
@@ -144,7 +144,7 @@ File Explorer does not have — **original location** and **date deleted** — s
 the bin doubles as a map of folders that no longer exist. Deleted is not gone,
 and the deletion record is itself evidence.
 
-Ten items show by default. The eleventh, `desktop.ini`, is marked hidden
+Nine items show by default. The tenth, `desktop.ini`, is marked hidden
 and appears only when a player turns on *Show hidden items* in the File
 Explorer. It is not important; it is there so that habit gets rewarded once.
 
