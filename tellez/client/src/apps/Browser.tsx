@@ -92,7 +92,7 @@ function BrowserView({ arg }: AppProps) {
         </button>
       </form>
 
-      <div className="flex min-h-0 flex-1 flex-col overflow-auto bg-[#0d1119]">
+      <div className="flex min-h-0 flex-1 flex-col overflow-auto bg-[#0e0e10]">
         {error && (
           <div className="flex h-full flex-col items-center justify-center gap-2.5 p-8 text-center">
             <Icon name="Unplug" size={28} className="text-husky-faint" />

@@ -51,7 +51,9 @@ Not a puzzle. This module owns the directory skeleton — `C:`, `C:/Users`,
 `C:/Users/atellez` and its Desktop, Documents, Downloads and Pictures — plus the
 desktop icons, the Start menu, and the ordinary clutter a real user leaves
 behind: a club laptop readme, a transition checklist, a signed-off budget, a
-treasurer email thread, a `Thumbs.db` marked hidden.
+treasurer email thread, a `Thumbs.db` marked hidden, and a joke
+`C:/Windows/System32/registry-hives.txt` for anyone who wanders outside the
+user folder — it asks them to imagine the hives.
 
 **Read this before adding files.** Those folders already exist, and a second
 module declaring `C:/Users/atellez/Documents` is a build failure, not a merge.
@@ -90,12 +92,12 @@ A player lands on a lock screen with the username field empty and no
 instructions beyond "he was not careful about where he talked about himself".
 The intended move is to go and read the club's own history.
 
-The lock screen gives one hint, and only for the password:
+A failed attempt shows one hint for whichever half was wrong:
 
-- Username wrong → no hint.
+- Username wrong → *"First initial + last name, e.g. jsmith for John Smith"*
 - Username right, password wrong → *"Discord username"*
 
-The hint appearing at all confirms the username is right, so this is a
+Which hint appears confirms whether the username is right, so this is a
 deliberate username oracle. On a real login that is a flaw; here it is the
 feature, because a room stuck on the front door learns nothing.
 
@@ -114,7 +116,7 @@ Both are trimmed and case-insensitive, so ` ATellez ` works.
 
 Failed attempts are recorded too, with `userOk` noting whether the username half
 was right. A person with several failures and `userOk: false` is stuck on the
-username and is getting no hint; `userOk: true` means they have seen the
+username despite the naming-style hint; `userOk: true` means they have seen the
 Discord hint and are hunting for his handle.
 
 **⚠️ Before the event**
@@ -133,7 +135,7 @@ A note to self holding the address of a vendor portal, and the pointer to its
 password.
 
 **Where it is**
-`C:/$Recycle.Bin/notes-to-self.txt`, one of fifteen deleted files.
+`C:/$Recycle.Bin/notes-to-self.txt`, one of eleven deleted files.
 
 **The process**
 The Recycle Bin is a desktop icon and a Start menu entry, so finding it is
@@ -142,7 +144,7 @@ File Explorer does not have — **original location** and **date deleted** — s
 the bin doubles as a map of folders that no longer exist. Deleted is not gone,
 and the deletion record is itself evidence.
 
-Fourteen items show by default. The fifteenth, `desktop.ini`, is marked hidden
+Ten items show by default. The eleventh, `desktop.ini`, is marked hidden
 and appears only when a player turns on *Show hidden items* in the File
 Explorer. It is not important; it is there so that habit gets rewarded once.
 

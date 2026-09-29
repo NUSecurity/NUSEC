@@ -21,11 +21,12 @@ export const login: ContentModule = {
 
   secrets: [
     // hints[0] of whichever half failed is shown on the lock screen after a
-    // wrong attempt. The username has none, so a wrong username gets no help
-    // at all; only a right username with a wrong password earns the hint.
+    // wrong attempt. The two hints differ, so which one appears still tells a
+    // player whether the username half was right.
     {
       id: "machine-username",
       value: "atellez",
+      hints: ["First initial + last name, e.g. jsmith for John Smith"],
     },
     {
       id: "machine-password",

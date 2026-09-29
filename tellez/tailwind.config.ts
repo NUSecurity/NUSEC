@@ -12,14 +12,17 @@ export default {
     extend: {
       colors: {
         husky: {
-          wall: "#0b1220",
-          glass: "rgba(20, 27, 42, 0.82)",
-          chrome: "#171f30",
-          edge: "#2a3448",
-          ink: "#e6ebf5",
-          dim: "#93a0b8",
-          faint: "#5e6c86",
-          accent: "#4aa8ff",
+          // Matches nusec.club: neutral near-black surfaces, one purple accent
+          // (the site's hsl(270 95% 60%)). Blue-tinted greys read as a
+          // different brand next to the club site on the projector.
+          wall: "#0a0a0a",
+          glass: "rgba(20, 20, 22, 0.86)",
+          chrome: "#161618",
+          edge: "#2a2a2e",
+          ink: "#f4f4f5",
+          dim: "#a1a1aa",
+          faint: "#6b6b75",
+          accent: "#9938fa",
           warn: "#f0a33c",
           bad: "#f0625d",
           good: "#48c98a",
